@@ -3,4 +3,4 @@ use Microsoft.IdentityModel.Tokens to:
 - Get PubKey
 - Verify Digital Signature
 - Verify Expiration Date
-- Check Claim/Consent
+- Check Claim
