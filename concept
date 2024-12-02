@@ -1,1 +1,6 @@
 AAD built based on OAuth 2 & OIDC (OpenId Connector)
+use Microsoft.IdentityModel.Tokens to:
+- Get PubKey
+- Verify Digital Signature
+- Verify Expiration Date
+- Check Claim/Consent
