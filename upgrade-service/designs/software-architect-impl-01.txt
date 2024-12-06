@@ -1,0 +1,157 @@
+== Method
+
+=== Technical Architecture
+
+The system will be structured into frontend and backend layers with clear segregation of concerns:
+
+[plantuml, architecture-diagram, png]
+----
+@startuml
+actor User as U
+actor BackOfficeUser as BO
+
+U --> API_Gateway : Interacts via ReactJS Storefront
+BO --> API_Gateway : Interacts via Angular Backoffice
+
+package "Frontend Applications" {
+  component ReactJS_Storefront
+  component Angular_Backoffice
+}
+
+package "API Gateway" {
+  component Gateway
+}
+
+package "Microservices" {
+  component IdentityService {
+    Authentication
+    SSO
+    MFA
+  }
+  component UserService {
+    CRUD User
+    Roles: Guest, Member, BackOffice, SuperAdmin
+  }
+  component ProductService {
+    CRUD Product
+  }
+  component OrderService {
+    Manage Orders and OrderLines
+  }
+  component InventoryService {
+    Manage Inventory Levels
+  }
+  component PaymentService {
+    Payment Processing
+  }
+}
+
+ReactJS_Storefront --> Gateway
+Angular_Backoffice --> Gateway
+Gateway --> IdentityService
+Gateway --> UserService
+Gateway --> ProductService
+Gateway --> OrderService
+Gateway --> InventoryService
+Gateway --> PaymentService
+@enduml
+----
+
+=== Service Responsibilities and Key APIs
+
+1. **Identity Service**:
+   - **Responsibilities**:
+     - User authentication with username/password or Microsoft SSO.
+     - Multi-Factor Authentication (MFA) for enhanced security.
+     - Issue and validate JWT tokens for API access.
+   - **Key APIs**:
+     - `POST /login`: Authenticate user and return JWT.
+     - `POST /mfa/verify`: Verify MFA code.
+     - `GET /sso/login`: Initiate SSO with Microsoft account.
+
+2. **User Service**:
+   - **Responsibilities**:
+     - Manage user roles: Guest, Member, BackOfficeUser, SuperAdmin.
+     - CRUD operations for users, except SuperAdmin.
+   - **Key APIs**:
+     - `POST /users`: Create a new user.
+     - `GET /users/{id}`: Retrieve user details.
+     - `PUT /users/{id}`: Update user details.
+     - `DELETE /users/{id}`: Delete a user (SuperAdmin cannot be deleted).
+
+3. **Product Service**:
+   - **Responsibilities**:
+     - Manage product details including image, price, and UoM.
+   - **Key APIs**:
+     - `POST /products`: Add a product.
+     - `GET /products`: List all products.
+     - `PUT /products/{id}`: Update product details.
+     - `DELETE /products/{id}`: Delete a product.
+
+4. **Order Service**:
+   - **Responsibilities**:
+     - Manage orders and their associated order lines.
+   - **Key APIs**:
+     - `POST /orders`: Create an order.
+     - `GET /orders`: Retrieve orders.
+     - `PATCH /orders/{id}`: Update order status (e.g., Cancelled, Verified).
+
+5. **Inventory Service**:
+   - **Responsibilities**:
+     - Track and manage inventory levels (Instock, Ordered, Commit, Available).
+   - **Key APIs**:
+     - `GET /inventory/{productId}`: Check inventory levels for a product.
+     - `POST /inventory/update`: Update inventory levels.
+
+6. **Payment Service**:
+   - **Responsibilities**:
+     - Handle payment processing and integrations (e.g., Stripe, PayPal).
+   - **Key APIs**:
+     - `POST /payments`: Process a payment.
+     - `GET /payments/{orderId}`: Get payment details for an order.
+
+=== Database Design
+
+1. **Identity Service**:
+   - **Users Table**:
+     ```
+     id (PK) | username | password_hash | role | sso_provider | created_at | updated_at
+     ```
+
+2. **User Service**:
+   - **Users Table**:
+     ```
+     id (PK) | first_name | last_name | email | phone | role | created_at | updated_at
+     ```
+
+3. **Product Service**:
+   - **Products Table**:
+     ```
+     id (PK) | name | description | image_url | price | uom | created_at | updated_at
+     ```
+
+4. **Order Service**:
+   - **Orders Table**:
+     ```
+     id (PK) | customer_id (FK) | status | total_amount | created_at | updated_at
+     ```
+   - **OrderLines Table**:
+     ```
+     id (PK) | order_id (FK) | product_id (FK) | quantity | unit_price | total_price
+     ```
+
+5. **Inventory Service**:
+   - **Inventory Table**:
+     ```
+     id (PK) | product_id (FK) | instock_qty | ordered_qty | commit_qty | available_qty
+     ```
+
+6. **Payment Service**:
+   - **Payments Table**:
+     ```
+     id (PK) | order_id (FK) | payment_method | payment_status | amount | created_at
+     ```
+
+---
+
+This method defines the microservices, their responsibilities, key APIs, and a database schema to support the requirements. Let me know if you’d like to dive deeper into any part or refine this approach. If it’s all good, I’ll move to the **Implementation** steps.
