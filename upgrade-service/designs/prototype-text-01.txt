@@ -1,0 +1,77 @@
+== Requirements
+
+The system will have the following features and functionalities:
+
+=== Must-Have
+- **Frontend**:
+  - **Storefront (ReactJS)**:
+    1. Display product information:
+       - Product Image
+       - Price
+       - Instock status
+    2. Allow users to place orders via a **Buy** button, requiring:
+       - User login with username and password.
+       - Redirect to the login page if not already logged in.
+    3. Provide users with access to their **Order History** after a successful login.
+  - **Backoffice (Angular)**:
+    1. Enable CRUD operations for **Users**.
+    2. Enable CRUD operations for **Products**.
+    3. Display **Orders** placed by Storefront users.
+    4. Allow backoffice users to:
+       - Change an order's status to **Cancelled** using a "Cancel" button.
+       - Change an order's status to **Verified** using a "Confirm" button.
+    5. Restrict order modifications:
+       - If the order status is **Verified**, it becomes immutable.
+
+- **Backend (Microservices)**:
+  - **General**:
+    1. Backend services must be implemented using the latest .NET version.
+    2. Microservices should communicate via REST APIs, and an **API Gateway** must route all requests.
+    3. Use token-based authentication and role-based authorization.
+  - **Identity Service**:
+    1. Provide authentication and authorization services behind the API Gateway.
+    2. Support Single Sign-On (SSO) with Microsoft accounts.
+    3. Implement Multi-Factor Authentication (MFA).
+    4. Treat the Identity service as a standalone microservice.
+  - **User Service**:
+    1. Manage user data with the following roles:
+       - **Guest**: Unauthenticated users (no login required).
+       - **Member**: Logged-in customers with access to Storefront features.
+       - **Backoffice User**: Internal users who manage storefront operations (e.g., logistics staff).
+       - **SuperAdmin**: A user with the highest privileges who:
+         - Is initialized with default credentials (username: `manager`, password: `manager`) on the first use.
+         - Cannot be deleted.
+    2. Perform CRUD operations for all roles except **SuperAdmin**.
+  - **Product Service**:
+    1. Manage product information, including:
+       - Image
+       - Price
+       - Unit of Measurement (UoM)
+  - **Order Service**:
+    1. Store order information, including:
+       - **Product Info**: Details of products in the order.
+       - **Customer Info**: Information about the customer placing the order.
+    2. Each order must:
+       - Be associated with exactly one customer.
+       - Contain one or more products.
+    3. Each order line must include:
+       - Product details
+       - Quantity
+  - **Inventory Service**:
+    1. Track inventory with the following fields:
+       - **InstockQty**: Total quantity in stock.
+       - **OrderedQty**: Quantity allocated to current orders.
+       - **CommitQty**: Quantity reserved but not yet committed to an order.
+       - **AvailableQty**: Quantity available for new orders (calculated as `InstockQty - OrderedQty - CommitQty`).
+
+=== Should-Have
+- **Storefront**:
+  - Option to remember user login across sessions.
+- **Backoffice**:
+  - Pagination and filtering options for managing large sets of data.
+
+=== Could-Have
+- **Storefront**:
+  - User profile management to update personal details.
+- **Backoffice**:
+  - Analytics dashboard for order and inventory statistics.
