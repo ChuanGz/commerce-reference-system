@@ -5,7 +5,7 @@ This repository contains the source code for a full-stack application with multi
 ## Prerequisites
 1. Install Docker: [https://www.docker.com/](https://www.docker.com/)
 2. Install Node.js (for frontend): [https://nodejs.org/](https://nodejs.org/)
-3. Install .NET 7.0 SDK: [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
+3. Install .NET 8.0 SDK: [https://dotnet.microsoft.com/](https://dotnet.microsoft.com/)
 
 ## Running Locally with Docker
 1. Clone the repository:
