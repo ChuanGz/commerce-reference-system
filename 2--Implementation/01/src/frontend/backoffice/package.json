@@ -1,0 +1,11 @@
+{
+  "name": "backoffice",
+  "version": "1.0.0",
+  "dependencies": {
+    "@angular/core": "^15.0.0"
+  },
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build"
+  }
+}

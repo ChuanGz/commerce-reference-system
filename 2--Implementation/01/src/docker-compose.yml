@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  storefront:
+    build: ./frontend/storefront
+    ports:
+      - "3000:3000"
+  backoffice:
+    build: ./frontend/backoffice
+    ports:
+      - "4200:4200"
+  product-service:
+    build: ./services/product-service
+    ports:
+      - "5000:5000"
+  order-service:
+    build: ./services/order-service
+    ports:
+      - "5001:5001"
