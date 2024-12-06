@@ -1,0 +1,66 @@
+== Gathering Results
+
+The success of the project will be evaluated based on the following criteria:
+
+=== Functional Validation
+1. **Frontend (Storefront)**:
+   - Verify that product information is displayed accurately, including:
+     - Product image
+     - Price
+     - Instock status
+   - Confirm users can:
+     - Log in successfully and view their order history.
+     - Place orders using the "Buy" button.
+   - Validate that order placement and retrieval integrate correctly with the backend.
+
+2. **Frontend (Backoffice)**:
+   - Ensure CRUD operations for users and products function as expected.
+   - Verify product images can be uploaded and displayed correctly.
+   - Test order status updates:
+     - Orders can be marked as **Cancelled** or **Verified**.
+     - Verified orders are immutable.
+
+3. **Backend Microservices**:
+   - Validate each microservice's API endpoints for correctness and performance.
+   - Verify the functionality of the Identity Service, including:
+     - Authentication and JWT token generation.
+     - Single Sign-On (SSO) and Multi-Factor Authentication (MFA).
+   - Confirm data consistency between:
+     - Order Service and Inventory Service.
+     - User Service and Identity Service.
+
+=== Performance Evaluation
+1. Ensure system stability under high load:
+   - Test up to 1000 concurrent users placing orders.
+   - Simulate backoffice user activity during peak storefront usage.
+2. Measure API response times:
+   - Average response time < 200ms under normal load.
+   - 95th percentile response time < 500ms under high load.
+
+=== Security and Compliance
+1. Verify security measures:
+   - Ensure authentication tokens are secure and properly validated.
+   - Test MFA flows for security and reliability.
+2. Conduct a penetration test to identify vulnerabilities.
+3. Confirm compliance with relevant data protection regulations (e.g., GDPR).
+
+=== User Acceptance Testing (UAT)
+1. Gather feedback from:
+   - Storefront users for ease of use and functionality.
+   - Backoffice users for operational efficiency.
+2. Address any critical feedback before final deployment.
+
+=== Monitoring and Logging Validation
+1. Validate monitoring setup:
+   - Ensure key metrics (e.g., API performance, inventory updates) are tracked in Grafana.
+2. Verify logging:
+   - Ensure all critical events are logged and can be reviewed in Kibana.
+
+=== Final Handoff
+1. Deliver the system documentation, including:
+   - API documentation (Swagger/OpenAPI).
+   - Deployment guides and diagrams.
+   - User manuals for Storefront and Backoffice.
+2. Confirm all requirements have been met and approved by stakeholders.
+
+---
