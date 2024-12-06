@@ -1,0 +1,40 @@
+name: CI/CD for Product Service
+
+on:
+  push:
+    paths:
+      - 'services/product-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Step 2: Setup .NET
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0'
+
+    # Step 3: Restore dependencies
+    - name: Restore dependencies
+      run: dotnet restore services/product-service
+
+    # Step 4: Build the service
+    - name: Build
+      run: dotnet build services/product-service --no-restore
+
+    # Step 5: Run tests
+    - name: Run tests
+      run: dotnet test services/product-service --no-build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    # Deployment placeholder step
+    - name: Deploy
+      run: echo "Deploying Product Service..."
