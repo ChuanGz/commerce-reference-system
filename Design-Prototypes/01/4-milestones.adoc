@@ -1,0 +1,71 @@
+== Milestones
+
+The project will be broken down into the following milestones, with each milestone focusing on specific deliverables to achieve a working system incrementally:
+
+=== Milestone 1: Project Setup and Architecture (2 Weeks)
+- Set up the Git repository and CI/CD pipelines for continuous integration and deployment.
+- Create the project structure for frontend and backend.
+- Set up the API Gateway and basic routing to all microservices.
+- Define shared contracts for API specifications using OpenAPI or Swagger.
+- Configure Docker Compose for local environment setup with all services.
+
+=== Milestone 2: Identity Service and Authentication (2 Weeks)
+- Implement the Identity Service with the following features:
+  - User authentication (username/password) with JWT.
+  - Single Sign-On (SSO) integration with Microsoft accounts.
+  - Multi-Factor Authentication (MFA).
+- Secure API Gateway routes using JWT validation.
+- Create a login page on the Storefront and Backoffice to test authentication flows.
+
+=== Milestone 3: Backend Core Services (3 Weeks)
+- **User Service**:
+  - Implement CRUD operations for user roles (Guest, Member, Backoffice User, SuperAdmin).
+  - Seed the SuperAdmin user during initialization.
+- **Product Service**:
+  - Implement CRUD operations for products, including file upload for product images.
+  - Store and serve product images via a file system or cloud storage (e.g., AWS S3).
+- **Order Service**:
+  - Implement APIs for order creation, retrieval, and status updates.
+  - Ensure validation rules for `Verified` and `Cancelled` order statuses.
+- **Inventory Service**:
+  - Implement APIs for inventory updates and availability checks.
+  - Define calculations for `AvailableQty = InstockQty - OrderedQty - CommitQty`.
+
+=== Milestone 4: Frontend Integration (3 Weeks)
+- **Storefront (ReactJS)**:
+  - Display product listing with images, price, and instock status.
+  - Add the Buy functionality to create orders.
+  - Integrate the order history page to display past orders for logged-in users.
+- **Backoffice (Angular)**:
+  - Add CRUD pages for user management and product management.
+  - Implement order management with Cancel and Verify buttons.
+  - Integrate file upload functionality for product images.
+
+=== Milestone 5: Payment Integration and Testing (2 Weeks)
+- **Payment Service**:
+  - Integrate with a payment gateway (e.g., Stripe, PayPal) for payment processing.
+  - Implement APIs to process payments and retrieve payment statuses.
+- End-to-end testing of the order-to-payment workflow.
+
+=== Milestone 6: Deployment and Monitoring (2 Weeks)
+- Containerize all services using Docker.
+- Deploy the system to a production environment using Kubernetes or Docker Swarm.
+- Set up monitoring and logging:
+  - Use Prometheus and Grafana for monitoring.
+  - Use ELK stack (Elasticsearch, Logstash, Kibana) for centralized logging.
+- Finalize and document deployment guides.
+
+=== Milestone 7: Final Review and Handover (1 Week)
+- Conduct user acceptance testing (UAT) with key stakeholders.
+- Document the system, including:
+  - API documentation (Swagger/OpenAPI).
+  - Architecture diagrams and setup instructions.
+- Handover the project to the operations team.
+
+---
+
+### Timeline Overview:
+- **Total Duration**: Approximately **15 weeks** (~3.5 months).
+- Progress will be tracked weekly, with deliverables reviewed at the end of each milestone.
+
+---
