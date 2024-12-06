@@ -1,5 +1,0 @@
-Failure MS
-
-- All projects can apply microservices
-  + Inhouse software, must have devops developer, cost of transfer knowledge of outsourcing devs
-  + 1 ms can have multiple repositores

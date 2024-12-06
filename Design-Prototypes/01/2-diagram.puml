@@ -24,25 +24,25 @@ package "API Gateway" {
 
 package "Microservices" {
   component IdentityService {
-    Authentication
-    SSO
-    MFA
+   'Authentication'
+    'SSO'
+    'MFA'
   }
   component UserService {
-    CRUD User
-    Roles: Guest, Member, BackOffice, SuperAdmin
+    'BackOffice, SuperAdmin can CRUD User'
+    'Roles: Guest, Member, BackOffice, SuperAdmin'
   }
   component ProductService {
-    CRUD Product
+    'CRUD Product'
   }
   component OrderService {
-    Manage Orders and OrderLines
+    'Manage Orders and OrderLines'
   }
   component InventoryService {
-    Manage Inventory Levels
+    'Manage Inventory Levels'
   }
   component PaymentService {
-    Payment Processing
+    'Payment Processing'
   }
 }
 
