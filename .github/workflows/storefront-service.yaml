@@ -22,7 +22,9 @@ jobs:
 
     # Install dependencies
     - name: Install dependencies
-      run: npm install
+      run:  |
+        cd 2--Implementation/STU01/src/frontend/backoffice
+        npm install
 
     # Build the application
     - name: Build the application
