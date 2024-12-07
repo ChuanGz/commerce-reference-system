@@ -3,7 +3,7 @@ name: CI/CD for Order Service
 on:
   push:
     paths:
-      - 'services/order-service/**'
+      - '2--Implementation/STU01/src/services/order-service/**'
 
 jobs:
   build:

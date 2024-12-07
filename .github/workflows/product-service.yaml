@@ -3,7 +3,7 @@ name: CI/CD for Product Service
 on:
   push:
     paths:
-      - 'services/product-service/**'
+      - '2--Implementation/STU01/src/services/product-service/**'
 
 jobs:
   build:
