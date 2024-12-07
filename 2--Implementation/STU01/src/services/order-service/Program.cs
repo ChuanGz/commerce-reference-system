@@ -8,7 +8,7 @@ namespace OrderServiceApp
         {
             var builder = WebApplication.CreateBuilder(args);
             var app = builder.Build();
-            app.MapGet("/", () => "Order Service is running... 123");
+            app.MapGet("/", () => "Order Service is running...");
             app.Run();
         }
     }
