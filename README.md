@@ -1,2 +1,2 @@
-# template-architect
+# Study Coding
 Achitecture Template 
