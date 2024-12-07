@@ -76,7 +76,7 @@ The project is highly modular, enabling developers to extend or modify individua
 - **React Router** and **Angular Router**
 
 ### Backend:
-- **Node.js** and **Express**
+- **.NET 8.0**
 - **Docker** for containerization
 
 ### DevOps:
