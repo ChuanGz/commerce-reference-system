@@ -1,6 +1,15 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+using Microsoft.AspNetCore.Builder;
 
-app.MapGet("/", () => "Product Service is running...");
-
-app.Run();
+namespace OrderServiceApp
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            var app = builder.Build();
+            app.MapGet("/", () => "Product Service is running...");
+            app.Run();
+        }
+    }
+}
