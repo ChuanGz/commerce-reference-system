@@ -1,0 +1,40 @@
+name: CI/CD for Inventory Service
+
+on:
+  push:
+    paths:
+      - '2--Implementation/STU01/src/services/inventory-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Step 2: Setup .NET
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0'
+
+    # Step 3: Restore dependencies
+    - name: Restore dependencies
+      run: dotnet restore 2--Implementation/STU01/src/services/inventory-service
+
+    # Step 4: Build the service
+    - name: Build
+      run: dotnet build 2--Implementation/STU01/src/services/inventory-service --no-restore
+
+    # Step 5: Run tests
+    - name: Run tests
+      run: dotnet test 2--Implementation/STU01/src/services/inventory-service --no-build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    # Deployment placeholder step
+    - name: Deploy
+      run: echo "Deploying Inventory Service..."
