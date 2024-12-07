@@ -224,4 +224,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 For any questions or suggestions, please contact:
 - **GitHub**: [chuangz](https://github.com/chuangz)
-- **Email**: example@example.com
+- **Email**: thanhnhan.lionus@gmail.com
