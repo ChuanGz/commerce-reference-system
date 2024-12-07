@@ -28,11 +28,15 @@ jobs:
 
     # Build the application
     - name: Build the application
-      run: npm run build
+      run: |
+        cd 2--Implementation/STU01/src/frontend/backoffice
+        npm run build
 
     # Run tests
     - name: Run tests
-      run: npm run test -- --watch=false --browsers=ChromeHeadless
+      run: |
+        cd 2--Implementation/STU01/src/frontend/backoffice
+        npm run test -- --watch=false --browsers=ChromeHeadless
 
   deploy:
     runs-on: ubuntu-latest
