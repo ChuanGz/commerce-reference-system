@@ -1,55 +1,23 @@
-=== Technical Architecture
-@startuml DGraph
+@startuml Service Dependency
 
 ' Frontend Applications
-RECTANGLE_STYLE ReactJS_Storefront
-ReactJS_Storefront : ReactJS Storefront
 ReactJS_Storefront --> API_Gateway : Sends Requests
-
-RECTANGLE_STYLE Angular_Backoffice
-Angular_Backoffice : Angular Backoffice
 Angular_Backoffice --> API_Gateway : Manages Backoffice Operations
 
 ' API Gateway
-RECTANGLE_STYLE API_Gateway
 API_Gateway : Routes Requests to Services
 
 ' Microservices
-RECTANGLE_STYLE IdentityService
-IdentityService : Handles Authentication
-
-RECTANGLE_STYLE UserService
-UserService : Manages User Profiles
-
-RECTANGLE_STYLE CustomerService
-CustomerService : Manages Customer Data
-
-RECTANGLE_STYLE ProductService
-ProductService : Manages Product Catalog
-
-RECTANGLE_STYLE InventoryService
-InventoryService : Tracks Inventory Levels
-
-RECTANGLE_STYLE OrderService
-OrderService : Handles Orders
-
-RECTANGLE_STYLE PaymentService
-PaymentService : Processes Payments
-
-' Connections from API Gateway to Microservices
 API_Gateway --> IdentityService
 API_Gateway --> UserService
 API_Gateway --> ProductService
 API_Gateway --> OrderService
-API_Gateway --> PaymentService
 API_Gateway --> InventoryService
 
-' Microservice Dependencies
 IdentityService --> UserService : Validates User Tokens
 CustomerService --> UserService : Fetches User Details
 OrderService --> CustomerService : Retrieves Customer Info
 OrderService --> ProductService : Fetches Product Data
-OrderService --> PaymentService : Handles Payment Workflow
 ProductService --> InventoryService : Checks Stock Availability
 
 @enduml
