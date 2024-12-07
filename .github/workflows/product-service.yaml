@@ -21,15 +21,15 @@ jobs:
 
     # Step 3: Restore dependencies
     - name: Restore dependencies
-      run: dotnet restore services/product-service
+      run: dotnet restore 2--Implementation/STU01/src/services/product-service
 
     # Step 4: Build the service
     - name: Build
-      run: dotnet build services/product-service --no-restore
+      run: dotnet build 2--Implementation/STU01/src/services/product-service --no-restore
 
     # Step 5: Run tests
     - name: Run tests
-      run: dotnet test services/product-service --no-build
+      run: dotnet test 2--Implementation/STU01/src/services/product-service --no-build
 
   deploy:
     needs: build
