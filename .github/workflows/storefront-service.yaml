@@ -22,17 +22,21 @@ jobs:
 
     # Install dependencies
     - name: Install dependencies
-      run:  |
-        cd 2--Implementation/STU01/src/frontend/backoffice
+      run: |
+        cd 2--Implementation/STU01/src/frontend/storefront
         npm install
 
     # Build the application
     - name: Build the application
-      run: npm run build
+      run: |
+        cd 2--Implementation/STU01/src/frontend/storefront
+        npm run build
 
     # Run tests
     - name: Run tests
-      run: npm test
+      run: |
+        cd 2--Implementation/STU01/src/frontend/storefront
+        npm test
 
   deploy:
     runs-on: ubuntu-latest
