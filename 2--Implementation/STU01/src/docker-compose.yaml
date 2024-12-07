@@ -5,31 +5,74 @@ services:
     build: ./frontend/storefront
     ports:
       - "3000:3000"
+    depends_on:
+      - product-service
+      - order-service
+    networks:
+      - frontend
+
   backoffice:
     build: ./frontend/backoffice
     ports:
       - "4200:4200"
-  customer-service:
-    build: ./services/product-service
+    depends_on:
+      - user-service
+      - order-service
+      - inventory-service
+    networks:
+      - frontend
+
+  identity-service:
+    build: ./services/identity-service
     ports:
       - "5001:5001"
-  identity-service:
-    build: ./services/product-service
+    networks:
+      - backend
+
+  user-service:
+    build: ./services/user-service
     ports:
       - "5002:5002"
-  inventory-service:
-    build: ./services/product-service
+    depends_on:
+      - identity-service
+    networks:
+      - backend
+
+  customer-service:
+    build: ./services/customer-service
     ports:
       - "5003:5003"
-  order-service:
-    build: ./services/order-service
-    ports:
-      - "5004:5004"
+    depends_on:
+      - user-service
+    networks:
+      - backend
+
   product-service:
     build: ./services/product-service
     ports:
+      - "5004:5004"
+    depends_on:
+      - inventory-service
+    networks:
+      - backend
+
+  inventory-service:
+    build: ./services/inventory-service
+    ports:
       - "5005:5005"
-  user-service:
-    build: ./services/product-service
+    networks:
+      - backend
+
+  order-service:
+    build: ./services/order-service
     ports:
       - "5006:5006"
+    depends_on:
+      - customer-service
+      - product-service
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
