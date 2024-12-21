@@ -3,7 +3,7 @@ name: CI/CD for Customer Service
 on:
   push:
     paths:
-      - '2--Implementation/STU01/src/services/customer-service/**'
+      - 'src/services/customer-service/**'
 
 jobs:
   build:
@@ -21,15 +21,15 @@ jobs:
 
     # Step 3: Restore dependencies
     - name: Restore dependencies
-      run: dotnet restore 2--Implementation/STU01/src/services/customer-service
+      run: dotnet restore src/services/customer-service
 
     # Step 4: Build the service
     - name: Build
-      run: dotnet build 2--Implementation/STU01/src/services/customer-service --no-restore
+      run: dotnet build src/services/customer-service --no-restore
 
     # Step 5: Run tests
     - name: Run tests
-      run: dotnet test 2--Implementation/STU01/src/services/customer-service --no-build
+      run: dotnet test src/services/customer-service --no-build
 
   deploy:
     needs: build
