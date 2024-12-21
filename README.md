@@ -93,11 +93,11 @@ The repository is organized as follows:
 ```
 template-architect/
 │
-├── 2--Implementation/STU01/src/frontend/
+├── src/frontend/
 │   ├── storefront/       # React Storefront application
 │   ├── backoffice/       # Angular Backoffice application
 │
-├── 2--Implementation/STU01/src/backend/
+├── src/backend/
 │   ├── identity-service/ # Authentication and authorization
 │   ├── user-service/     # User profile management
 │   ├── customer-service/ # Customer-related data
@@ -135,13 +135,13 @@ cd template-architect
 1. **Frontend Applications**:
    - Navigate to the desired app directory (e.g., `storefront`):
      ```bash
-     cd 2--Implementation/STU01/src/frontend/storefront
+     cd src/frontend/storefront
      npm install
      npm start
      ```
    - For the Angular backoffice:
      ```bash
-     cd 2--Implementation/STU01/src/frontend/backoffice
+     cd src/frontend/backoffice
      npm install
      ng serve
      ```
