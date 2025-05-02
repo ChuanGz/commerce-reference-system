@@ -40,7 +40,7 @@ for layer in Domain Application Infrastructure API; do
 done
 
 # Create solution
-dotnet new sln -n "$SERVICE_PASCAL.sln"
+dotnet new sln -n "$SERVICE_PASCAL"
 dotnet sln add "$SERVICE_PASCAL."{Domain,Application,Infrastructure,API}
 
 # Add references
