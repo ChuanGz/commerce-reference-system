@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.API", "UserService.API\UserService.API.csproj", "{6EDDF534-C86C-4793-B1B6-D3682531B97F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Application.Tests", "..\tests\UserService.Application.Tests\UserService.Application.Tests.csproj", "{158C364F-D54D-4C34-8DAF-0C4FF36B2C37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{6EDDF534-C86C-4793-B1B6-D3682531B97F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EDDF534-C86C-4793-B1B6-D3682531B97F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EDDF534-C86C-4793-B1B6-D3682531B97F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{158C364F-D54D-4C34-8DAF-0C4FF36B2C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{158C364F-D54D-4C34-8DAF-0C4FF36B2C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{158C364F-D54D-4C34-8DAF-0C4FF36B2C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{158C364F-D54D-4C34-8DAF-0C4FF36B2C37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
