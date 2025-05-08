@@ -1,9 +1,13 @@
-version: '3.8'
+x-environment-check:
+  &required-env
+  - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:?Environment not set}
+  - SQL_SA_PASSWORD=${SQL_SA_PASSWORD:?Password not set}
+  - ConnectionStrings__DefaultConnection=${CONNECTION_STRING:?Connection string not set}
 
 services:
-  user-service:
+  api:
     build:
-      context: ../
+      context: .
       dockerfile: docker/Dockerfile
     ports:
       - "5000:80"

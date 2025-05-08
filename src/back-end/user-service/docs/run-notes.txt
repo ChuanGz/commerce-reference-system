@@ -1,0 +1,6 @@
+docker builder prune --all --force
+
+export $(cat .env.development | xargs)
+docker compose up --build
+
+docker compose build --no-cache && docker compose up
