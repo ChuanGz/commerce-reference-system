@@ -2,14 +2,9 @@ using UserService.Application.Commands;
 
 namespace UserService.Application.Handlers;
 
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Guid>
+public class CreateUserCommandHandler(IUserRepository repo) : IRequestHandler<CreateUserCommand, Guid>
 {
-    private readonly IUserRepository _repo;
-
-    public CreateUserCommandHandler(IUserRepository repo)
-    {
-        _repo = repo;
-    }
+    private readonly IUserRepository _repo = repo;
 
     public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {

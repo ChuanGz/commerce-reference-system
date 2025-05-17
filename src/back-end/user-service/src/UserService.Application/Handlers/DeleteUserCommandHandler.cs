@@ -2,14 +2,9 @@ using UserService.Application.Commands;
 
 namespace UserService.Application.Handlers;
 
-public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
+public class DeleteUserCommandHandler(IUserRepository repo) : IRequestHandler<DeleteUserCommand>
 {
-    private readonly IUserRepository _repo;
-
-    public DeleteUserCommandHandler(IUserRepository repo)
-    {
-        _repo = repo;
-    }
+    private readonly IUserRepository _repo = repo;
 
     public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {

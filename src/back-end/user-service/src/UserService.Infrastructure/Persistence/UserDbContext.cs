@@ -1,9 +1,6 @@
 namespace UserService.Infrastructure.Persistence;
 
-public class UserDbContext : DbContext
+public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
 {
-    public UserDbContext(DbContextOptions<UserDbContext> options)
-        : base(options) { }
-
     public DbSet<User> Users => Set<User>();
 }
