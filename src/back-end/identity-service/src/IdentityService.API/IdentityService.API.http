@@ -1,6 +1,94 @@
-@IdentityService.API_HostAddress = http://localhost:5226
+### 🔐 Register a new user
+POST http://localhost:5070/api/register
+Content-Type: application/json
 
-GET {{IdentityService.API_HostAddress}}/weatherforecast/
-Accept: application/json
+{
+  "username": "john.doe",
+  "password": "secret123"
+}
 
 ###
+
+### 🔑 Login and get JWT
+POST http://localhost:5070/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "john.doe",
+  "password": "secret123"
+}
+
+###
+
+### 🧪 GET all user-group assignments (requires token)
+GET http://localhost:5070/api/usergroups
+Authorization: Bearer {{jwt_token}}
+
+###
+
+### 🛠 Assign user to group
+POST http://localhost:5070/api/usergroups
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "userId": "PUT-USER-ID-HERE",
+  "groupId": "PUT-GROUP-ID-HERE"
+}
+
+###
+
+### ✅ Approve user in group
+PUT http://localhost:5070/api/usergroups/approve
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "userId": "PUT-USER-ID-HERE",
+  "groupId": "PUT-GROUP-ID-HERE"
+}
+
+###
+
+### 📜 Get all permissions
+GET http://localhost:5070/api/permissions
+Authorization: Bearer {{jwt_token}}
+
+###
+
+### 📋 Get all roles
+GET http://localhost:5070/api/roles
+Authorization: Bearer {{jwt_token}}
+
+###
+
+### ➕ Create a new role
+POST http://localhost:5070/api/roles
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "NewManager",
+  "permissionIds": [
+    "PUT-PERMISSION-ID-1-HERE",
+    "PUT-PERMISSION-ID-2-HERE"
+  ]
+}
+
+###
+
+### 🔁 Assign permission to role
+POST http://localhost:5070/api/roles/{{roleId}}/permissions/{{permissionId}}
+Authorization: Bearer {{jwt_token}}
+
+###
+
+### ❌ Remove permission from role
+DELETE http://localhost:5070/api/roles/{{roleId}}/permissions/{{permissionId}}
+Authorization: Bearer {{jwt_token}}
+
+###
+
+### 🧼 Delete a role
+DELETE http://localhost:5070/api/roles/{{roleId}}
+Authorization: Bearer {{jwt_token}}
