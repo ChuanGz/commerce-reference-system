@@ -25,7 +25,7 @@ COPY --from=build /app/publish .
 
 # Expose default port
 EXPOSE 80
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=Docker
 
 # Health check endpoint
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \

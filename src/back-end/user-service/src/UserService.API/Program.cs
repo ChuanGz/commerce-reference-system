@@ -4,6 +4,17 @@ using UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load config theo từng môi trường
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: true
+    )
+    .AddEnvironmentVariables();
+
 // Add MVC controllers
 builder.Services.AddControllers();
 
@@ -12,11 +23,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
-Console.WriteLine("UserService API is starting...");
-
 // EF Core DbContext
 builder.Services.AddDbContext<UserDbContext>(
-    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 // DI for repository + MediatR
@@ -25,7 +34,7 @@ builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 
 var app = builder.Build();
 
-// Enable Swagger in Development
+// Swagger only in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,9 +43,41 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Map controller routes
+app.MapControllers();
+
 // Map healthchecks
 app.MapHealthChecks("/health");
 
-// Map controller routes
-app.MapControllers();
+try
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+
+    // Auto migrate & seed data
+    await context.Database.MigrateAsync();
+
+    Console.WriteLine("Connected to SQL Server successfully!");
+    Console.WriteLine("== Seeded Users ==");
+
+    var users = await context.Users.ToListAsync();
+
+    // Print header
+    Console.WriteLine("{0,-38} | {1,-20} | {2}", "ID", "Name", "Email");
+    Console.WriteLine(new string('-', 90));
+
+    // Print rows
+    foreach (var user in users)
+    {
+        Console.WriteLine("{0,-38} | {1,-20} | {2}", user.Id, user.Name, user.Email);
+    }
+
+    Console.WriteLine("==================");
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Failed to connect to SQL Server:");
+    Console.WriteLine(ex.Message);
+}
+
 await app.RunAsync();
