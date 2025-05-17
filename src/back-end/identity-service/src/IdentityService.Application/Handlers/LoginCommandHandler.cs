@@ -1,8 +1,4 @@
 using IdentityService.Application.Commands;
-using IdentityService.Infrastructure.Persistence;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

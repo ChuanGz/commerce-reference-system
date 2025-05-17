@@ -1,7 +1,6 @@
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 using IdentityService.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Infrastructure.Repositories;
 
