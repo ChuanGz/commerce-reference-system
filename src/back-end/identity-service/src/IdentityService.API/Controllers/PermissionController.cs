@@ -1,8 +1,6 @@
 using IdentityService.API.Models;
-using IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.API.Controllers;
 
