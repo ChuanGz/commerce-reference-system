@@ -6,6 +6,7 @@ docker run -e 'ACCEPT_EULA=1' \
  -e 'SA_PASSWORD=<set-me>' \
  -p 1433:1433 \
  --name sqlserver \
+ --restart unless-stopped \
  -d mcr.microsoft.com/azure-sql-edge
 
 Step 3: Verify it’s running
