@@ -4,26 +4,22 @@ using IdentityService.Infrastructure.Persistence;
 
 namespace IdentityService.Infrastructure.Repositories;
 
-public class UserGroupRepository : IUserGroupRepository
+public class UserGroupRepository(IdentityDbContext db) : IUserGroupRepository
 {
-    private readonly IdentityDbContext _db;
-
-    public UserGroupRepository(IdentityDbContext db) => _db = db;
-
     public async Task<UserGroup?> GetAsync(
         Guid userId,
         Guid groupId,
         CancellationToken cancellationToken = default
     ) =>
-        await _db.UserGroups.FirstOrDefaultAsync(
+        await db.UserGroups.FirstOrDefaultAsync(
             ug => ug.UserId == userId && ug.GroupId == groupId,
             cancellationToken
         );
 
     public async Task AddAsync(UserGroup userGroup, CancellationToken cancellationToken = default)
     {
-        _db.UserGroups.Add(userGroup);
-        await _db.SaveChangesAsync(cancellationToken);
+        db.UserGroups.Add(userGroup);
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task ApproveAsync(
@@ -32,8 +28,8 @@ public class UserGroupRepository : IUserGroupRepository
     )
     {
         userGroup.IsApproved = true;
-        _db.UserGroups.Update(userGroup);
-        await _db.SaveChangesAsync(cancellationToken);
+        db.UserGroups.Update(userGroup);
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task RemoveAsync(
@@ -41,7 +37,7 @@ public class UserGroupRepository : IUserGroupRepository
         CancellationToken cancellationToken = default
     )
     {
-        _db.UserGroups.Remove(userGroup);
-        await _db.SaveChangesAsync(cancellationToken);
+        db.UserGroups.Remove(userGroup);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

@@ -8,21 +8,15 @@ namespace IdentityService.API.Controllers;
 [ApiController]
 [Route("api/roles")]
 [Authorize]
-public class RoleController : ControllerBase
+public class RoleController(IdentityDbContext db) : ControllerBase
 {
-    private readonly IdentityDbContext _db;
-
-    public RoleController(IdentityDbContext db)
-    {
-        _db = db;
-    }
 
     // GET: /api/roles
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]
-    public async Task<ActionResult<List<RoleDto>>> GetAll(CancellationToken ct)
+    public async Task<ActionResult<List<RoleDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var roles = await _db.Roles
+        var roles = await db.Roles
             .Include(r => r.RolePermissions)
             .ThenInclude(rp => rp.Permission)
             .Select(
@@ -34,7 +28,7 @@ public class RoleController : ControllerBase
                         PermissionIds = r.RolePermissions.Select(rp => rp.PermissionId).ToList()
                     }
             )
-            .ToListAsync(ct);
+            .ToListAsync(cancellationToken);
 
         return Ok(roles);
     }
@@ -42,11 +36,11 @@ public class RoleController : ControllerBase
     // GET: /api/roles/{id}
     [Authorize(Policy = "CanViewRole")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<RoleDto>> GetById(Guid id, CancellationToken ct)
+    public async Task<ActionResult<RoleDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var role = await _db.Roles
+        var role = await db.Roles
             .Include(r => r.RolePermissions)
-            .FirstOrDefaultAsync(r => r.Id == id, ct);
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
         if (role is null)
             return NotFound();
@@ -62,7 +56,7 @@ public class RoleController : ControllerBase
     // POST: /api/roles
     [Authorize(Policy = "CanEditRole")]
     [HttpPost]
-    public async Task<IActionResult> Create(RoleDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create(RoleDto dto, CancellationToken cancellationToken)
     {
         var role = new Role
         {
@@ -73,8 +67,8 @@ public class RoleController : ControllerBase
                 .ToList()
         };
 
-        _db.Roles.Add(role);
-        await _db.SaveChangesAsync(ct);
+        db.Roles.Add(role);
+        await db.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id = role.Id }, null);
     }
@@ -82,11 +76,11 @@ public class RoleController : ControllerBase
     // PUT: /api/roles/{id}
     [Authorize(Policy = "CanEditRole")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, RoleDto dto, CancellationToken ct)
+    public async Task<IActionResult> Update(Guid id, RoleDto dto, CancellationToken cancellationToken)
     {
-        var role = await _db.Roles
+        var role = await db.Roles
             .Include(r => r.RolePermissions)
-            .FirstOrDefaultAsync(r => r.Id == id, ct);
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
         if (role is null)
             return NotFound();
@@ -94,29 +88,29 @@ public class RoleController : ControllerBase
         role.Name = dto.Name;
 
         // Remove old permissions
-        _db.RolePermissions.RemoveRange(role.RolePermissions);
+        db.RolePermissions.RemoveRange(role.RolePermissions);
 
         // Add new ones
         role.RolePermissions = dto.PermissionIds
             .Select(pid => new RolePermission { RoleId = role.Id, PermissionId = pid })
             .ToList();
 
-        await _db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 
     // DELETE: /api/roles/{id}
     [Authorize(Policy = "CanDeleteRole")]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        var role = await _db.Roles.FirstOrDefaultAsync(r => r.Id == id, ct);
+        var role = await db.Roles.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
         if (role is null)
             return NotFound();
 
-        _db.Roles.Remove(role);
-        await _db.SaveChangesAsync(ct);
+        db.Roles.Remove(role);
+        await db.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 }

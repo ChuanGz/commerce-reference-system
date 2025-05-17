@@ -10,14 +10,8 @@ namespace IdentityService.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public AuthController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
 
     /// <summary>
     /// Login endpoint — validates credentials and returns a JWT token.
@@ -32,7 +26,7 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var token = await _mediator.Send(command, cancellationToken);
+        var token = await mediator.Send(command, cancellationToken);
 
         if (token is null)
             return Unauthorized("Invalid credentials");
