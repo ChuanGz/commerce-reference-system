@@ -1,11 +1,3 @@
-using IdentityService.Application;
-using IdentityService.Infrastructure;
-using IdentityService.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Add Controllers + Swagger ---
@@ -17,10 +9,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<IdentityDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
-// --- Register Application & Infrastructure dependencies ---
-builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // --- Add JWT Authentication ---
 builder.Services
