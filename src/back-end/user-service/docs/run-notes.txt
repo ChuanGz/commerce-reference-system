@@ -4,3 +4,6 @@ export $(cat .env.development | xargs)
 docker compose up --build
 
 docker compose build --no-cache && docker compose up
+
+nc -zv localhost 1433
+Connection to localhost port 1433 [tcp/ms-sql-s] succeeded!
