@@ -16,17 +16,14 @@ namespace IdentityService.Application.Handlers;
 public class LoginCommandHandler : IRequestHandler<LoginCommand, string?>
 {
     private readonly IdentityDbContext _dbContext;
-    private readonly IConfiguration _config;
 
-    public LoginCommandHandler(IdentityDbContext dbContext, IConfiguration config)
+    public LoginCommandHandler(IdentityDbContext dbContext)
     {
         _dbContext = dbContext;
-        _config = config;
     }
 
     public async Task<string?> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        // TODO: Replace this with secure password verification (e.g. BCrypt)
         var user = await _dbContext.Users
             .Include(u => u.UserGroups)
             .ThenInclude(ug => ug.Group)
@@ -36,11 +33,11 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string?>
             .ThenInclude(rp => rp.Permission)
             .FirstOrDefaultAsync(u => u.Username == request.Username, cancellationToken);
 
-        // Mock password check (replace this!)
-        if (user is null || request.Password != "password")
+        // 🔒 Replace mock password check with real hash verification (BCrypt)
+        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             return null;
 
-        // Flatten permissions from Group → Role → Permission
+        // 📄 Flatten permissions from user → groups → roles → permissions
         var permissions = user.UserGroups
             .SelectMany(ug => ug.Group.GroupRoles)
             .SelectMany(gr => gr.Role.RolePermissions)
@@ -48,17 +45,14 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string?>
             .Distinct()
             .ToList();
 
-        // Create standard + custom JWT claims
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Username),
         };
 
-        // Add each permission as a separate claim
         claims.AddRange(permissions.Select(p => new Claim("permission", p)));
 
-        // Sign the token using JWT secret
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Secret"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
