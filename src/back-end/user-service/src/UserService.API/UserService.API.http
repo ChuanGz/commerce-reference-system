@@ -1,6 +1,41 @@
 @UserService.API_HostAddress = http://localhost:5069
 
-GET {{UserService.API_HostAddress}}/weatherforecast/
+### Get all users
+GET {{UserService.API_HostAddress}}/api/users
+Accept: application/json
+
+###
+
+### Get user by ID
+GET {{UserService.API_HostAddress}}/api/users/1
+Accept: application/json
+
+###
+
+### Create a new user
+POST {{UserService.API_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com"
+}
+
+###
+
+### Update an existing user
+PUT {{UserService.API_HostAddress}}/api/users/1
+Content-Type: application/json
+
+{
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com"
+}
+
+###
+
+### Delete a user
+DELETE {{UserService.API_HostAddress}}/api/users/1
 Accept: application/json
 
 ###

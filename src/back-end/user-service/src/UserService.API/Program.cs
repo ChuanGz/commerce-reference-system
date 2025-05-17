@@ -1,13 +1,4 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-
-using MediatR;
-
 using UserService.Application.Handlers;
-using UserService.Domain.Repositories;
 using UserService.Infrastructure.Persistence;
 using UserService.Infrastructure.Repositories;
 
@@ -48,5 +39,4 @@ app.MapHealthChecks("/health");
 
 // Map controller routes
 app.MapControllers();
-
-app.Run();
+await app.RunAsync();

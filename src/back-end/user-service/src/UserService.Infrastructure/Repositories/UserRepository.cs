@@ -2,14 +2,9 @@ using UserService.Infrastructure.Persistence;
 
 namespace UserService.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(UserDbContext context) : IUserRepository
 {
-    private readonly UserDbContext _context;
-
-    public UserRepository(UserDbContext context)
-    {
-        _context = context;
-    }
+    private readonly UserDbContext _context = context;
 
     public async Task<List<User>> GetAllAsync()
     {

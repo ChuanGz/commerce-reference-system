@@ -1,21 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
-using UserService.Domain.Entities;
-using UserService.Domain.Repositories;
 
 namespace UserService.API.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController : ControllerBase
+public class UsersController(IUserRepository repo) : ControllerBase
 {
-    private readonly IUserRepository _repo;
-
-    public UsersController(IUserRepository repo)
-    {
-        _repo = repo;
-    }
+    private readonly IUserRepository _repo = repo;
 
     [HttpGet]
     public async Task<IActionResult> Get() => Ok(await _repo.GetAllAsync());
