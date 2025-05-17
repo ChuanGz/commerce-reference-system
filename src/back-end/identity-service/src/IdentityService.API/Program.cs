@@ -1,13 +1,33 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// --- Add Controllers + Swagger ---
+Console.WriteLine($"ENVIRONMENT: {builder.Environment.EnvironmentName}");
+
+// Load configuration from appsettings.json and environment variables
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: true
+    )
+    .AddEnvironmentVariables();
+
+// Add MVC controllers
 builder.Services.AddControllers();
+
+// Swagger & healthchecks
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
 
-// --- Add EF Core with SQL Server ---
+Console.WriteLine("== Loaded DefaultConnection ==");
+Console.WriteLine($"DefaultConnection: {builder.Configuration.GetConnectionString("DefaultConnection")}");
+
+// EF Core DbContext
 builder.Services.AddDbContext<IdentityDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sql => sql.UseRelationalNulls())
+
 );
 
 // --- Add JWT Authentication ---
@@ -28,7 +48,7 @@ builder.Services
         };
     });
 
-// --- Add Authorization Policies ---
+// Authorization + Policies
 builder.Services.AddAuthorization(options =>
 {
     // Group access policies
@@ -66,10 +86,16 @@ builder.Services.AddAuthorization(options =>
     );
 });
 
+// DI for repository + MediatR
+
 var app = builder.Build();
 
-// --- Middleware Pipeline ---
-if (app.Environment.IsDevelopment())
+// Swagger only in development
+if (
+    app.Environment.IsDevelopment()
+    || app.Environment.EnvironmentName == "Local"
+    || app.Environment.EnvironmentName == "Docker"
+)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -79,10 +105,57 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Map controller routes
 app.MapControllers();
+
+// Map healthchecks
 app.MapHealthChecks("/health");
 
-// --- Seed initial data (dev only) ---
-await SeedData.InitializeAsync(app.Services);
+try
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+
+    // Auto migrate & seed data
+    await context.Database.MigrateAsync();
+
+    Console.WriteLine("Connected to SQL Server successfully!");
+    Console.WriteLine("== Seeded Data ==");
+
+    var roles = await context.Roles.ToListAsync();
+    var permissions = await context.Permissions.ToListAsync();
+    var groups = await context.Groups.ToListAsync();
+
+    static void PrintList<T>(
+        string title,
+        IEnumerable<T> items,
+        Func<T, object[]> selector,
+        string[] headers
+    )
+    {
+        Console.WriteLine(new string('-', 60));
+        Console.WriteLine(title);
+        Console.WriteLine(string.Join(" | ", headers));
+        Console.WriteLine(new string('-', 60));
+        foreach (var item in items)
+            Console.WriteLine(string.Join(" | ", selector(item)));
+    }
+
+    PrintList("Roles", roles, r => new object[] { r.Id, r.Name }, new[] { "ID", "Name" });
+    PrintList(
+        "Permissions",
+        permissions,
+        p => [p.Id, p.Description],
+        ["ID", "Description"]
+    );
+    PrintList("Groups", groups, g => [g.Id, g.Name], ["ID", "Name"]);
+
+    Console.WriteLine("==================");
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Failed to connect to SQL Server:");
+    Console.WriteLine(ex.Message);
+}
 
 await app.RunAsync();
