@@ -1,0 +1,62 @@
+using IdentityService.Domain.Entities;
+using IdentityService.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace IdentityService.API.Controllers;
+
+[ApiController]
+[Route("api/register")]
+[AllowAnonymous]
+public class RegistrationController : ControllerBase
+{
+    private readonly IdentityDbContext _db;
+
+    public RegistrationController(IdentityDbContext db)
+    {
+        _db = db;
+    }
+
+    /// <summary>
+    /// Register a new user with username and password.
+    /// Automatically assigns to 'Customer' group.
+    /// </summary>
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterRequest request, CancellationToken ct)
+    {
+        // Check username uniqueness
+        var exists = await _db.Users.AnyAsync(u => u.Username == request.Username, ct);
+        if (exists)
+            return Conflict("Username already taken.");
+
+        // Find 'Customer' group (must exist in seed)
+        var customerGroup = await _db.Groups.FirstOrDefaultAsync(g => g.Name == "Customer", ct);
+        if (customerGroup is null)
+            return StatusCode(500, "Default group not found.");
+
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Username = request.Username,
+            PasswordHash = request.Password, // Replace with hashing in production
+            UserGroups = new List<UserGroup> { new UserGroup { GroupId = customerGroup.Id } }
+        };
+
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync(ct);
+
+        return Created("/api/register", new { user.Id, user.Username });
+    }
+}
+
+public class RegisterRequest
+{
+    [Required]
+    public string Username { get; set; } = string.Empty;
+
+    [Required]
+    [MinLength(6)]
+    public string Password { get; set; } = string.Empty;
+}

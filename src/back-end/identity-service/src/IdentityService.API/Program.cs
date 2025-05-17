@@ -1,13 +1,86 @@
+using IdentityService.Application;
+using IdentityService.Infrastructure;
+using IdentityService.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// --- Add Controllers + Swagger ---
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// --- Add EF Core with SQL Server ---
+builder.Services.AddDbContext<IdentityDbContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+// --- Register Application & Infrastructure dependencies ---
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
+// --- Add JWT Authentication ---
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)
+            )
+        };
+    });
+
+// --- Add Authorization Policies ---
+builder.Services.AddAuthorization(options =>
+{
+    // Group access policies
+    options.AddPolicy(
+        "CanViewGroup",
+        policy => policy.RequireClaim("permission", "CAN_VIEW_GROUP")
+    );
+    options.AddPolicy(
+        "CanApproveGroup",
+        policy => policy.RequireClaim("permission", "CAN_APPROVE_GROUP")
+    );
+    options.AddPolicy(
+        "CanEditGroup",
+        policy => policy.RequireClaim("permission", "CAN_EDIT_GROUP")
+    );
+    options.AddPolicy(
+        "CanDeleteGroup",
+        policy => policy.RequireClaim("permission", "CAN_DELETE_GROUP")
+    );
+
+    // Role & permission management (for RoleController / PermissionController)
+    options.AddPolicy(
+        "CanViewPermission",
+        policy => policy.RequireClaim("permission", "CAN_VIEW_PERMISSION")
+    );
+    options.AddPolicy("CanViewRole", policy => policy.RequireClaim("permission", "CAN_VIEW_ROLE"));
+    options.AddPolicy("CanEditRole", policy => policy.RequireClaim("permission", "CAN_EDIT_ROLE"));
+    options.AddPolicy(
+        "CanDeleteRole",
+        policy => policy.RequireClaim("permission", "CAN_DELETE_ROLE")
+    );
+    options.AddPolicy(
+        "CanAssignRolePermission",
+        policy => policy.RequireClaim("permission", "CAN_ASSIGN_ROLE_PERMISSION")
+    );
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --- Middleware Pipeline ---
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -15,30 +88,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.MapControllers();
+app.MapHealthChecks("/health");
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+// --- Seed initial data (dev only) ---
+await SeedData.InitializeAsync(app.Services);
 
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+await app.RunAsync();
