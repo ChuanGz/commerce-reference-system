@@ -9,23 +9,17 @@ namespace IdentityService.API.Controllers;
 [ApiController]
 [Route("api/roles/{roleId:guid}/permissions")]
 [Authorize]
-public class RolePermissionController : ControllerBase
+public class RolePermissionController(IdentityDbContext db) : ControllerBase
 {
-    private readonly IdentityDbContext _db;
-
-    public RolePermissionController(IdentityDbContext db)
-    {
-        _db = db;
-    }
 
     /// <summary>
     /// List all permission keys assigned to a specific role.
     /// </summary>
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]
-    public async Task<IActionResult> Get(Guid roleId, CancellationToken ct)
+    public async Task<IActionResult> Get(Guid roleId, CancellationToken cancellationToken)
     {
-        var permissions = await _db.RolePermissions
+        var permissions = await db.RolePermissions
             .Where(rp => rp.RoleId == roleId)
             .Include(rp => rp.Permission)
             .Select(
@@ -37,7 +31,7 @@ public class RolePermissionController : ControllerBase
                         rp.Permission.Description
                     }
             )
-            .ToListAsync(ct);
+            .ToListAsync(cancellationToken);
 
         return Ok(permissions);
     }
@@ -50,22 +44,22 @@ public class RolePermissionController : ControllerBase
     public async Task<IActionResult> AddPermission(
         Guid roleId,
         Guid permissionId,
-        CancellationToken ct
+        CancellationToken cancellationToken
     )
     {
-        var exists = await _db.RolePermissions.AnyAsync(
+        var exists = await db.RolePermissions.AnyAsync(
             rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
-            ct
+            cancellationToken
         );
 
         if (exists)
             return Conflict("Permission already assigned to role.");
 
-        _db.RolePermissions.Add(
+        db.RolePermissions.Add(
             new Domain.Entities.RolePermission { RoleId = roleId, PermissionId = permissionId }
         );
 
-        await _db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(cancellationToken);
         return Ok("Permission assigned.");
     }
 
@@ -77,19 +71,19 @@ public class RolePermissionController : ControllerBase
     public async Task<IActionResult> RemovePermission(
         Guid roleId,
         Guid permissionId,
-        CancellationToken ct
+        CancellationToken cancellationToken
     )
     {
-        var existing = await _db.RolePermissions.FirstOrDefaultAsync(
+        var existing = await db.RolePermissions.FirstOrDefaultAsync(
             rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
-            ct
+            cancellationToken
         );
 
         if (existing is null)
             return NotFound("Permission not assigned to this role.");
 
-        _db.RolePermissions.Remove(existing);
-        await _db.SaveChangesAsync(ct);
+        db.RolePermissions.Remove(existing);
+        await db.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 }

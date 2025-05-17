@@ -7,19 +7,12 @@ namespace IdentityService.API.Controllers;
 [ApiController]
 [Route("api/permissions")]
 [Authorize(Policy = "CanViewPermission")]
-public class PermissionController : ControllerBase
+public class PermissionController(IdentityDbContext db) : ControllerBase
 {
-    private readonly IdentityDbContext _db;
-
-    public PermissionController(IdentityDbContext db)
-    {
-        _db = db;
-    }
-
     [HttpGet]
-    public async Task<ActionResult<List<PermissionDto>>> GetAll(CancellationToken ct)
+    public async Task<ActionResult<List<PermissionDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var permissions = await _db.Permissions
+        var permissions = await db.Permissions
             .Select(
                 p =>
                     new PermissionDto
@@ -29,7 +22,7 @@ public class PermissionController : ControllerBase
                         Description = p.Description
                     }
             )
-            .ToListAsync(ct);
+            .ToListAsync(cancellationToken);
 
         return Ok(permissions);
     }

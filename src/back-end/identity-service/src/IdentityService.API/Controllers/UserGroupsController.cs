@@ -12,14 +12,8 @@ namespace IdentityService.API.Controllers;
 [ApiController]
 [Route("api/usergroups")]
 [Authorize]
-public class UserGroupController : ControllerBase
+public class UserGroupController(IdentityDbContext db) : ControllerBase
 {
-    private readonly IdentityDbContext _db;
-
-    public UserGroupController(IdentityDbContext db)
-    {
-        _db = db;
-    }
 
     /// <summary>
     /// Get list of all users and their assigned groups.
@@ -28,7 +22,7 @@ public class UserGroupController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var result = await _db.Users
+        var result = await db.Users
             .Include(u => u.UserGroups)
             .ThenInclude(ug => ug.Group)
             .Select(
@@ -52,13 +46,13 @@ public class UserGroupController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AssignUserToGroup(
         [FromBody] UserGroupDto dto,
-        CancellationToken ct
+        CancellationToken cancellationToken
     )
     {
         if (
-            await _db.UserGroups.AnyAsync(
+            await db.UserGroups.AnyAsync(
                 ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,
-                ct
+                cancellationToken
             )
         )
             return Conflict("User is already in the group.");
@@ -70,8 +64,8 @@ public class UserGroupController : ControllerBase
             IsApproved = false
         };
 
-        _db.UserGroups.Add(userGroup);
-        await _db.SaveChangesAsync(ct);
+        db.UserGroups.Add(userGroup);
+        await db.SaveChangesAsync(cancellationToken);
         return CreatedAtAction(nameof(GetAll), null);
     }
 
@@ -80,18 +74,18 @@ public class UserGroupController : ControllerBase
     /// </summary>
     [Authorize(Policy = "CanApproveGroup")]
     [HttpPut("approve")]
-    public async Task<IActionResult> Approve([FromBody] UserGroupDto dto, CancellationToken ct)
+    public async Task<IActionResult> Approve([FromBody] UserGroupDto dto, CancellationToken cancellationToken)
     {
-        var userGroup = await _db.UserGroups.FirstOrDefaultAsync(
+        var userGroup = await db.UserGroups.FirstOrDefaultAsync(
             ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,
-            ct
+            cancellationToken
         );
 
         if (userGroup is null)
             return NotFound("Assignment not found.");
 
         userGroup.IsApproved = true;
-        await _db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(cancellationToken);
 
         return Ok("Approved.");
     }
@@ -101,18 +95,18 @@ public class UserGroupController : ControllerBase
     /// </summary>
     [Authorize(Policy = "CanDeleteGroup")]
     [HttpDelete]
-    public async Task<IActionResult> Remove([FromBody] UserGroupDto dto, CancellationToken ct)
+    public async Task<IActionResult> Remove([FromBody] UserGroupDto dto, CancellationToken cancellationToken)
     {
-        var userGroup = await _db.UserGroups.FirstOrDefaultAsync(
+        var userGroup = await db.UserGroups.FirstOrDefaultAsync(
             ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,
-            ct
+            cancellationToken
         );
 
         if (userGroup is null)
             return NotFound("Assignment not found.");
 
-        _db.UserGroups.Remove(userGroup);
-        await _db.SaveChangesAsync(ct);
+        db.UserGroups.Remove(userGroup);
+        await db.SaveChangesAsync(cancellationToken);
 
         return NoContent();
     }

@@ -10,4 +10,5 @@ public class UserGroup
 
     public Guid GroupId { get; set; }
     public Group Group { get; set; } = default!;
+    public bool IsApproved { get; set; }
 }

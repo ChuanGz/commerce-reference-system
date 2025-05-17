@@ -8,29 +8,23 @@ namespace IdentityService.API.Controllers;
 [ApiController]
 [Route("api/register")]
 [AllowAnonymous]
-public class RegistrationController : ControllerBase
+public class RegistrationController(IdentityDbContext db) : ControllerBase
 {
-    private readonly IdentityDbContext _db;
-
-    public RegistrationController(IdentityDbContext db)
-    {
-        _db = db;
-    }
 
     /// <summary>
     /// Register a new user with username and password.
     /// Automatically assigns to 'Customer' group.
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterRequest request, CancellationToken ct)
+    public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
         // Check username uniqueness
-        var exists = await _db.Users.AnyAsync(u => u.Username == request.Username, ct);
+        var exists = await db.Users.AnyAsync(u => u.Username == request.Username, cancellationToken);
         if (exists)
             return Conflict("Username already taken.");
 
         // Find 'Customer' group (must exist in seed)
-        var customerGroup = await _db.Groups.FirstOrDefaultAsync(g => g.Name == "Customer", ct);
+        var customerGroup = await db.Groups.FirstOrDefaultAsync(g => g.Name == "Customer", cancellationToken);
         if (customerGroup is null)
             return StatusCode(500, "Default group not found.");
 
@@ -42,8 +36,8 @@ public class RegistrationController : ControllerBase
             UserGroups = new List<UserGroup> { new UserGroup { GroupId = customerGroup.Id } }
         };
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync(ct);
+        db.Users.Add(user);
+        await db.SaveChangesAsync(cancellationToken);
 
         return Created("/api/register", new { user.Id, user.Username });
     }
