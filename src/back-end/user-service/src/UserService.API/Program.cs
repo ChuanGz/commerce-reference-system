@@ -25,6 +25,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
+Console.WriteLine("== Loaded DefaultConnection ==");
+Console.WriteLine(
+    $"\r\n    DefaultConnection: {builder.Configuration.GetConnectionString("DefaultConnection")}\r\n"
+);
+
 // EF Core DbContext
 builder.Services.AddDbContext<UserDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))

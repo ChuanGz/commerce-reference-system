@@ -2,10 +2,6 @@ using IdentityService.Domain.Entities;
 
 namespace IdentityService.Infrastructure.Persistence;
 
-/// <summary>
-/// EF Core DbContext for identity-related models: Users, Groups, Roles, Permissions.
-/// This context maps domain models to the database schema.
-/// </summary>
 public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : DbContext(options)
 {
 
