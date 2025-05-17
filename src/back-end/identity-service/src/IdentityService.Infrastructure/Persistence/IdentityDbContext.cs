@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using IdentityService.Domain.Entities;
 
 namespace IdentityService.Infrastructure.Persistence;
