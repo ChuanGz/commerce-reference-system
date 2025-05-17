@@ -8,6 +8,18 @@ public class CreateUserCommandHandler(IUserRepository repo) : IRequestHandler<Cr
 
     public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
+        // Check for duplicate Name
+        var nameExists = await _repo.AnyAsync(u => u.Name == request.Name, cancellationToken);
+        if (nameExists)
+            throw new ArgumentException
+("A user with this name already exists.");
+
+        // Check for duplicate Email
+        var emailExists = await _repo.AnyAsync(u => u.Email == request.Email, cancellationToken);
+        if (emailExists)
+            throw new ArgumentException
+("A user with this email already exists.");
+
         var user = new User
         {
             Id = Guid.NewGuid(),
@@ -15,7 +27,7 @@ public class CreateUserCommandHandler(IUserRepository repo) : IRequestHandler<Cr
             Email = request.Email
         };
 
-        await _repo.AddAsync(user);
+        await _repo.AddAsync(user, cancellationToken);
         return user.Id;
     }
 }

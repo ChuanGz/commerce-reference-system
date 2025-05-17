@@ -8,11 +8,11 @@ public class UpdateUserCommandHandler(IUserRepository repo) : IRequestHandler<Up
 
     public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _repo.GetByIdAsync(request.Id) ?? throw new InvalidOperationException($"User with ID {request.Id} not found.");
+        var user = await _repo.GetByIdAsync(request.Id, cancellationToken) ?? throw new InvalidOperationException($"User with ID {request.Id} not found.");
         user.Name = request.Name;
         user.Email = request.Email;
 
-        await _repo.UpdateAsync(user);
+        await _repo.UpdateAsync(user, cancellationToken);
         return Unit.Value;
     }
 }

@@ -8,7 +8,8 @@ public class DeleteUserCommandHandler(IUserRepository repo) : IRequestHandler<De
 
     public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        await _repo.DeleteAsync(request.Id);
+        var user = await _repo.GetByIdAsync(request.Id, cancellationToken) ?? throw new ArgumentException("User not found.");
+        await _repo.DeleteAsync(user.Id, cancellationToken);
         return Unit.Value;
     }
 }

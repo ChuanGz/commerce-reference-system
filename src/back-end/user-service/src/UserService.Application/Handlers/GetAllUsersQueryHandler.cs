@@ -7,5 +7,5 @@ public class GetAllUsersQueryHandler(IUserRepository repo) : IRequestHandler<Get
     private readonly IUserRepository _repo = repo;
 
     public Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken) =>
-        _repo.GetAllAsync();
+        _repo.GetAllAsync(cancellationToken);
 }
