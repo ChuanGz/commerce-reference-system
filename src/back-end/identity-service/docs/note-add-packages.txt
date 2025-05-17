@@ -7,6 +7,9 @@ dotnet add ./src/IdentityService.Infrastructure package Microsoft.EntityFramewor
 - Application
 dotnet add ./src/IdentityService.Application package MediatR
 dotnet add ./src/IdentityService.Application package MediatR.Extensions.Microsoft.DependencyInjection
+dotnet add ./src/IdentityService.Application package Microsoft.EntityFrameworkCore
+dotnet add ./src/IdentityService.Application package Microsoft.EntityFrameworkCore.Design
+dotnet add ./src/IdentityService.Application package Microsoft.EntityFrameworkCore.Tools
 
 - API 
 dotnet add ./src/IdentityService.API package Microsoft.AspNetCore.Authentication.JwtBearer
