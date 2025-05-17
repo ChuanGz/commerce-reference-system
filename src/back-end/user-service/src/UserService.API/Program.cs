@@ -4,7 +4,9 @@ using UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load config theo từng môi trường
+Console.WriteLine($"ENVIRONMENT: {builder.Environment.EnvironmentName}");
+
+// Load configuration from appsettings.json and environment variables
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -35,7 +37,11 @@ builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 var app = builder.Build();
 
 // Swagger only in development
-if (app.Environment.IsDevelopment())
+if (
+    app.Environment.IsDevelopment()
+    || app.Environment.EnvironmentName == "Local"
+    || app.Environment.EnvironmentName == "Docker"
+)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
