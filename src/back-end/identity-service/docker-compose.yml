@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  identity-service:
+    build:
+      context: ./services/identity-service
+      dockerfile: docker/Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__DefaultConnection=Server=identity-db;Database=IdentityDb;User Id=sa;Password=<set-me>;
+      - Jwt__Issuer=identity-service
+      - Jwt__Audience=microservice-clients
+      - Jwt__Secret=<set-me>
+    depends_on:
+      - identity-db
+    networks:
+      - internal
+
+  identity-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: identity-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=<set-me>
+    ports:
+      - "1433:1433"
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
