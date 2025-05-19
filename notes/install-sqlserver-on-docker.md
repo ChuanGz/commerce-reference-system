@@ -2,11 +2,18 @@ Step 1: Pull the image
 docker pull mcr.microsoft.com/azure-sql-edge
 
 Step 2: Run a SQL Server Edge container
+docker stop <container_id_or_name>
+
+docker rm <container_id_or_name>
+
+mkdir -p ~/sqlserver/data
+
 docker run -e 'ACCEPT_EULA=1' \
  -e 'SA_PASSWORD=<set-me>' \
  -p 1433:1433 \
  --name sqlserver \
  --restart unless-stopped \
+ -v ~/sqlserver/data:/var/opt/mssql \
  -d mcr.microsoft.com/azure-sql-edge
 
 Step 3: Verify it’s running

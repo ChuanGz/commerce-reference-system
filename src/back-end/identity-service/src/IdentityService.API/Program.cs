@@ -21,8 +21,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
-Console.WriteLine("== Loaded DefaultConnection ==");
-Console.WriteLine($"DefaultConnection: {builder.Configuration.GetConnectionString("DefaultConnection")}");
+
+Console.WriteLine("== Loaded MS SQL ServerConnection ==");
+Console.WriteLine(
+    $"\r\n    DefaultConnection: {builder.Configuration.GetConnectionString("DefaultConnection")}\r\n"
+);
+
 
 // EF Core DbContext
 builder.Services.AddDbContext<IdentityDbContext>(
@@ -89,13 +93,12 @@ builder.Services.AddAuthorization(options =>
 // DI for repository + MediatR
 
 var app = builder.Build();
-
-// Swagger only in development
-if (
+var isDevelopmentEnv =
     app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName == "Local"
-    || app.Environment.EnvironmentName == "Docker"
-)
+    || app.Environment.EnvironmentName == "Docker";
+// Swagger only in development
+if (isDevelopmentEnv)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -115,9 +118,13 @@ try
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
-
+    context.Database.EnsureCreated();
     // Auto migrate & seed data
-    await context.Database.MigrateAsync();
+    if (isDevelopmentEnv)
+    {
+        await context.Database.EnsureDeletedAsync();
+        await context.Database.MigrateAsync();
+    }
 
     Console.WriteLine("Connected to SQL Server successfully!");
     Console.WriteLine("== Seeded Data ==");

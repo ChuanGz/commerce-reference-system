@@ -25,7 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
-Console.WriteLine("== Loaded DefaultConnection ==");
+Console.WriteLine("== Loaded MS SQL ServerConnection ==");
 Console.WriteLine(
     $"\r\n    DefaultConnection: {builder.Configuration.GetConnectionString("DefaultConnection")}\r\n"
 );
@@ -41,12 +41,13 @@ builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 
 var app = builder.Build();
 
-// Swagger only in development
-if (
+var isDevelopmentEnv =
     app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName == "Local"
-    || app.Environment.EnvironmentName == "Docker"
-)
+    || app.Environment.EnvironmentName == "Docker";
+
+// Swagger only in development
+if (isDevelopmentEnv)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -66,7 +67,11 @@ try
     var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
 
     // Auto migrate & seed data
-    await context.Database.MigrateAsync();
+    if (isDevelopmentEnv)
+    {
+        await context.Database.EnsureDeletedAsync();
+        await context.Database.MigrateAsync();
+    }
 
     Console.WriteLine("Connected to SQL Server successfully!");
     Console.WriteLine("== Seeded Users ==");
