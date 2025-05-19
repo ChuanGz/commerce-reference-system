@@ -118,7 +118,7 @@ try
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
-    context.Database.EnsureCreated();
+
     // Auto migrate & seed data
     if (isDevelopmentEnv)
     {
