@@ -49,7 +49,7 @@ public class RoleController(IdentityDbContext db) : ControllerBase
         {
             Id = role.Id,
             Name = role.Name,
-            PermissionIds = role.RolePermissions.Select(rp => rp.PermissionId).ToList()
+            PermissionIds = [.. role.RolePermissions.Select(rp => rp.PermissionId)]
         };
     }
 
@@ -62,9 +62,7 @@ public class RoleController(IdentityDbContext db) : ControllerBase
         {
             Id = Guid.NewGuid(),
             Name = dto.Name,
-            RolePermissions = dto.PermissionIds
-                .Select(pid => new RolePermission { PermissionId = pid })
-                .ToList()
+            RolePermissions = [.. dto.PermissionIds.Select(pid => new RolePermission { PermissionId = pid })]
         };
 
         db.Roles.Add(role);
@@ -91,9 +89,7 @@ public class RoleController(IdentityDbContext db) : ControllerBase
         db.RolePermissions.RemoveRange(role.RolePermissions);
 
         // Add new ones
-        role.RolePermissions = dto.PermissionIds
-            .Select(pid => new RolePermission { RoleId = role.Id, PermissionId = pid })
-            .ToList();
+        role.RolePermissions = [.. dto.PermissionIds.Select(pid => new RolePermission { RoleId = role.Id, PermissionId = pid })];
 
         await db.SaveChangesAsync(cancellationToken);
         return NoContent();

@@ -21,5 +21,5 @@ public class User
     /// <summary>
     /// Many-to-many: user memberships to groups.
     /// </summary>
-    public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
+    public ICollection<UserGroup> UserGroups { get; set; } = [];
 }

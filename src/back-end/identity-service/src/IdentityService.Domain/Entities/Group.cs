@@ -12,10 +12,10 @@ public class Group
     /// <summary>
     /// Users that belong to this group.
     /// </summary>
-    public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
+    public ICollection<UserGroup> UserGroups { get; set; } = [];
 
     /// <summary>
     /// Roles assigned to this group.
     /// </summary>
-    public ICollection<GroupRole> GroupRoles { get; set; } = new List<GroupRole>();
+    public ICollection<GroupRole> GroupRoles { get; set; } = [];
 }

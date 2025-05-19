@@ -52,39 +52,34 @@ public static class SeedData
         {
             Id = Guid.NewGuid(),
             Name = "Admin",
-            RolePermissions = permissions
-                .Select(p => new RolePermission { Permission = p })
-                .ToList()
+            RolePermissions = [.. permissions.Select(p => new RolePermission { Permission = p })]
         };
 
         var managerRole = new Role
         {
             Id = Guid.NewGuid(),
             Name = "Manager",
-            RolePermissions = permissions
+            RolePermissions = [.. permissions
                 .Where(p => p.Key != "CAN_DELETE_GROUP")
-                .Select(p => new RolePermission { Permission = p })
-                .ToList()
+                .Select(p => new RolePermission { Permission = p })]
         };
 
         var employeeRole = new Role
         {
             Id = Guid.NewGuid(),
             Name = "Employee",
-            RolePermissions = permissions
+            RolePermissions = [.. permissions
                 .Where(p => p.Key == "CAN_VIEW_GROUP")
-                .Select(p => new RolePermission { Permission = p })
-                .ToList()
+                .Select(p => new RolePermission { Permission = p })]
         };
 
         var auditorRole = new Role
         {
             Id = Guid.NewGuid(),
             Name = "Auditor",
-            RolePermissions = permissions
+            RolePermissions = [.. permissions
                 .Where(p => p.Key == "CAN_VIEW_GROUP")
-                .Select(p => new RolePermission { Permission = p })
-                .ToList()
+                .Select(p => new RolePermission { Permission = p })]
         };
 
         // --- Groups ---
@@ -94,31 +89,31 @@ public static class SeedData
             {
                 Id = Guid.NewGuid(),
                 Name = "SystemAdmin",
-                GroupRoles = new List<GroupRole> { new GroupRole { Role = adminRole } }
+                GroupRoles = [new GroupRole { Role = adminRole }]
             },
             new Group
             {
                 Id = Guid.NewGuid(),
                 Name = "BOD",
-                GroupRoles = new List<GroupRole> { new GroupRole { Role = managerRole } }
+                GroupRoles = [new GroupRole { Role = managerRole }]
             },
             new Group
             {
                 Id = Guid.NewGuid(),
                 Name = "Customer",
-                GroupRoles = new List<GroupRole> { new GroupRole { Role = employeeRole } }
+                GroupRoles = [new GroupRole { Role = employeeRole }]
             },
             new Group
             {
                 Id = Guid.NewGuid(),
                 Name = "Employee",
-                GroupRoles = new List<GroupRole> { new GroupRole { Role = employeeRole } }
+                GroupRoles = [new GroupRole { Role = employeeRole }]
             },
             new Group
             {
                 Id = Guid.NewGuid(),
                 Name = "Auditor",
-                GroupRoles = new List<GroupRole> { new GroupRole { Role = auditorRole } }
+                GroupRoles = [new GroupRole { Role = auditorRole }]
             },
         };
 
@@ -137,7 +132,7 @@ public static class SeedData
                         Id = Guid.NewGuid(),
                         Username = $"{group.Name.ToLower()}_{i}",
                         PasswordHash = "password", // Replace with hashed value
-                        UserGroups = new List<UserGroup> { new UserGroup { Group = group } }
+                        UserGroups = [new UserGroup { Group = group }]
                     }
                 );
             }

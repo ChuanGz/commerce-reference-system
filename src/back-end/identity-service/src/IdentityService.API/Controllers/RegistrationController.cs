@@ -33,7 +33,7 @@ public class RegistrationController(IdentityDbContext db) : ControllerBase
             Id = Guid.NewGuid(),
             Username = request.Username,
             PasswordHash = request.Password, // Replace with hashing in production
-            UserGroups = new List<UserGroup> { new UserGroup { GroupId = customerGroup.Id } }
+            UserGroups = [new UserGroup { GroupId = customerGroup.Id }]
         };
 
         db.Users.Add(user);
