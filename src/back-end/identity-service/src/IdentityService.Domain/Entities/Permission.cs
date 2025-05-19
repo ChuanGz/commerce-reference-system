@@ -18,5 +18,5 @@ public class Permission
     /// <summary>
     /// Roles that include this permission.
     /// </summary>
-    public ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
+    public ICollection<RolePermission> RolePermissions { get; set; } = [];
 }

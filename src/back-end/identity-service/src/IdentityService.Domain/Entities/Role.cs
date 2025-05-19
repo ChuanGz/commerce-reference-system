@@ -12,10 +12,10 @@ public class Role
     /// <summary>
     /// Groups that have this role.
     /// </summary>
-    public ICollection<GroupRole> GroupRoles { get; set; } = new List<GroupRole>();
+    public ICollection<GroupRole> GroupRoles { get; set; } = [];
 
     /// <summary>
     /// Permissions that this role grants.
     /// </summary>
-    public ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
+    public ICollection<RolePermission> RolePermissions { get; set; } = [];
 }
