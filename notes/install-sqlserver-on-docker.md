@@ -7,14 +7,19 @@ docker stop <container_id_or_name>
 docker rm <container_id_or_name>
 
 mkdir -p ~/sqlserver/data
+mkdir -p ~/sqlserver/logs
+docker restart sqlserver
+du -sh ~/sqlserver/data/log
 
-docker run -e 'ACCEPT_EULA=1' \
- -e 'SA_PASSWORD=SqlDev@2025!' \
- -p 1433:1433 \
- --name sqlserver \
- --restart unless-stopped \
- -v ~/sqlserver/data:/var/opt/mssql \
- -d mcr.microsoft.com/azure-sql-edge
+docker run \
+  -e 'ACCEPT_EULA=1' \
+  -e 'SA_PASSWORD=SqlDev@2025!' \
+  -p 1433:1433 \
+  --name sqlserver \
+  --restart unless-stopped \
+  -v ~/sqlserver/data:/var/opt/mssql/data \
+  -v ~/sqlserver/logs:/var/opt/mssql/log \
+  -d mcr.microsoft.com/azure-sql-edge
 
 Step 3: Verify it’s running
 docker ps

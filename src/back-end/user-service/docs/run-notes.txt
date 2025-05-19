@@ -9,3 +9,5 @@ nc -zv localhost 1433
 Connection to localhost port 1433 [tcp/ms-sql-s] succeeded!
 
 docker run -e "ACCEPT_EULA=1" -e "MSSQL_SA_PASSWORD=SqlDev@2025!" -p 1433:1433 --name azure-sql-edge --platform linux/arm64 --restart unless-stopped -d mcr.microsoft.com/azure-sql-edge
+
+du -sh ~/sqlserver/data/*
