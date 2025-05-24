@@ -1,3 +1,4 @@
+using UserService.API.Middlewares;
 using UserService.Application.Handlers;
 using UserService.Application.Validators;
 using UserService.Infrastructure.Persistence;

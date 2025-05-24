@@ -1,4 +1,6 @@
-﻿public class ValidationErrorResponse
+﻿namespace UserService.API.Middlewares;
+
+public class ValidationErrorResponse
 {
     public string Message { get; set; } = "Validation failed";
     public List<FieldError> Errors { get; set; } = [];
