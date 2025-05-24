@@ -3,7 +3,6 @@ using UserService.Application.Validators;
 using UserService.Infrastructure.Persistence;
 using UserService.Infrastructure.Repositories;
 
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -17,17 +16,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
+
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
-builder.Services.AddFluentValidationAutoValidation();
+
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UserService.Application.Behaviors.ValidationBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 var isDevelopmentEnv =
     app.Environment.IsDevelopment()
