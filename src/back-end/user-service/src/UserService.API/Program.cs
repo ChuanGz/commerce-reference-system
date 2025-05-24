@@ -1,52 +1,39 @@
 using UserService.Application.Handlers;
+using UserService.Application.Validators;
 using UserService.Infrastructure.Persistence;
 using UserService.Infrastructure.Repositories;
 
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
-Console.WriteLine($"ENVIRONMENT: {builder.Environment.EnvironmentName}");
-
-// Load configuration from appsettings.json and environment variables
 builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile(
-        $"appsettings.{builder.Environment.EnvironmentName}.json",
-        optional: true,
-        reloadOnChange: true
-    )
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
-// Add MVC controllers
 builder.Services.AddControllers();
-
-// Swagger & healthchecks
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
-
-Console.WriteLine("== Loaded MS SQL ServerConnection ==");
-Console.WriteLine(
-    $"\r\n    DefaultConnection: {builder.Configuration.GetConnectionString("DefaultConnection")}\r\n"
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
-// EF Core DbContext
-builder.Services.AddDbContext<UserDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-
-// DI for repository + MediatR
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UserService.Application.Behaviors.ValidationBehavior<,>));
 
 var app = builder.Build();
 
 var isDevelopmentEnv =
     app.Environment.IsDevelopment()
-    || app.Environment.EnvironmentName == "Local"
-    || app.Environment.EnvironmentName == "Docker";
+    || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
+    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
 
-// Swagger only in development
 if (isDevelopmentEnv)
 {
     app.UseSwagger();
@@ -54,46 +41,18 @@ if (isDevelopmentEnv)
 }
 
 app.UseHttpsRedirection();
-
-// Map controller routes
 app.MapControllers();
-
-// Map healthchecks
 app.MapHealthChecks("/health");
 
-try
+app.Lifetime.ApplicationStarted.Register(() =>
 {
-    using var scope = app.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-
-    // Auto migrate & seed data
-    if (isDevelopmentEnv)
-    {
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.MigrateAsync();
-    }
-
-    Console.WriteLine("Connected to SQL Server successfully!");
-    Console.WriteLine("== Seeded Users ==");
-
-    var users = await context.Users.ToListAsync();
-
-    // Print header
-    Console.WriteLine("{0,-38} | {1,-20} | {2}", "ID", "Name", "Email");
-    Console.WriteLine(new string('-', 90));
-
-    // Print rows
-    foreach (var user in users)
-    {
-        Console.WriteLine("{0,-38} | {1,-20} | {2}", user.Id, user.Name, user.Email);
-    }
-
-    Console.WriteLine("==================");
-}
-catch (Exception ex)
-{
-    Console.WriteLine("Failed to connect to SQL Server:");
-    Console.WriteLine(ex.Message);
-}
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    DatabaseInitializer.InitializeAsync(app.Services, logger, isDevelopmentEnv)
+        .ContinueWith(task =>
+        {
+            if (task.Exception != null)
+                logger.LogError(task.Exception, "Database initialization failed");
+        });
+});
 
 await app.RunAsync();
