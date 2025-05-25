@@ -18,8 +18,10 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var user = await _mediator.Send(new GetUserByIdQuery(id), cancellationToken);
+
         if (user == null)
             return NotFound();
+
         return Ok(user);
     }
 
@@ -27,6 +29,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
     {
         var userId = await _mediator.Send(command, cancellationToken);
+
         return CreatedAtAction(nameof(GetById), new { id = userId }, command);
     }
 
@@ -36,7 +39,8 @@ public class UsersController(IMediator mediator) : ControllerBase
         var updatedCommand = new UpdateUserCommand(id, command.Name, command.Email);
 
         var result = await _mediator.Send(updatedCommand, cancellationToken);
-        if (result.Equals(Unit.Value))
+
+        if (!result.Equals(Unit.Value))
             return NotFound();
 
         return NoContent();
@@ -46,6 +50,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new DeleteUserCommand(id), cancellationToken);
+
         if (!result.Equals(Unit.Value))
             return NotFound();
 
