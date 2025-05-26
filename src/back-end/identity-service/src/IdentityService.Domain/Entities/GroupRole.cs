@@ -1,8 +1,4 @@
 namespace IdentityService.Domain.Entities;
-
-/// <summary>
-/// Join table: Group <-> Role (many-to-many).
-/// </summary>
 public class GroupRole
 {
     public Guid GroupId { get; set; }
