@@ -2,19 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers;
-
-/// <summary>
-/// Manages assignment of permissions to roles.
-/// </summary>
 [ApiController]
 [Route("api/roles/{roleId:guid}/permissions")]
 [Authorize]
 public class RolePermissionController(IdentityDbContext db) : ControllerBase
 {
-
-    /// <summary>
-    /// List all permission keys assigned to a specific role.
-    /// </summary>
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]
     public async Task<IActionResult> Get(Guid roleId, CancellationToken cancellationToken)
@@ -35,17 +27,13 @@ public class RolePermissionController(IdentityDbContext db) : ControllerBase
 
         return Ok(permissions);
     }
-
-    /// <summary>
-    /// Assign a permission to a role.
-    /// </summary>
     [Authorize(Policy = "CanAssignRolePermission")]
     [HttpPost("{permissionId:guid}")]
     public async Task<IActionResult> AddPermission(
-        Guid roleId,
-        Guid permissionId,
-        CancellationToken cancellationToken
-    )
+            Guid roleId,
+            Guid permissionId,
+            CancellationToken cancellationToken
+        )
     {
         var exists = await db.RolePermissions.AnyAsync(
             rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
@@ -62,17 +50,13 @@ public class RolePermissionController(IdentityDbContext db) : ControllerBase
         await db.SaveChangesAsync(cancellationToken);
         return Ok("Permission assigned.");
     }
-
-    /// <summary>
-    /// Remove a permission from a role.
-    /// </summary>
     [Authorize(Policy = "CanAssignRolePermission")]
     [HttpDelete("{permissionId:guid}")]
     public async Task<IActionResult> RemovePermission(
-        Guid roleId,
-        Guid permissionId,
-        CancellationToken cancellationToken
-    )
+            Guid roleId,
+            Guid permissionId,
+            CancellationToken cancellationToken
+        )
     {
         var existing = await db.RolePermissions.FirstOrDefaultAsync(
             rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
