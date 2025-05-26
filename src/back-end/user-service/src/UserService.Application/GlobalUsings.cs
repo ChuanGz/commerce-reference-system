@@ -1,4 +1,3 @@
-// Shared across the whole Application assembly
 global using MediatR;
 global using System;
 global using System.Collections.Generic;

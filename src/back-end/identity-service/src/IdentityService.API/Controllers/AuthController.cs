@@ -4,21 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers;
-
-/// <summary>
-/// Handles authentication requests such as login.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController(IMediator mediator) : ControllerBase
 {
-
-    /// <summary>
-    /// Login endpoint — validates credentials and returns a JWT token.
-    /// </summary>
-    /// <param name="command">Login credentials (username, password)</param>
-    /// <param name="cancellationToken">Bound to the HTTP request lifecycle</param>
-    /// <returns>JWT token or 401 Unauthorized</returns>
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(

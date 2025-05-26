@@ -1,8 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
 Console.WriteLine($"ENVIRONMENT: {builder.Environment.EnvironmentName}");
-
-// Load configuration from appsettings.json and environment variables
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -12,11 +10,7 @@ builder.Configuration
         reloadOnChange: true
     )
     .AddEnvironmentVariables();
-
-// Add MVC controllers
 builder.Services.AddControllers();
-
-// Swagger & healthchecks
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
@@ -26,15 +20,10 @@ Console.WriteLine("== Loaded MS SQL ServerConnection ==");
 Console.WriteLine(
     $"\r\n    DefaultConnection: {builder.Configuration.GetConnectionString("DefaultConnection")}\r\n"
 );
-
-
-// EF Core DbContext
 builder.Services.AddDbContext<IdentityDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sql => sql.UseRelationalNulls())
 
 );
-
-// --- Add JWT Authentication ---
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -51,11 +40,8 @@ builder.Services
             )
         };
     });
-
-// Authorization + Policies
 builder.Services.AddAuthorization(options =>
 {
-    // Group access policies
     options.AddPolicy(
         "CanViewGroup",
         policy => policy.RequireClaim("permission", "CAN_VIEW_GROUP")
@@ -72,8 +58,6 @@ builder.Services.AddAuthorization(options =>
         "CanDeleteGroup",
         policy => policy.RequireClaim("permission", "CAN_DELETE_GROUP")
     );
-
-    // Role & permission management (for RoleController / PermissionController)
     options.AddPolicy(
         "CanViewPermission",
         policy => policy.RequireClaim("permission", "CAN_VIEW_PERMISSION")
@@ -90,14 +74,11 @@ builder.Services.AddAuthorization(options =>
     );
 });
 
-// DI for repository + MediatR
-
 var app = builder.Build();
 var isDevelopmentEnv =
     app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName == "Local"
     || app.Environment.EnvironmentName == "Docker";
-// Swagger only in development
 if (isDevelopmentEnv)
 {
     app.UseSwagger();
@@ -107,19 +88,13 @@ if (isDevelopmentEnv)
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Map controller routes
 app.MapControllers();
-
-// Map healthchecks
 app.MapHealthChecks("/health");
 
 try
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
-
-    // Auto migrate & seed data
     if (isDevelopmentEnv)
     {
         await context.Database.EnsureDeletedAsync();

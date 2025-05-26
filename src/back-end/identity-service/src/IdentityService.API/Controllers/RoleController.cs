@@ -10,8 +10,6 @@ namespace IdentityService.API.Controllers;
 [Authorize]
 public class RoleController(IdentityDbContext db) : ControllerBase
 {
-
-    // GET: /api/roles
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]
     public async Task<ActionResult<List<RoleDto>>> GetAll(CancellationToken cancellationToken)
@@ -32,8 +30,6 @@ public class RoleController(IdentityDbContext db) : ControllerBase
 
         return Ok(roles);
     }
-
-    // GET: /api/roles/{id}
     [Authorize(Policy = "CanViewRole")]
     [HttpGet("{id}")]
     public async Task<ActionResult<RoleDto>> GetById(Guid id, CancellationToken cancellationToken)
@@ -52,8 +48,6 @@ public class RoleController(IdentityDbContext db) : ControllerBase
             PermissionIds = [.. role.RolePermissions.Select(rp => rp.PermissionId)]
         };
     }
-
-    // POST: /api/roles
     [Authorize(Policy = "CanEditRole")]
     [HttpPost]
     public async Task<IActionResult> Create(RoleDto dto, CancellationToken cancellationToken)
@@ -70,8 +64,6 @@ public class RoleController(IdentityDbContext db) : ControllerBase
 
         return CreatedAtAction(nameof(GetById), new { id = role.Id }, null);
     }
-
-    // PUT: /api/roles/{id}
     [Authorize(Policy = "CanEditRole")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, RoleDto dto, CancellationToken cancellationToken)
@@ -84,18 +76,12 @@ public class RoleController(IdentityDbContext db) : ControllerBase
             return NotFound();
 
         role.Name = dto.Name;
-
-        // Remove old permissions
         db.RolePermissions.RemoveRange(role.RolePermissions);
-
-        // Add new ones
         role.RolePermissions = [.. dto.PermissionIds.Select(pid => new RolePermission { RoleId = role.Id, PermissionId = pid })];
 
         await db.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
-
-    // DELETE: /api/roles/{id}
     [Authorize(Policy = "CanDeleteRole")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)

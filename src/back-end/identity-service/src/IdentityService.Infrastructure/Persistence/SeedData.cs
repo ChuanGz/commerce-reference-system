@@ -2,10 +2,6 @@ using IdentityService.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.Infrastructure.Persistence;
-
-/// <summary>
-/// Seeds users, groups, roles, and permissions for realistic test scenarios.
-/// </summary>
 public static class SeedData
 {
     public static async Task InitializeAsync(IServiceProvider serviceProvider)
@@ -17,8 +13,6 @@ public static class SeedData
 
         if (context.Users.Any())
             return; // Already seeded
-
-        // --- Permissions ---
         var permissions = new[]
         {
             new Permission
@@ -46,8 +40,6 @@ public static class SeedData
                 Description = "Delete groups"
             },
         };
-
-        // --- Roles ---
         var adminRole = new Role
         {
             Id = Guid.NewGuid(),
@@ -81,8 +73,6 @@ public static class SeedData
                 .Where(p => p.Key == "CAN_VIEW_GROUP")
                 .Select(p => new RolePermission { Permission = p })]
         };
-
-        // --- Groups ---
         var groups = new[]
         {
             new Group
@@ -116,8 +106,6 @@ public static class SeedData
                 GroupRoles = [new GroupRole { Role = auditorRole }]
             },
         };
-
-        // --- Users ---
         var users = new List<User>();
 
         foreach (var group in groups)
@@ -137,8 +125,6 @@ public static class SeedData
                 );
             }
         }
-
-        // Save everything to DB
         context.Permissions.AddRange(permissions);
         context.Roles.AddRange(adminRole, managerRole, employeeRole, auditorRole);
         context.Groups.AddRange(groups);

@@ -10,20 +10,12 @@ namespace IdentityService.API.Controllers;
 [AllowAnonymous]
 public class RegistrationController(IdentityDbContext db) : ControllerBase
 {
-
-    /// <summary>
-    /// Register a new user with username and password.
-    /// Automatically assigns to 'Customer' group.
-    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
-        // Check username uniqueness
         var exists = await db.Users.AnyAsync(u => u.Username == request.Username, cancellationToken);
         if (exists)
             return Conflict("Username already taken.");
-
-        // Find 'Customer' group (must exist in seed)
         var customerGroup = await db.Groups.FirstOrDefaultAsync(g => g.Name == "Customer", cancellationToken);
         if (customerGroup is null)
             return StatusCode(500, "Default group not found.");
