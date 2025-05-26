@@ -1,13 +1,13 @@
-using IdentityService.API.Models;
+using IdentityService.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers;
+namespace IdentityService.API.Controllers.Authorization;
 
 [ApiController]
 [Route("api/permissions")]
 [Authorize(Policy = "CanViewPermission")]
-public class PermissionController(IdentityDbContext db) : ControllerBase
+public class GroupMembershipController(IdentityDbContext db) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<PermissionDto>>> GetAll(CancellationToken cancellationToken)

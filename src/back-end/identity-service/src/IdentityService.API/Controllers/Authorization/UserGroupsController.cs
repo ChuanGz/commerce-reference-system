@@ -1,9 +1,9 @@
-using IdentityService.API.Models;
+using IdentityService.Application.Models;
 using IdentityService.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers;
+namespace IdentityService.API.Controllers.Authorization;
 [ApiController]
 [Route("api/usergroups")]
 [Authorize]

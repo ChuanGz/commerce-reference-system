@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers;
+namespace IdentityService.API.Controllers.Authorization;
 [ApiController]
 [Route("api/roles/{roleId:guid}/permissions")]
 [Authorize]

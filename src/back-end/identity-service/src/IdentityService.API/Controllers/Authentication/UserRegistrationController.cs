@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace IdentityService.API.Controllers;
+namespace IdentityService.API.Controllers.Authentication;
 
 [ApiController]
 [Route("api/register")]
 [AllowAnonymous]
-public class RegistrationController(IdentityDbContext db) : ControllerBase
+public class UserRegistrationController(IdentityDbContext db) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)

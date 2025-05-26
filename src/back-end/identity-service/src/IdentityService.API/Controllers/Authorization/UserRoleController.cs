@@ -1,14 +1,14 @@
-using IdentityService.API.Models;
+using IdentityService.Application.Models;
 using IdentityService.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers;
+namespace IdentityService.API.Controllers.Authorization;
 
 [ApiController]
 [Route("api/roles")]
 [Authorize]
-public class RoleController(IdentityDbContext db) : ControllerBase
+public class UserRoleController(IdentityDbContext db) : ControllerBase
 {
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]

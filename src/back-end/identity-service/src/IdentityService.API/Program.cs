@@ -1,7 +1,7 @@
-using System.Text.Json.Serialization;
 using IdentityService.API.Middlewares;
 using IdentityService.Domain.Repositories;
 using IdentityService.Infrastructure.Repositories;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
