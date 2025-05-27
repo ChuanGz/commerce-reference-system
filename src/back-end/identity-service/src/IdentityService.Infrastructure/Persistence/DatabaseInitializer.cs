@@ -90,7 +90,7 @@ public static class DatabaseInitializer
                 {
                     Id = Guid.NewGuid(),
                     Username = $"{group.Name.ToLower()}_{i}",
-                    PasswordHash = "password",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Abcd@@1234"),
                     UserGroups = [new UserGroup { Group = group }]
                 });
             }

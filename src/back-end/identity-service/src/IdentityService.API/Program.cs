@@ -1,7 +1,13 @@
+using FluentValidation;
 using IdentityService.API.Middlewares;
+using IdentityService.Application.Constants;
+using IdentityService.Application.Handlers;
 using IdentityService.Domain.Repositories;
 using IdentityService.Infrastructure.Repositories;
+using MediatR;
+using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using UserService.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +24,48 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
 {
     opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity Service API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT token only (no Bearer prefix)"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme { Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IUserGroupRepository, UserGroupRepository>();
+builder.Services.AddMediatR(typeof(AddRolePermissionCommandHandler).Assembly);
+
+builder.Services.AddValidatorsFromAssemblyContaining<UserRegistrationValidator>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -44,28 +86,19 @@ builder.Services
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("CanViewGroup", policy => policy.RequireClaim("permission", "CAN_VIEW_GROUP"));
-    options.AddPolicy("CanApproveGroup", policy => policy.RequireClaim("permission", "CAN_APPROVE_GROUP"));
-    options.AddPolicy("CanEditGroup", policy => policy.RequireClaim("permission", "CAN_EDIT_GROUP"));
-    options.AddPolicy("CanDeleteGroup", policy => policy.RequireClaim("permission", "CAN_DELETE_GROUP"));
-    options.AddPolicy("CanViewPermission", policy => policy.RequireClaim("permission", "CAN_VIEW_PERMISSION"));
-    options.AddPolicy("CanViewRole", policy => policy.RequireClaim("permission", "CAN_VIEW_ROLE"));
-    options.AddPolicy("CanEditRole", policy => policy.RequireClaim("permission", "CAN_EDIT_ROLE"));
-    options.AddPolicy("CanDeleteRole", policy => policy.RequireClaim("permission", "CAN_DELETE_ROLE"));
-    options.AddPolicy("CanAssignRolePermission", policy => policy.RequireClaim("permission", "CAN_ASSIGN_ROLE_PERMISSION"));
+    foreach (var (policyName, claim) in AuthorizationPolicies.Map)
+    {
+        options.AddPolicy(policyName, policy => policy.RequireClaim("permission", claim));
+    }
 });
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-var isDev = app.Environment.IsDevelopment()
-    || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
-    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
-
-if (isDev)
+if (app.Environment.IsDevelopment() ||
+    app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase) ||
+    app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -80,7 +113,7 @@ app.MapHealthChecks("/health");
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    DatabaseInitializer.InitializeAsync(app.Services, logger, isDev)
+    DatabaseInitializer.InitializeAsync(app.Services, logger, app.Environment.IsDevelopment())
         .ContinueWith(task =>
         {
             if (task.Exception != null)
