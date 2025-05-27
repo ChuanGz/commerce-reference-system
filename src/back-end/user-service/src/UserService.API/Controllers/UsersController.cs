@@ -14,7 +14,7 @@ public class UsersController(IMediator mediator) : ControllerBase
         Ok(await mediator.Send(new GetAllUsersQuery(), cancellationToken));
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(Guid id,CancellationToken cancellationToken = default)
     {
         var user = await mediator.Send(new GetUserByIdQuery(id), cancellationToken);
 
@@ -25,7 +25,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] CreateUserCommand command,CancellationToken cancellationToken = default)
     {
         var userId = await mediator.Send(command, cancellationToken);
 
@@ -33,7 +33,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserCommand command,CancellationToken cancellationToken = default)
     {
         var updatedCommand = new UpdateUserCommand(id, command.Name, command.Email);
 
@@ -46,7 +46,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid id,CancellationToken cancellationToken = default)
     {
         var result = await mediator.Send(new DeleteUserCommand(id), cancellationToken);
 

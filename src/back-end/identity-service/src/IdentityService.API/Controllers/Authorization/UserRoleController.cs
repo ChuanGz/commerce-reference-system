@@ -32,7 +32,7 @@ public class UserRoleController(IdentityDbContext db) : ControllerBase
     }
     [Authorize(Policy = "CanViewRole")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<RoleDto>> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<RoleDto>> GetById(Guid id,CancellationToken cancellationToken = default)
     {
         var role = await db.Roles
             .Include(r => r.RolePermissions)
@@ -50,7 +50,7 @@ public class UserRoleController(IdentityDbContext db) : ControllerBase
     }
     [Authorize(Policy = "CanEditRole")]
     [HttpPost]
-    public async Task<IActionResult> Create(RoleDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(RoleDto dto,CancellationToken cancellationToken = default)
     {
         var role = new Role
         {
@@ -66,7 +66,7 @@ public class UserRoleController(IdentityDbContext db) : ControllerBase
     }
     [Authorize(Policy = "CanEditRole")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, RoleDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(Guid id, RoleDto dto,CancellationToken cancellationToken = default)
     {
         var role = await db.Roles
             .Include(r => r.RolePermissions)
@@ -84,7 +84,7 @@ public class UserRoleController(IdentityDbContext db) : ControllerBase
     }
     [Authorize(Policy = "CanDeleteRole")]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid id,CancellationToken cancellationToken = default)
     {
         var role = await db.Roles.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 

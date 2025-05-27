@@ -9,7 +9,7 @@ public class RolePermissionController(IdentityDbContext db) : ControllerBase
 {
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]
-    public async Task<IActionResult> Get(Guid roleId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get(Guid roleId,CancellationToken cancellationToken = default)
     {
         var permissions = await db.RolePermissions
             .Where(rp => rp.RoleId == roleId)

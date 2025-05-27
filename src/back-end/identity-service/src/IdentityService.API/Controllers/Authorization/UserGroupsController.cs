@@ -57,7 +57,7 @@ public class UserGroupController(IdentityDbContext db) : ControllerBase
     }
     [Authorize(Policy = "CanApproveGroup")]
     [HttpPut("approve")]
-    public async Task<IActionResult> Approve([FromBody] UserGroupDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Approve([FromBody] UserGroupDto dto,CancellationToken cancellationToken = default)
     {
         var userGroup = await db.UserGroups.FirstOrDefaultAsync(
             ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,
@@ -74,7 +74,7 @@ public class UserGroupController(IdentityDbContext db) : ControllerBase
     }
     [Authorize(Policy = "CanDeleteGroup")]
     [HttpDelete]
-    public async Task<IActionResult> Remove([FromBody] UserGroupDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Remove([FromBody] UserGroupDto dto,CancellationToken cancellationToken = default)
     {
         var userGroup = await db.UserGroups.FirstOrDefaultAsync(
             ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,

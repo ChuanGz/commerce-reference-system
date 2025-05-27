@@ -6,7 +6,7 @@ public class CreateUserCommandHandler(IUserRepository repo) : IRequestHandler<Cr
 {
     private readonly IUserRepository _repo = repo;
 
-    public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 

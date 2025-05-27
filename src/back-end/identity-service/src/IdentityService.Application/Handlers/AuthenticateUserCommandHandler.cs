@@ -9,7 +9,7 @@ using System.Text;
 namespace IdentityService.Application.Handlers;
 public class AuthenticateUserCommandHandler(IUserRepository userRepository, IConfiguration _config) : IRequestHandler<AuthenticateUserCommand, string?>
 {
-    public async Task<string?> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
+    public async Task<string?> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken = default)
     {
         var user = await userRepository.GetByUsernameAsync(request.Username, cancellationToken);
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
