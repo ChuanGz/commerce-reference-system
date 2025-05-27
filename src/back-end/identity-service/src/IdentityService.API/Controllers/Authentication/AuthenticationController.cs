@@ -12,7 +12,7 @@ public class AuthenticationController(IMediator mediator) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         [FromBody] AuthenticateUserCommand command,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         var token = await mediator.Send(command, cancellationToken);
