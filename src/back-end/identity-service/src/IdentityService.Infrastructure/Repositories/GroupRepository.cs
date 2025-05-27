@@ -11,12 +11,19 @@ public class GroupRepository(IdentityDbContext db) : IGroupRepository
         CancellationToken cancellationToken = default
     ) =>
         await db.Groups
+            .AsNoTracking()
             .Include(g => g.GroupRoles)
             .ThenInclude(gr => gr.Role)
             .FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
 
+    public Task<Group?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    {
+        return db.Groups.AsNoTracking().FirstOrDefaultAsync(g => g.Name == name, cancellationToken);
+    }
+
     public async Task<List<Group>> GetAllAsync(CancellationToken cancellationToken = default) =>
         await db.Groups
+            .AsNoTracking()
             .Include(g => g.GroupRoles)
             .ThenInclude(gr => gr.Role)
             .ToListAsync(cancellationToken);

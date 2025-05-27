@@ -7,9 +7,9 @@ using System.Security.Claims;
 using System.Text;
 
 namespace IdentityService.Application.Handlers;
-public class LoginCommandHandler(IUserRepository userRepository, IConfiguration _config) : IRequestHandler<LoginCommand, string?>
+public class AuthenticateUserCommandHandler(IUserRepository userRepository, IConfiguration _config) : IRequestHandler<AuthenticateUserCommand, string?>
 {
-    public async Task<string?> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<string?> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken = default)
     {
         var user = await userRepository.GetByUsernameAsync(request.Username, cancellationToken);
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))

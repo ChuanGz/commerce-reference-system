@@ -6,6 +6,6 @@ public class GetAllUsersQueryHandler(IUserRepository repo) : IRequestHandler<Get
 {
     private readonly IUserRepository _repo = repo;
 
-    public Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken) =>
+    public Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken = default) =>
         _repo.GetAllAsync(cancellationToken);
 }

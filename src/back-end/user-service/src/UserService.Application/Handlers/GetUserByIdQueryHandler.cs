@@ -6,6 +6,6 @@ public class GetUserByIdQueryHandler(IUserRepository repo) : IRequestHandler<Get
 {
     private readonly IUserRepository _repo = repo;
 
-    public Task<User?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken) =>
+    public Task<User?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken = default) =>
         _repo.GetByIdAsync(request.Id, cancellationToken);
 }
