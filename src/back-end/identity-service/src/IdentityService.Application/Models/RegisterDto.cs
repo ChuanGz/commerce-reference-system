@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IdentityService.API.Models;
+namespace IdentityService.Application.Models;
 
 public class RegisterDto
 {

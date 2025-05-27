@@ -44,4 +44,33 @@ public class RoleRepository(IdentityDbContext db) : IRoleRepository
     {
         return await db.Roles.AnyAsync(r => r.Id == id, cancellationToken);
     }
+
+    public async Task<bool> HasPermissionAsync(Guid roleId, Guid permissionId, CancellationToken cancellationToken = default)
+    {
+        return await db.RolePermissions.AnyAsync(
+            rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
+            cancellationToken
+        );
+    }
+
+    public async Task AssignPermissionAsync(RolePermission rolePermission, CancellationToken cancellationToken = default)
+    {
+        db.RolePermissions.Add(rolePermission);
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<bool> RevokePermissionAsync(Guid roleId, Guid permissionId, CancellationToken cancellationToken = default)
+    {
+        var existing = await db.RolePermissions.FirstOrDefaultAsync(
+            rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
+            cancellationToken
+        );
+
+        if (existing is null)
+            return false;
+
+        db.RolePermissions.Remove(existing);
+        await db.SaveChangesAsync(cancellationToken);
+        return true;
+    }
 }
