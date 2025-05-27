@@ -8,12 +8,14 @@ docker rm <container_id_or_name>
 
 mkdir -p ~/sqlserver/data
 mkdir -p ~/sqlserver/logs
+
 docker restart sqlserver
 du -sh ~/sqlserver/data/log
 
 docker run \
   -e 'ACCEPT_EULA=1' \
   -e 'SA_PASSWORD=SqlDev@2025!' \
+  -e 'MSSQL_ENABLE_EXTENSIBILITY=0' \
   -p 1433:1433 \
   --name sqlserver \
   --restart unless-stopped \

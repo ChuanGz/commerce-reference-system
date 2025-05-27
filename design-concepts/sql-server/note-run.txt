@@ -1,0 +1,26 @@
+docker build -t azure-sqlserver .
+
+
+docker run -e 'ACCEPT_EULA=1' \
+ -e 'SA_PASSWORD=SqlDev@2025!' \
+ -p 1433:1433 \
+ --name sqlserver \
+ --restart unless-stopped \
+ -v ~/sqlserver/data:/var/opt/mssql/data \
+ -v ~/sqlserver/logs:/var/opt/mssql/log \
+ -d azure-sqlserver
+
+
+ home brew
+
+ brew tap microsoft/mssql-release https://github.com/Microsoft/homebrew-mssql-release
+
+ brew install --no-sandbox msodbcsql17 mssql-tools
+ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ arch -x86_64 /usr/local/bin/brew install msodbcsql17 mssql-tools
+ /opt/homebrew/bin/sqlcmd -S localhost -U sa -P SqlDev@2025!
+
+ arch -x86_64 /usr/local/bin/brew tap microsoft/mssql-release https://github.com/Microsoft/homebrew-mssql-release
+ arch -x86_64 /usr/local/bin/brew update
+
+arch -x86_64 /usr/local/bin/brew install --no-sandbox msodbcsql17 mssql-tools
