@@ -1,5 +1,7 @@
+using IdentityService.Application.Commands;
 using IdentityService.Application.Models;
-using IdentityService.Domain.Entities;
+using IdentityService.Application.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,91 +10,45 @@ namespace IdentityService.API.Controllers.Authorization;
 [ApiController]
 [Route("api/roles")]
 [Authorize]
-public class UserRoleController(IdentityDbContext db) : ControllerBase
+public class UserRoleController(IMediator mediator) : ControllerBase
 {
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]
     public async Task<ActionResult<List<RoleDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var roles = await db.Roles
-            .Include(r => r.RolePermissions)
-            .ThenInclude(rp => rp.Permission)
-            .Select(
-                r =>
-                    new RoleDto
-                    {
-                        Id = r.Id,
-                        Name = r.Name,
-                        PermissionIds = r.RolePermissions.Select(rp => rp.PermissionId).ToList()
-                    }
-            )
-            .ToListAsync(cancellationToken);
-
-        return Ok(roles);
+        var result = await mediator.Send(new GetAllRolesQuery(), cancellationToken);
+        return Ok(result);
     }
+
     [Authorize(Policy = "CanViewRole")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<RoleDto>> GetById(Guid id,CancellationToken cancellationToken = default)
+    public async Task<ActionResult<RoleDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var role = await db.Roles
-            .Include(r => r.RolePermissions)
-            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-        if (role is null)
-            return NotFound();
-
-        return new RoleDto
-        {
-            Id = role.Id,
-            Name = role.Name,
-            PermissionIds = [.. role.RolePermissions.Select(rp => rp.PermissionId)]
-        };
+        var result = await mediator.Send(new GetRoleByIdQuery(id), cancellationToken);
+        return result is null ? NotFound() : Ok(result);
     }
+
     [Authorize(Policy = "CanEditRole")]
     [HttpPost]
-    public async Task<IActionResult> Create(RoleDto dto,CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Create(RoleDto dto, CancellationToken cancellationToken)
     {
-        var role = new Role
-        {
-            Id = Guid.NewGuid(),
-            Name = dto.Name,
-            RolePermissions = [.. dto.PermissionIds.Select(pid => new RolePermission { PermissionId = pid })]
-        };
-
-        db.Roles.Add(role);
-        await db.SaveChangesAsync(cancellationToken);
-
-        return CreatedAtAction(nameof(GetById), new { id = role.Id }, null);
+        var id = await mediator.Send(new CreateRoleCommand(dto.Name, dto.PermissionIds), cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id }, null);
     }
+
     [Authorize(Policy = "CanEditRole")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, RoleDto dto,CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Update(Guid id, RoleDto dto, CancellationToken cancellationToken)
     {
-        var role = await db.Roles
-            .Include(r => r.RolePermissions)
-            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-        if (role is null)
-            return NotFound();
-
-        role.Name = dto.Name;
-        db.RolePermissions.RemoveRange(role.RolePermissions);
-        role.RolePermissions = [.. dto.PermissionIds.Select(pid => new RolePermission { RoleId = role.Id, PermissionId = pid })];
-
-        await db.SaveChangesAsync(cancellationToken);
-        return NoContent();
+        var success = await mediator.Send(new UpdateRoleCommand(id, dto.Name, dto.PermissionIds), cancellationToken);
+        return success ? NoContent() : NotFound();
     }
+
     [Authorize(Policy = "CanDeleteRole")]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id,CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        var role = await db.Roles.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-        if (role is null)
-            return NotFound();
-
-        db.Roles.Remove(role);
-        await db.SaveChangesAsync(cancellationToken);
-        return NoContent();
+        var success = await mediator.Send(new DeleteRoleCommand(id), cancellationToken);
+        return success ? NoContent() : NotFound();
     }
 }

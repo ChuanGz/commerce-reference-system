@@ -1,9 +1,7 @@
 using IdentityService.Application.Commands;
-using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace IdentityService.API.Controllers.Authentication;
 

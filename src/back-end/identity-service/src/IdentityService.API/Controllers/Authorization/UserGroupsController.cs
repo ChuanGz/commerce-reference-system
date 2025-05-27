@@ -1,92 +1,46 @@
+using IdentityService.Application.Commands;
 using IdentityService.Application.Models;
-using IdentityService.Domain.Entities;
+using IdentityService.Application.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers.Authorization;
+
 [ApiController]
 [Route("api/usergroups")]
 [Authorize]
-public class UserGroupController(IdentityDbContext db) : ControllerBase
+public class UserGroupController(IMediator mediator) : ControllerBase
 {
     [Authorize(Policy = "CanViewGroup")]
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
     {
-        var result = await db.Users
-            .Include(u => u.UserGroups)
-            .ThenInclude(ug => ug.Group)
-            .Select(
-                u =>
-                    new UserGroupResponseDto
-                    {
-                        UserId = u.Id,
-                        Username = u.Username,
-                        Groups = u.UserGroups.Select(ug => ug.Group.Name).ToList()
-                    }
-            )
-            .ToListAsync(cancellationToken);
-
+        var result = await mediator.Send(new GetAllUserGroupsQuery(), cancellationToken);
         return Ok(result);
     }
+
     [Authorize(Policy = "CanEditGroup")]
     [HttpPost]
-    public async Task<IActionResult> AssignUserToGroup(
-            [FromBody] UserGroupDto dto,
-            CancellationToken cancellationToken
-        )
+    public async Task<IActionResult> AssignUserToGroup([FromBody] UserGroupDto dto, CancellationToken cancellationToken = default)
     {
-        if (
-            await db.UserGroups.AnyAsync(
-                ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,
-                cancellationToken
-            )
-        )
-            return Conflict("User is already in the group.");
-
-        var userGroup = new UserGroup
-        {
-            UserId = dto.UserId,
-            GroupId = dto.GroupId,
-            IsApproved = false
-        };
-
-        db.UserGroups.Add(userGroup);
-        await db.SaveChangesAsync(cancellationToken);
-        return CreatedAtAction(nameof(GetAll), null);
+        var success = await mediator.Send(new AssignUserToGroupCommand(dto.UserId, dto.GroupId), cancellationToken);
+        return success ? CreatedAtAction(nameof(GetAll), null) : Conflict("User is already in the group.");
     }
+
     [Authorize(Policy = "CanApproveGroup")]
     [HttpPut("approve")]
-    public async Task<IActionResult> Approve([FromBody] UserGroupDto dto,CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Approve([FromBody] UserGroupDto dto, CancellationToken cancellationToken = default)
     {
-        var userGroup = await db.UserGroups.FirstOrDefaultAsync(
-            ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,
-            cancellationToken
-        );
-
-        if (userGroup is null)
-            return NotFound("Assignment not found.");
-
-        userGroup.IsApproved = true;
-        await db.SaveChangesAsync(cancellationToken);
-
-        return Ok("Approved.");
+        var success = await mediator.Send(new ApproveUserGroupCommand(dto.UserId, dto.GroupId), cancellationToken);
+        return success ? Ok("Approved.") : NotFound("Assignment not found.");
     }
+
     [Authorize(Policy = "CanDeleteGroup")]
     [HttpDelete]
-    public async Task<IActionResult> Remove([FromBody] UserGroupDto dto,CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Remove([FromBody] UserGroupDto dto, CancellationToken cancellationToken = default)
     {
-        var userGroup = await db.UserGroups.FirstOrDefaultAsync(
-            ug => ug.UserId == dto.UserId && ug.GroupId == dto.GroupId,
-            cancellationToken
-        );
-
-        if (userGroup is null)
-            return NotFound("Assignment not found.");
-
-        db.UserGroups.Remove(userGroup);
-        await db.SaveChangesAsync(cancellationToken);
-
-        return NoContent();
+        var success = await mediator.Send(new RemoveUserGroupCommand(dto.UserId, dto.GroupId), cancellationToken);
+        return success ? NoContent() : NotFound("Assignment not found.");
     }
 }

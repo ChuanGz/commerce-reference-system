@@ -1,4 +1,6 @@
 using IdentityService.Application.Models;
+using IdentityService.Application.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,23 +9,12 @@ namespace IdentityService.API.Controllers.Authorization;
 [ApiController]
 [Route("api/permissions")]
 [Authorize(Policy = "CanViewPermission")]
-public class GroupMembershipController(IdentityDbContext db) : ControllerBase
+public class GroupMembershipController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<PermissionDto>>> GetAll(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<PermissionDto>>> GetAll(CancellationToken cancellationToken = default)
     {
-        var permissions = await db.Permissions
-            .Select(
-                p =>
-                    new PermissionDto
-                    {
-                        Id = p.Id,
-                        Key = p.Key,
-                        Description = p.Description
-                    }
-            )
-            .ToListAsync(cancellationToken);
-
+        var permissions = await mediator.Send(new GetAllPermissionsQuery(), cancellationToken);
         return Ok(permissions);
     }
 }
