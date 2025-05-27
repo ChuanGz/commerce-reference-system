@@ -1,10 +1,11 @@
+using Microsoft.OpenApi.Models;
 using UserService.API.Middlewares;
 using UserService.Application.Handlers;
-using UserService.Application.Validators;
 using UserService.Infrastructure.Persistence;
 using UserService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
@@ -15,30 +16,31 @@ builder.Configuration
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Service API", Version = "v1" });
+});
 builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-var isDevelopmentEnv =
-    app.Environment.IsDevelopment()
+var isDev = app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
     || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
 
-if (isDevelopmentEnv)
+if (isDev)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -51,7 +53,7 @@ app.MapHealthChecks("/health");
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    DatabaseInitializer.InitializeAsync(app.Services, logger, isDevelopmentEnv)
+    DatabaseInitializer.InitializeAsync(app.Services, logger, isDev)
         .ContinueWith(task =>
         {
             if (task.Exception != null)
