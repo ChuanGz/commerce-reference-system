@@ -1,0 +1,10 @@
+We’ll build:
+	•	routes/RouteConfig.tsx: Public & private separation
+	•	<ProtectedRoute /> component
+	•	Lazy-loading of pages using React.lazy()
+	•	Navigation flow: redirect to /login if unauthenticated
+
+Also:
+	•	Define Layouts (AuthLayout vs MainLayout)
+	•	404 fallback
+	•	Deep link-safe routing

@@ -1,0 +1,13 @@
+We’ll build:
+	•	useAuth() custom hook
+	•	AuthContext (optional but cleaner for shared state)
+	•	Login page + form validation
+	•	Token storage in localStorage
+	•	AuthService with:
+	•	login
+	•	logout
+	•	refresh (future-ready)
+
+Security:
+	•	Attach token via axios interceptor
+	•	Auto logout on token expiry (basic 401 handler)

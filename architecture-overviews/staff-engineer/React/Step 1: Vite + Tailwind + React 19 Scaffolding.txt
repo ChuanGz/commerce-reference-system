@@ -1,0 +1,11 @@
+We’ll:
+	•	Initialize with Vite (fast dev + HMR)
+	•	Add TypeScript
+	•	Configure TailwindCSS
+	•	Setup PostCSS, shadcn/ui, Prettier, ESLint, Husky
+
+🔧 Deliverables:
+	•	vite.config.ts with aliases
+	•	tailwind.config.ts (dark mode support)
+	•	postcss.config.js
+	•	index.css with base layer

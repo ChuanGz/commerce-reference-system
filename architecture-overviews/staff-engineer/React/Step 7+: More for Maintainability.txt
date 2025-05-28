@@ -1,0 +1,6 @@
+	•	ESLint + Prettier + Husky
+	•	Example Jest test (LoginForm.test.tsx)
+	•	CI-ready .env setup
+	•	README with developer instructions
+	•	src/constants/ for routes, API paths, etc.
+	•	src/types/ for request/response types
