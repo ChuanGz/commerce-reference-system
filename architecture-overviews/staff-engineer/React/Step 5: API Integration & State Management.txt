@@ -1,0 +1,12 @@
+Two scalable options:
+	•	Zustand: Local-first, fast, minimal boilerplate
+	•	React Query: Remote-cache focus, great for data fetching
+
+We’ll build:
+	•	useProducts, useOrders, useCreateOrder hooks
+	•	api.ts for ProductService and OrderService
+	•	Error handling patterns (e.g., toast on 4xx)
+
+Caching, stale data management:
+	•	Use queryClient.invalidateQueries() on mutation
+	•	Paginate orders with React Query + filtering

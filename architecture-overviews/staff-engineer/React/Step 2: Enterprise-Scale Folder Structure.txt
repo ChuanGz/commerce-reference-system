@@ -1,0 +1,17 @@
+src/
+├── features/                # Business features: auth, products, orders
+│   └── auth/
+│       ├── api.ts           # Auth API integration
+│       ├── hooks.ts         # useAuth, useLogin
+│       └── components/      # Auth UI: LoginForm
+├── components/              # Shared UI: Button, Card, Modal
+├── pages/                   # Route-level pages: /login, /products, /orders
+├── routes/                  # Route config, layout, ProtectedRoute
+├── services/                # Axios instance, error handlers, interceptors
+├── store/                   # Zustand / React Query setup
+├── hooks/                   # Reusable global hooks
+├── locales/                 # i18n translations
+├── utils/                   # General utils (date, validation, etc.)
+├── styles/                  # Global styles & Tailwind config
+├── main.tsx                 # App bootstrap
+└── App.tsx                  # Router + layout mount

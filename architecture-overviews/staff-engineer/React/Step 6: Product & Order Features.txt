@@ -1,0 +1,13 @@
+Product Listing
+	•	GET products
+	•	Display: name, price, stock status, image
+	•	“Buy” button to place order
+
+Order History
+	•	GET current user’s orders
+	•	Show: status, created date, total amount
+	•	Format using dayjs
+
+Order Placement
+	•	POST /orders with productId + quantity
+	•	Guard against placing without login
