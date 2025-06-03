@@ -1,41 +1,59 @@
-﻿namespace UserService.API.Middlewares;
+using System.Net;
+using System.Text.Json;
+using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+
+namespace UserService.API.Middlewares;
 
 public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
 {
-
     private readonly RequestDelegate _next = next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
 
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
             await _next(context);
         }
-        catch (ValidationException ex)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "application/json";
-
-            var errorResponse = new ValidationErrorResponse
-            {
-                Errors = ex.Errors
-                    .GroupBy(f => f.PropertyName)
-                    .Select(g => new FieldError
-                    {
-                        Field = g.Key,
-                        Error = string.Join(" ", g.Select(f => f.ErrorMessage).Distinct())
-                    })
-                    .ToList()
-            };
-
-            await context.Response.WriteAsJsonAsync(errorResponse);
-        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception occurred.");
-            context.Response.StatusCode = 500;
-            await context.Response.WriteAsync("An unexpected error occurred.");
+            _logger.LogError(ex, "An unhandled exception occurred. Request: {Method} {Path}", 
+                context.Request.Method, context.Request.Path);
+            await HandleExceptionAsync(context, ex);
         }
+    }
+
+    private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    {
+        context.Response.ContentType = "application/json";
+
+        var response = exception switch
+        {
+            ValidationException validationEx => new
+            {
+                error = "Validation failed",
+                details = validationEx.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage })
+            },
+            InvalidOperationException => new
+            {
+                error = exception.Message
+            },
+            _ => new
+            {
+                error = "An error occurred while processing your request"
+            }
+        };
+
+        context.Response.StatusCode = exception switch
+        {
+            ValidationException => (int)HttpStatusCode.BadRequest,
+            InvalidOperationException => (int)HttpStatusCode.BadRequest,
+            _ => (int)HttpStatusCode.InternalServerError
+        };
+
+        var jsonResponse = JsonSerializer.Serialize(response);
+        await context.Response.WriteAsync(jsonResponse);
     }
 }

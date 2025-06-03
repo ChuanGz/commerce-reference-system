@@ -32,6 +32,20 @@ builder.Services.AddDbContext<PaymentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<ICustomerServiceClient, CustomerServiceClient>();
+builder.Services.AddScoped<IOrderServiceClient, OrderServiceClient>();
+
+builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:CustomerService:BaseUrl"] ?? "http://localhost:5050");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient<IOrderServiceClient, OrderServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:OrderService:BaseUrl"] ?? "http://localhost:5080");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 builder.Services.AddMediatR(typeof(CreatePaymentCommandHandler).Assembly);
 

@@ -1,45 +1,34 @@
 using IdentityService.Application.Commands;
-using IdentityService.Domain.Repositories;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using IdentityService.Application.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityService.Application.Handlers;
-public class AuthenticateUserCommandHandler(IUserRepository userRepository, IConfiguration _config) : IRequestHandler<AuthenticateUserCommand, string?>
+
+public class AuthenticateUserCommandHandler(IAuthenticationService authService, ILogger<AuthenticateUserCommandHandler> logger) : IRequestHandler<AuthenticateUserCommand, string?>
 {
     public async Task<string?> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken = default)
     {
-        var user = await userRepository.GetByUsernameAsync(request.Username, cancellationToken);
-        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            return null;
-        var permissions = user.UserGroups
-            .SelectMany(ug => ug.Group.GroupRoles)
-            .SelectMany(gr => gr.Role.RolePermissions)
-            .Select(rp => rp.Permission.Key)
-            .Distinct()
-            .ToList();
-
-        var claims = new List<Claim>
+        logger.LogInformation("Processing authentication request for user: {Username}", request.Username);
+        
+        try
         {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, user.Username),
-        };
-
-        claims.AddRange(permissions.Select(p => new Claim("permission", p)));
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Secret"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
+            var result = await authService.AuthenticateAsync(request.Username, request.Password, cancellationToken);
+            
+            if (result != null)
+            {
+                logger.LogInformation("Authentication successful for user: {Username}", request.Username);
+            }
+            else
+            {
+                logger.LogWarning("Authentication failed for user: {Username}", request.Username);
+            }
+            
+            return result;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error during authentication for user: {Username}", request.Username);
+            throw;
+        }
     }
 }
