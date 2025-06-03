@@ -13,12 +13,17 @@ public static class DatabaseInitializer
 
         if (isDevelopment)
         {
+            logger.LogInformation("Development environment detected. Recreating database...");
             await context.Database.EnsureDeletedAsync();
+            logger.LogInformation("Database deleted successfully");
             await context.Database.MigrateAsync();
+            logger.LogInformation("Database migration completed successfully");
         }
         else
         {
+            logger.LogInformation("Production environment. Running migrations...");
             await context.Database.MigrateAsync();
+            logger.LogInformation("Database migration completed successfully");
         }
 
         if (context.Users.Any())
