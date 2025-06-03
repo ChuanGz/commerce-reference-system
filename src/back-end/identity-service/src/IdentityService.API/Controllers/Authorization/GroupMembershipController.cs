@@ -9,7 +9,7 @@ namespace IdentityService.API.Controllers.Authorization;
 [ApiController]
 [Route("api/permissions")]
 [Authorize(Policy = "CanViewPermission")]
-public class GroupMembershipController(IMediator mediator) : ControllerBase
+public class PermissionsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<PermissionDto>>> GetAll(CancellationToken cancellationToken = default)

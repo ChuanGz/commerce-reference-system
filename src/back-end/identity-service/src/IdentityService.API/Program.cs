@@ -8,6 +8,8 @@ using MediatR;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using UserService.Application.Validators;
+using IdentityService.Application.Interfaces;
+using IdentityService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +64,7 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IUserGroupRepository, UserGroupRepository>();
+builder.Services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
 builder.Services.AddMediatR(typeof(AddRolePermissionCommandHandler).Assembly);
 
 builder.Services.AddValidatorsFromAssemblyContaining<UserRegistrationValidator>();
