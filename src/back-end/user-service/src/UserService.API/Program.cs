@@ -3,6 +3,8 @@ using UserService.API.Middlewares;
 using UserService.Application.Handlers;
 using UserService.Infrastructure.Persistence;
 using UserService.Infrastructure.Repositories;
+using UserService.Application.Interfaces;
+using UserService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,19 @@ builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IIdentityServiceClient, IdentityServiceClient>();
+
+builder.Services.AddHttpClient<IIdentityServiceClient, IdentityServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:IdentityService:BaseUrl"] ?? "http://localhost:5070");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient<IIdentityServiceClient, IdentityServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:IdentityService:BaseUrl"] ?? "http://localhost:5070");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 
