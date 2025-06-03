@@ -1,39 +1,70 @@
+using Microsoft.OpenApi.Models;
+using OrderService.API.Middlewares;
+using OrderService.Application.Handlers;
+using OrderService.Infrastructure.Persistence;
+using OrderService.Infrastructure.Repositories;
+using OrderService.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using MediatR;
+using OrderService.Application.Behaviors;
+using OrderService.Application.Validators;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order Service API", Version = "v1" });
+});
+builder.Services.AddHealthChecks();
+
+builder.Services.AddDbContext<OrderDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+builder.Services.AddMediatR(typeof(CreateOrderCommandHandler).Assembly);
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+var isDev = app.Environment.IsDevelopment()
+    || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
+    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
+
+if (isDev)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
+app.MapHealthChecks("/health");
 
-var summaries = new[]
+app.Lifetime.ApplicationStarted.Register(() =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    DatabaseInitializer.InitializeAsync(app.Services, logger, isDev)
+        .ContinueWith(task =>
+        {
+            if (task.Exception != null)
+                logger.LogError(task.Exception, "Database initialization failed");
+        });
+});
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+await app.RunAsync();
