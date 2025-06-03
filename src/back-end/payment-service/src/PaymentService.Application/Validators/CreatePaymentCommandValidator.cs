@@ -1,5 +1,6 @@
 using FluentValidation;
 using PaymentService.Application.Commands;
+using PaymentService.Domain.Constants;
 using PaymentService.Domain.Repositories;
 
 namespace PaymentService.Application.Validators;
