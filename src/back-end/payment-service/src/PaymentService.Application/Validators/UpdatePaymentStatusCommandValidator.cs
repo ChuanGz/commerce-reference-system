@@ -1,5 +1,6 @@
 using FluentValidation;
 using PaymentService.Application.Commands;
+using PaymentService.Domain.Constants;
 
 namespace PaymentService.Application.Validators;
 
@@ -14,7 +15,7 @@ public class UpdatePaymentStatusCommandValidator : AbstractValidator<UpdatePayme
         RuleFor(x => x.Status)
             .NotEmpty()
             .WithMessage("Status is required")
-            .Must(status => new[] { "Pending", "Completed", "Failed", "Cancelled", "Refunded" }.Contains(status))
+            .Must(status => new[] { PaymentStatus.Pending, PaymentStatus.Completed, PaymentStatus.Failed, PaymentStatus.Cancelled, PaymentStatus.Refunded }.Contains(status))
             .WithMessage("Status must be one of: Pending, Completed, Failed, Cancelled, Refunded");
 
         RuleFor(x => x.TransactionId)

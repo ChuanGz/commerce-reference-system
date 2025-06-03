@@ -1,5 +1,6 @@
 using PaymentService.Application.Commands;
 using PaymentService.Domain.Repositories;
+using PaymentService.Domain.Constants;
 
 namespace PaymentService.Application.Handlers;
 
@@ -15,12 +16,12 @@ public class ProcessPaymentCommandHandler(IPaymentRepository repo) : IRequestHan
         if (payment == null)
             throw new InvalidOperationException("Payment not found");
 
-        if (payment.Status != "Pending")
+        if (payment.Status != PaymentStatus.Pending)
             throw new InvalidOperationException("Payment is not in pending status");
 
         var isSuccessful = await SimulatePaymentProcessing(payment);
         
-        payment.Status = isSuccessful ? "Completed" : "Failed";
+        payment.Status = isSuccessful ? PaymentStatus.Completed : PaymentStatus.Failed;
         payment.TransactionId = isSuccessful ? $"TXN-{Guid.NewGuid():N}" : null;
         payment.ProcessedAt = DateTime.UtcNow;
 

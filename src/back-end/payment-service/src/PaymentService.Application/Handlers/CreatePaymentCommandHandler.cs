@@ -1,6 +1,7 @@
 using PaymentService.Application.Commands;
 using PaymentService.Domain.Entities;
 using PaymentService.Domain.Repositories;
+using PaymentService.Domain.Constants;
 
 namespace PaymentService.Application.Handlers;
 
@@ -18,7 +19,7 @@ public class CreatePaymentCommandHandler(IPaymentRepository repo) : IRequestHand
             OrderId = request.OrderId,
             Amount = request.Amount,
             PaymentMethod = request.PaymentMethod.Trim(),
-            Status = "Pending",
+            Status = PaymentStatus.Pending,
             TransactionId = null,
             ProcessedAt = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow
