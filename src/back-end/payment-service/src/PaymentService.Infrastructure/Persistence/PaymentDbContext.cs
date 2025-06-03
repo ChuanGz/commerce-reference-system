@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PaymentService.Domain.Entities;
+using PaymentService.Domain.Constants;
 
 namespace PaymentService.Infrastructure.Persistence;
 
@@ -41,7 +42,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 OrderId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                 Amount = 199.99m,
                 PaymentMethod = "Credit Card",
-                Status = "Completed",
+                Status = PaymentStatus.Completed,
                 TransactionId = "TXN-ABC123456789",
                 ProcessedAt = DateTime.UtcNow.AddDays(-2),
                 CreatedAt = DateTime.UtcNow.AddDays(-2)
@@ -52,7 +53,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 OrderId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                 Amount = 89.50m,
                 PaymentMethod = "PayPal",
-                Status = "Completed",
+                Status = PaymentStatus.Completed,
                 TransactionId = "TXN-DEF987654321",
                 ProcessedAt = DateTime.UtcNow.AddDays(-1),
                 CreatedAt = DateTime.UtcNow.AddDays(-1)
@@ -63,7 +64,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 OrderId = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                 Amount = 299.99m,
                 PaymentMethod = "Debit Card",
-                Status = "Pending",
+                Status = PaymentStatus.Pending,
                 TransactionId = null,
                 ProcessedAt = DateTime.UtcNow,
                 CreatedAt = DateTime.UtcNow
@@ -74,7 +75,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 OrderId = Guid.Parse("88888888-8888-8888-8888-888888888888"),
                 Amount = 45.00m,
                 PaymentMethod = "Bank Transfer",
-                Status = "Failed",
+                Status = PaymentStatus.Failed,
                 TransactionId = null,
                 ProcessedAt = DateTime.UtcNow.AddHours(-6),
                 CreatedAt = DateTime.UtcNow.AddHours(-6)
