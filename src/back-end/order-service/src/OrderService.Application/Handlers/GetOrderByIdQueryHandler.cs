@@ -7,13 +7,13 @@ namespace OrderService.Application.Handlers;
 public class GetOrderByIdQueryHandler(IOrderRepository repo)
     : IRequestHandler<GetOrderByIdQuery, Order?>
 {
-    private readonly IOrderRepository _repo = repo;
-
     public async Task<Order?> Handle(
-        GetOrderByIdQuery request,
+        GetOrderByIdQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByIdAsync(request.Id, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+
+        return await repo.GetByIdAsync(query.Id, cancellationToken);
     }
 }

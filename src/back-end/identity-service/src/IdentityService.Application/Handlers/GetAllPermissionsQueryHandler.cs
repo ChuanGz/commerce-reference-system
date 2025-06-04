@@ -5,7 +5,7 @@ using IdentityService.Domain.Repositories;
 namespace IdentityService.Application.Handlers;
 
 public class GetAllPermissionsQueryHandler(IPermissionRepository permissionRepository)
-        : IRequestHandler<GetAllPermissionsQuery, List<PermissionDto>>
+    : IRequestHandler<GetAllPermissionsQuery, List<PermissionDto>>
 {
     public async Task<List<PermissionDto>> Handle(
         GetAllPermissionsQuery command,

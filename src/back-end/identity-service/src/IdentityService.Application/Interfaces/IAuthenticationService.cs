@@ -15,4 +15,3 @@ public interface IAuthenticationService
     );
     Task RevokeTokenAsync(string token, CancellationToken cancellationToken = default);
 }
-

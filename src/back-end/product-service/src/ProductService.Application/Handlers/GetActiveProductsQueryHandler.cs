@@ -7,14 +7,12 @@ namespace ProductService.Application.Handlers;
 public class GetActiveProductsQueryHandler(IProductRepository repo)
     : IRequestHandler<GetActiveProductsQuery, List<Product>>
 {
-    private readonly IProductRepository _repo = repo;
-
     public async Task<List<Product>> Handle(
         GetActiveProductsQuery query,
         CancellationToken cancellationToken = default
     )
     {
         ArgumentNullException.ThrowIfNull(query);
-        return await _repo.GetActiveProductsAsync(cancellationToken);
+        return await repo.GetActiveProductsAsync(cancellationToken);
     }
 }

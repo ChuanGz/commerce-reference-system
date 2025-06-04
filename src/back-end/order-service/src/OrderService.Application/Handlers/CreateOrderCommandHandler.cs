@@ -7,24 +7,22 @@ namespace OrderService.Application.Handlers;
 public class CreateOrderCommandHandler(IOrderRepository repo)
     : IRequestHandler<CreateOrderCommand, Guid>
 {
-    private readonly IOrderRepository _repo = repo;
-
     public async Task<Guid> Handle(
-        CreateOrderCommand request,
+        CreateOrderCommand command,
         CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(command);
 
         var order = new Order
         {
             Id = Guid.NewGuid(),
-            CustomerId = request.CustomerId,
-            ShippingAddress = request.ShippingAddress.Trim(),
+            CustomerId = command.CustomerId,
+            ShippingAddress = command.ShippingAddress.Trim(),
             Status = "Pending",
             OrderDate = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow,
-            OrderItems = request
+            OrderItems = command
                 .OrderItems.Select(item => new OrderItem
                 {
                     Id = Guid.NewGuid(),
@@ -37,7 +35,7 @@ public class CreateOrderCommandHandler(IOrderRepository repo)
 
         order.TotalAmount = order.OrderItems.Sum(item => item.Quantity * item.UnitPrice);
 
-        await _repo.AddAsync(order, cancellationToken);
+        await repo.AddAsync(order, cancellationToken);
         return order.Id;
     }
 }

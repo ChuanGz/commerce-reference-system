@@ -7,19 +7,15 @@ namespace PaymentService.Application.Validators;
 
 public class CreatePaymentCommandValidator : AbstractValidator<CreatePaymentCommand>
 {
-    private readonly IPaymentRepository _repo;
-
     public CreatePaymentCommandValidator(IPaymentRepository repo)
     {
-        _repo = repo;
-
         RuleFor(x => x.OrderId)
             .NotEmpty()
             .WithMessage("OrderId is required")
             .MustAsync(
                 async (orderId, cancellationToken) =>
                 {
-                    return !await _repo.AnyAsync(p => p.OrderId == orderId, cancellationToken);
+                    return !await repo.AnyAsync(p => p.OrderId == orderId, cancellationToken);
                 }
             )
             .WithMessage("Payment for this order already exists");

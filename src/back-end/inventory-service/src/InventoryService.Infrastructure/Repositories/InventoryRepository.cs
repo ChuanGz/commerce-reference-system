@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
+using InventoryService.Domain.Constants;
 using InventoryService.Domain.Entities;
 using InventoryService.Domain.Repositories;
 using InventoryService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using InventoryService.Domain.Constants;
 
 namespace InventoryService.Infrastructure.Repositories;
 

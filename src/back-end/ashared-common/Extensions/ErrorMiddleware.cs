@@ -2,7 +2,7 @@ using System.Net;
 using System.Text.Json;
 using FluentValidation;
 
-namespace InventoryService.API.Middlewares;
+namespace ASharedCommon.Extensions;
 
 public class ExceptionHandlingMiddleware(
     RequestDelegate next,
@@ -38,16 +38,10 @@ public class ExceptionHandlingMiddleware(
                 {
                     field = e.PropertyName,
                     message = e.ErrorMessage,
-                })
+                }),
             },
-            InvalidOperationException => new ErrorResponse
-            {
-                Error = exception.Message
-            },
-            _ => new ErrorResponse
-            {
-                Error = "An error occurred while processing your request"
-            }
+            InvalidOperationException => new ErrorResponse { Error = exception.Message },
+            _ => new ErrorResponse { Error = "An error occurred while processing your request" },
         };
 
         context.Response.StatusCode = exception switch
@@ -66,4 +60,16 @@ public class ExceptionHandlingMiddleware(
         public string Error { get; set; } = default!;
         public object? Details { get; set; }
     }
+}
+
+public class ValidationErrorResponse
+{
+    public string Message { get; set; } = "Validation failed";
+    public List<FieldError> Errors { get; set; } = [];
+}
+
+public class FieldError
+{
+    public required string Field { get; set; }
+    public required string Error { get; set; }
 }

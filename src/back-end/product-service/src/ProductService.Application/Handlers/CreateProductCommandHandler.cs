@@ -7,8 +7,6 @@ namespace ProductService.Application.Handlers;
 public class CreateProductCommandHandler(IProductRepository repo)
     : IRequestHandler<CreateProductCommand, Guid>
 {
-    private readonly IProductRepository _repo = repo;
-
     public async Task<Guid> Handle(
         CreateProductCommand command,
         CancellationToken cancellationToken = default
@@ -28,7 +26,7 @@ public class CreateProductCommandHandler(IProductRepository repo)
             CreatedAt = DateTime.UtcNow,
         };
 
-        await _repo.AddAsync(product, cancellationToken);
+        await repo.AddAsync(product, cancellationToken);
         return product.Id;
     }
 }

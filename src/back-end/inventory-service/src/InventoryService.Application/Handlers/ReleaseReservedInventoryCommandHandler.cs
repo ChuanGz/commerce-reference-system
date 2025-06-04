@@ -6,8 +6,6 @@ namespace InventoryService.Application.Handlers;
 public class ReleaseReservedInventoryCommandHandler(IInventoryRepository repo)
     : IRequestHandler<ReleaseReservedInventoryCommand, Unit>
 {
-    private readonly IInventoryRepository _repo = repo;
-
     public async Task<Unit> Handle(
         ReleaseReservedInventoryCommand request,
         CancellationToken cancellationToken = default
@@ -15,7 +13,7 @@ public class ReleaseReservedInventoryCommandHandler(IInventoryRepository repo)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        await _repo.ReleaseReservedQuantityAsync(
+        await repo.ReleaseReservedQuantityAsync(
             request.ProductId,
             request.Quantity,
             cancellationToken

@@ -7,14 +7,12 @@ namespace ProductService.Application.Handlers;
 public class GetProductsByCategoryQueryHandler(IProductRepository repo)
     : IRequestHandler<GetProductsByCategoryQuery, List<Product>>
 {
-    private readonly IProductRepository _repo = repo;
-
     public async Task<List<Product>> Handle(
         GetProductsByCategoryQuery query,
         CancellationToken cancellationToken = default
     )
     {
         ArgumentNullException.ThrowIfNull(query);
-        return await _repo.GetByCategoryAsync(query.Category, cancellationToken);
+        return await repo.GetByCategoryAsync(query.Category, cancellationToken);
     }
 }

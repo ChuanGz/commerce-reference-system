@@ -15,6 +15,7 @@ public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<UserGroup>().HasKey(ug => new { ug.UserId, ug.GroupId });
 

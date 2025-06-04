@@ -7,8 +7,6 @@ namespace InventoryService.Application.Handlers;
 public class CreateInventoryCommandHandler(IInventoryRepository repo)
     : IRequestHandler<CreateInventoryCommand, Guid>
 {
-    private readonly IInventoryRepository _repo = repo;
-
     public async Task<Guid> Handle(
         CreateInventoryCommand request,
         CancellationToken cancellationToken = default
@@ -26,7 +24,7 @@ public class CreateInventoryCommandHandler(IInventoryRepository repo)
             LastUpdated = DateTime.UtcNow,
         };
 
-        await _repo.AddAsync(inventory, cancellationToken);
+        await repo.AddAsync(inventory, cancellationToken);
         return inventory.Id;
     }
 }

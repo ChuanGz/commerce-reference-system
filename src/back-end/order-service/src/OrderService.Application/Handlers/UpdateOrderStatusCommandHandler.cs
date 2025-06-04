@@ -6,22 +6,20 @@ namespace OrderService.Application.Handlers;
 public class UpdateOrderStatusCommandHandler(IOrderRepository repo)
     : IRequestHandler<UpdateOrderStatusCommand, Unit>
 {
-    private readonly IOrderRepository _repo = repo;
-
     public async Task<Unit> Handle(
-        UpdateOrderStatusCommand request,
+        UpdateOrderStatusCommand command,
         CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(command);
 
-        var order = await _repo.GetByIdAsync(request.Id, cancellationToken);
+        var order = await repo.GetByIdAsync(command.Id, cancellationToken);
         if (order == null)
             return Unit.Value;
 
-        order.Status = request.Status.Trim();
+        order.Status = command.Status.Trim();
 
-        await _repo.UpdateAsync(order, cancellationToken);
+        await repo.UpdateAsync(order, cancellationToken);
         return Unit.Value;
     }
 }

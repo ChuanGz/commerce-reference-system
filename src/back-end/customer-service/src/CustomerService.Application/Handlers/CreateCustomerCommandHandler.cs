@@ -7,8 +7,6 @@ namespace CustomerService.Application.Handlers;
 public class CreateCustomerCommandHandler(ICustomerRepository repo)
     : IRequestHandler<CreateCustomerCommand, Guid>
 {
-    private readonly ICustomerRepository _repo = repo;
-
     public async Task<Guid> Handle(
         CreateCustomerCommand request,
         CancellationToken cancellationToken = default
@@ -27,7 +25,7 @@ public class CreateCustomerCommandHandler(ICustomerRepository repo)
             CreatedAt = DateTime.UtcNow,
         };
 
-        await _repo.AddAsync(customer, cancellationToken);
+        await repo.AddAsync(customer, cancellationToken);
         return customer.Id;
     }
 }

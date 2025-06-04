@@ -6,8 +6,6 @@ namespace CustomerService.Application.Handlers;
 public class DeleteCustomerCommandHandler(ICustomerRepository repo)
     : IRequestHandler<DeleteCustomerCommand, Unit>
 {
-    private readonly ICustomerRepository _repo = repo;
-
     public async Task<Unit> Handle(
         DeleteCustomerCommand request,
         CancellationToken cancellationToken = default
@@ -15,7 +13,7 @@ public class DeleteCustomerCommandHandler(ICustomerRepository repo)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        await _repo.DeleteAsync(request.Id, cancellationToken);
+        await repo.DeleteAsync(request.Id, cancellationToken);
         return Unit.Value;
     }
 }

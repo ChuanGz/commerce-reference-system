@@ -6,8 +6,6 @@ namespace ProductService.Application.Handlers;
 public class UpdateProductCommandHandler(IProductRepository repo)
     : IRequestHandler<UpdateProductCommand, Unit>
 {
-    private readonly IProductRepository _repo = repo;
-
     public async Task<Unit> Handle(
         UpdateProductCommand query,
         CancellationToken cancellationToken = default
@@ -15,7 +13,7 @@ public class UpdateProductCommandHandler(IProductRepository repo)
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        var product = await _repo.GetByIdAsync(query.Id, cancellationToken);
+        var product = await repo.GetByIdAsync(query.Id, cancellationToken);
         if (product == null)
             return Unit.Value;
 
@@ -25,7 +23,7 @@ public class UpdateProductCommandHandler(IProductRepository repo)
         product.Category = query.Category.Trim();
         product.IsActive = query.IsActive;
 
-        await _repo.UpdateAsync(product, cancellationToken);
+        await repo.UpdateAsync(product, cancellationToken);
         return Unit.Value;
     }
 }
