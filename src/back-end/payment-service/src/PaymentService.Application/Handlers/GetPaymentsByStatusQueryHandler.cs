@@ -7,13 +7,12 @@ namespace PaymentService.Application.Handlers;
 public class GetPaymentsByStatusQueryHandler(IPaymentRepository repo)
     : IRequestHandler<GetPaymentsByStatusQuery, List<Payment>>
 {
-    private readonly IPaymentRepository _repo = repo;
-
     public async Task<List<Payment>> Handle(
-        GetPaymentsByStatusQuery request,
+        GetPaymentsByStatusQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByStatusAsync(request.Status, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await repo.GetByStatusAsync(query.Status, cancellationToken);
     }
 }

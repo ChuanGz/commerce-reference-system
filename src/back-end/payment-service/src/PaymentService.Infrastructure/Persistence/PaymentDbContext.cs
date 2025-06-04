@@ -10,6 +10,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Payment>(entity =>

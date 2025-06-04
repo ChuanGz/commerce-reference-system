@@ -8,7 +8,6 @@ public class CreateUserCommandHandler(
     ILogger<CreateUserCommandHandler> logger
 ) : IRequestHandler<CreateUserCommand, Guid>
 {
-    private readonly IUserRepository _repo = repo;
     private readonly ILogger<CreateUserCommandHandler> _logger = logger;
 
     public async Task<Guid> Handle(
@@ -27,7 +26,7 @@ public class CreateUserCommandHandler(
             Email = request.Email.Trim(),
         };
 
-        await _repo.AddAsync(user, cancellationToken);
+        await repo.AddAsync(user, cancellationToken);
 
         _logger.LogInformation("Successfully created user with ID: {UserId}", user.Id);
         return user.Id;

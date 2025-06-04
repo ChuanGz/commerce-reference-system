@@ -7,13 +7,12 @@ namespace InventoryService.Application.Handlers;
 public class GetInventoryByProductIdQueryHandler(IInventoryRepository repo)
     : IRequestHandler<GetInventoryByProductIdQuery, Inventory?>
 {
-    private readonly IInventoryRepository _repo = repo;
-
     public async Task<Inventory?> Handle(
-        GetInventoryByProductIdQuery request,
+        GetInventoryByProductIdQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByProductIdAsync(request.ProductId, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await repo.GetByProductIdAsync(query.ProductId, cancellationToken);
     }
 }

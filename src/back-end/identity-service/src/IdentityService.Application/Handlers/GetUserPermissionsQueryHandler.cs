@@ -34,7 +34,7 @@ public class GetUserPermissionsQueryHandler(
         logger.LogInformation(
             "Found {PermissionCount} permissions for user: {UserId}",
             permissions.Count,
-            request.UserId
+            query.UserId
         );
         return permissions;
     }

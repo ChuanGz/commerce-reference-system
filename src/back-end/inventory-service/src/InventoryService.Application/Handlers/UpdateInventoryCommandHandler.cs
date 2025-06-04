@@ -6,8 +6,6 @@ namespace InventoryService.Application.Handlers;
 public class UpdateInventoryCommandHandler(IInventoryRepository repo)
     : IRequestHandler<UpdateInventoryCommand, Unit>
 {
-    private readonly IInventoryRepository _repo = repo;
-
     public async Task<Unit> Handle(
         UpdateInventoryCommand request,
         CancellationToken cancellationToken = default
@@ -15,7 +13,7 @@ public class UpdateInventoryCommandHandler(IInventoryRepository repo)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var inventory = await _repo.GetByIdAsync(request.Id, cancellationToken);
+        var inventory = await repo.GetByIdAsync(request.Id, cancellationToken);
         if (inventory == null)
             return Unit.Value;
 
@@ -23,7 +21,7 @@ public class UpdateInventoryCommandHandler(IInventoryRepository repo)
         inventory.Location = request.Location.Trim();
         inventory.LastUpdated = DateTime.UtcNow;
 
-        await _repo.UpdateAsync(inventory, cancellationToken);
+        await repo.UpdateAsync(inventory, cancellationToken);
         return Unit.Value;
     }
 }

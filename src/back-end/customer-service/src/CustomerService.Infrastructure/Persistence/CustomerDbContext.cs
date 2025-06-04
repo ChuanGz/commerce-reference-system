@@ -9,6 +9,7 @@ public class CustomerDbContext(DbContextOptions<CustomerDbContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
         base.OnModelCreating(modelBuilder);
 
         var seedCustomers = new[]

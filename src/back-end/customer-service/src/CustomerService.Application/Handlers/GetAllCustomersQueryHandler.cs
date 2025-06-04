@@ -7,14 +7,12 @@ namespace CustomerService.Application.Handlers;
 public class GetAllCustomersQueryHandler(ICustomerRepository repo)
     : IRequestHandler<GetAllCustomersQuery, List<Customer>>
 {
-    private readonly ICustomerRepository _repo = repo;
-
     public async Task<List<Customer>> Handle(
         GetAllCustomersQuery query,
         CancellationToken cancellationToken = default
     )
     {
         ArgumentNullException.ThrowIfNull(query);
-        return await _repo.GetAllAsync(cancellationToken);
+        return await repo.GetAllAsync(cancellationToken);
     }
 }

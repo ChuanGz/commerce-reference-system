@@ -8,9 +8,7 @@ namespace IdentityService.API.Controllers.Authentication;
 [ApiController]
 [Route("api/register")]
 [AllowAnonymous]
-public class UserRegistrationController(
-    IMediator mediator
-) : ControllerBase
+public class UserRegistrationController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Register(

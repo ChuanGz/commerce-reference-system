@@ -6,12 +6,8 @@ namespace ProductService.Application.Validators;
 
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    private readonly IProductRepository _repo;
-
     public CreateProductCommandValidator(IProductRepository repo)
     {
-        _repo = repo;
-
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("Name is required")
@@ -40,7 +36,7 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .MustAsync(
                 async (sku, cancellationToken) =>
                 {
-                    return !await _repo.AnyAsync(p => p.SKU == sku.ToUpper(), cancellationToken);
+                    return !await repo.AnyAsync(p => p.SKU == sku.ToUpper(), cancellationToken);
                 }
             )
             .WithMessage("SKU already exists");

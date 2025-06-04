@@ -6,9 +6,7 @@ namespace UserService.API.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController(
-    IMediator mediator
-) : ControllerBase
+public class UsersController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
@@ -43,6 +41,7 @@ public class UsersController(
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
         var updatedCommand = new UpdateUserCommand(id, command.Name, command.Email);
 
         var result = await mediator.Send(updatedCommand, cancellationToken);

@@ -6,16 +6,14 @@ namespace OrderService.Application.Handlers;
 public class DeleteOrderCommandHandler(IOrderRepository repo)
     : IRequestHandler<DeleteOrderCommand, Unit>
 {
-    private readonly IOrderRepository _repo = repo;
-
     public async Task<Unit> Handle(
-        DeleteOrderCommand request,
+        DeleteOrderCommand command,
         CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(command);
 
-        await _repo.DeleteAsync(request.Id, cancellationToken);
+        await repo.DeleteAsync(command.Id, cancellationToken);
         return Unit.Value;
     }
 }

@@ -7,9 +7,7 @@ namespace IdentityService.API.Controllers.Authentication;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticationController(
-    IMediator mediator
-) : ControllerBase
+public class AuthenticationController(IMediator mediator) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("login")]

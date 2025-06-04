@@ -7,13 +7,12 @@ namespace PaymentService.Application.Handlers;
 public class GetPaymentByOrderIdQueryHandler(IPaymentRepository repo)
     : IRequestHandler<GetPaymentByOrderIdQuery, Payment?>
 {
-    private readonly IPaymentRepository _repo = repo;
-
     public async Task<Payment?> Handle(
-        GetPaymentByOrderIdQuery request,
+        GetPaymentByOrderIdQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByOrderIdAsync(request.OrderId, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await repo.GetByOrderIdAsync(query.OrderId, cancellationToken);
     }
 }

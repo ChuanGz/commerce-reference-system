@@ -10,7 +10,7 @@ namespace UserService.Infrastructure.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            migrationBuilder?.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -85,7 +85,7 @@ namespace UserService.Infrastructure.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "Users");
+            migrationBuilder?.DropTable(name: "Users");
         }
     }
 }

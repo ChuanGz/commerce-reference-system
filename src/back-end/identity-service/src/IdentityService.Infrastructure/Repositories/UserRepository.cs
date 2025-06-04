@@ -4,21 +4,14 @@ using IdentityService.Infrastructure.Persistence;
 
 namespace IdentityService.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(IdentityDbContext db) : IUserRepository
 {
-    private readonly IdentityDbContext _db;
-
-    public UserRepository(IdentityDbContext db)
-    {
-        _db = db;
-    }
-
     public async Task<User?> GetByUsernameAsync(
         string username,
         CancellationToken cancellationToken = default
     )
     {
-        return await _db
+        return await db
             .Users.Include(u => u.UserGroups)
             .ThenInclude(ug => ug.Group)
             .ThenInclude(g => g.GroupRoles)
@@ -30,7 +23,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _db
+        return await db
             .Users.Include(u => u.UserGroups)
             .ThenInclude(ug => ug.Group)
             .ThenInclude(g => g.GroupRoles)
@@ -42,25 +35,25 @@ public class UserRepository : IUserRepository
 
     public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _db.Users.ToListAsync(cancellationToken);
+        return await db.Users.ToListAsync(cancellationToken);
     }
 
     public async Task AddAsync(User user, CancellationToken cancellationToken = default)
     {
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync(cancellationToken);
+        db.Users.Add(user);
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(User user, CancellationToken cancellationToken = default)
     {
-        _db.Users.Update(user);
-        await _db.SaveChangesAsync(cancellationToken);
+        db.Users.Update(user);
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(User user, CancellationToken cancellationToken = default)
     {
-        _db.Users.Remove(user);
-        await _db.SaveChangesAsync(cancellationToken);
+        db.Users.Remove(user);
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<bool> ExistsByUsernameAsync(
@@ -68,6 +61,6 @@ public class UserRepository : IUserRepository
         CancellationToken cancellationToken = default
     )
     {
-        return await _db.Users.AnyAsync(u => u.Username == username, cancellationToken);
+        return await db.Users.AnyAsync(u => u.Username == username, cancellationToken);
     }
 }

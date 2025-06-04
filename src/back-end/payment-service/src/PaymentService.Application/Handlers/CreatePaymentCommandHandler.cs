@@ -8,8 +8,6 @@ namespace PaymentService.Application.Handlers;
 public class CreatePaymentCommandHandler(IPaymentRepository repo)
     : IRequestHandler<CreatePaymentCommand, Guid>
 {
-    private readonly IPaymentRepository _repo = repo;
-
     public async Task<Guid> Handle(
         CreatePaymentCommand request,
         CancellationToken cancellationToken = default
@@ -29,7 +27,7 @@ public class CreatePaymentCommandHandler(IPaymentRepository repo)
             CreatedAt = DateTime.UtcNow,
         };
 
-        await _repo.AddAsync(payment, cancellationToken);
+        await repo.AddAsync(payment, cancellationToken);
         return payment.Id;
     }
 }

@@ -6,8 +6,6 @@ namespace PaymentService.Application.Handlers;
 public class UpdatePaymentStatusCommandHandler(IPaymentRepository repo)
     : IRequestHandler<UpdatePaymentStatusCommand, Unit>
 {
-    private readonly IPaymentRepository _repo = repo;
-
     public async Task<Unit> Handle(
         UpdatePaymentStatusCommand request,
         CancellationToken cancellationToken = default
@@ -15,7 +13,7 @@ public class UpdatePaymentStatusCommandHandler(IPaymentRepository repo)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var payment = await _repo.GetByIdAsync(request.Id, cancellationToken);
+        var payment = await repo.GetByIdAsync(request.Id, cancellationToken);
         if (payment == null)
             return Unit.Value;
 
@@ -23,7 +21,7 @@ public class UpdatePaymentStatusCommandHandler(IPaymentRepository repo)
         payment.TransactionId = request.TransactionId?.Trim();
         payment.ProcessedAt = DateTime.UtcNow;
 
-        await _repo.UpdateAsync(payment, cancellationToken);
+        await repo.UpdateAsync(payment, cancellationToken);
         return Unit.Value;
     }
 }

@@ -1,15 +1,13 @@
 using PaymentService.Application.Commands;
 using PaymentService.Domain.Constants;
-using PaymentService.Domain.Repositories;
 using PaymentService.Domain.Entities;
+using PaymentService.Domain.Repositories;
 
 namespace PaymentService.Application.Handlers;
 
 public class ProcessPaymentCommandHandler(IPaymentRepository repo)
     : IRequestHandler<ProcessPaymentCommand, Unit>
 {
-    private readonly IPaymentRepository _repo = repo;
-
     public async Task<Unit> Handle(
         ProcessPaymentCommand request,
         CancellationToken cancellationToken = default
@@ -17,7 +15,7 @@ public class ProcessPaymentCommandHandler(IPaymentRepository repo)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var payment = await _repo.GetByIdAsync(request.Id, cancellationToken);
+        var payment = await repo.GetByIdAsync(request.Id, cancellationToken);
         if (payment == null)
             throw new InvalidOperationException(ErrorMessages.PaymentNotFound);
 
@@ -30,7 +28,7 @@ public class ProcessPaymentCommandHandler(IPaymentRepository repo)
         payment.TransactionId = isSuccessful ? $"TXN-{Guid.NewGuid():N}" : null;
         payment.ProcessedAt = DateTime.UtcNow;
 
-        await _repo.UpdateAsync(payment, cancellationToken);
+        await repo.UpdateAsync(payment, cancellationToken);
         return Unit.Value;
     }
 

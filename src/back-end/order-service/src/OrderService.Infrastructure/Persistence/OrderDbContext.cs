@@ -10,6 +10,7 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Order>(entity =>

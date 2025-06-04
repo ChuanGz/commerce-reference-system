@@ -4,7 +4,6 @@ using OrderService.Application.Commands;
 using OrderService.Application.Queries;
 using OrderService.Domain.Constants;
 
-
 namespace OrderService.API.Controllers;
 
 [ApiController]
@@ -81,6 +80,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
         if (id != command.Id)
             return BadRequest(ErrorMessages.IdMismatch);
 

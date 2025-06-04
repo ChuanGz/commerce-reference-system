@@ -6,19 +6,15 @@ namespace InventoryService.Application.Validators;
 
 public class CreateInventoryCommandValidator : AbstractValidator<CreateInventoryCommand>
 {
-    private readonly IInventoryRepository _repo;
-
     public CreateInventoryCommandValidator(IInventoryRepository repo)
     {
-        _repo = repo;
-
         RuleFor(x => x.ProductId)
             .NotEmpty()
             .WithMessage("ProductId is required")
             .MustAsync(
                 async (productId, cancellationToken) =>
                 {
-                    return !await _repo.AnyAsync(i => i.ProductId == productId, cancellationToken);
+                    return !await repo.AnyAsync(i => i.ProductId == productId, cancellationToken);
                 }
             )
             .WithMessage("Inventory for this product already exists");

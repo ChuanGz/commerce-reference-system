@@ -1,16 +1,13 @@
 using CustomerService.Application.Commands;
 using CustomerService.Application.Queries;
 using MediatR;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerService.API.Controllers;
 
 [ApiController]
 [Route("api/customers")]
-public class CustomersController(
-    IMediator mediator
-) : ControllerBase
+public class CustomersController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken) =>

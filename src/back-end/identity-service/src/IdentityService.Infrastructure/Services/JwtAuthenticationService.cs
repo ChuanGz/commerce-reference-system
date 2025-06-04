@@ -2,11 +2,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using IdentityService.Application.Interfaces;
+using IdentityService.Application.Models;
 using IdentityService.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using IdentityService.Application.Models;
 
 namespace IdentityService.Infrastructure.Services;
 

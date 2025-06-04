@@ -1,7 +1,7 @@
 using IdentityService.Application.Commands;
+using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
-using IdentityService.Domain.Constants;
 
 namespace IdentityService.Application.Handlers;
 
