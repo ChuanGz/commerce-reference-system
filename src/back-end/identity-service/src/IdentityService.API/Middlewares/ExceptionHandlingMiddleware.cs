@@ -37,9 +37,9 @@ public class ExceptionHandlingMiddleware(
 
         var response = exception switch
         {
-            ValidationException validationEx => new
+            ValidationException validationEx => (object)new
             {
-                error = "Validation failed",
+                error = ErrorMessages.ValidationFailed,
                 details = validationEx.Errors.Select(e => new
                 {
                     field = e.PropertyName,

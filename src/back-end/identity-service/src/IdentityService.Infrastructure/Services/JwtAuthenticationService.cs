@@ -63,7 +63,7 @@ public class JwtAuthenticationService(
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<TokenValidationResult> ValidateTokenAsync(
+    public async Task<Application.Interfaces.TokenValidationResult> ValidateTokenAsync(
         string token,
         CancellationToken cancellationToken = default
     )
@@ -94,7 +94,7 @@ public class JwtAuthenticationService(
                 .Claims.Where(x => x.Type == "permission")
                 .Select(x => x.Value);
 
-            return new TokenValidationResult
+            return new Application.Interfaces.TokenValidationResult
             {
                 IsValid = true,
                 UserId = userId,
@@ -104,7 +104,7 @@ public class JwtAuthenticationService(
         catch (Exception ex)
         {
             logger.LogWarning(ex, "Token validation failed");
-            return new TokenValidationResult { IsValid = false };
+            return new Application.Interfaces.TokenValidationResult { IsValid = false };
         }
     }
 

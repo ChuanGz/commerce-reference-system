@@ -14,6 +14,8 @@ public class ExceptionHandlingMiddleware(
 
     public async Task InvokeAsync(HttpContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+
         try
         {
             await _next(context);
@@ -31,17 +33,17 @@ public class ExceptionHandlingMiddleware(
 
         var response = exception switch
         {
-            ValidationException validationEx => new
+            ValidationException validationEx => (object)new
             {
-                error = "Validation failed",
+                error = ErrorMessages.ValidationFailed,
                 details = validationEx.Errors.Select(e => new
                 {
                     field = e.PropertyName,
                     message = e.ErrorMessage,
                 }),
             },
-            InvalidOperationException => new { error = exception.Message },
-            _ => new { error = "An error occurred while processing your request" },
+            InvalidOperationException => (object)new { error = exception.Message },
+            _ => (object)new { error = ErrorMessages.UnhandledException },
         };
 
         context.Response.StatusCode = exception switch

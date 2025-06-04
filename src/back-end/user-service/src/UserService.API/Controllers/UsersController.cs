@@ -43,6 +43,9 @@ public class UsersController(
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
+
         var updatedCommand = new UpdateUserCommand(id, command.Name, command.Email);
 
         var result = await mediator.Send(updatedCommand, cancellationToken);

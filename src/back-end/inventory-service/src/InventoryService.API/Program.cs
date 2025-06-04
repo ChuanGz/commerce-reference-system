@@ -1,4 +1,6 @@
 using FluentValidation;
+
+
 using InventoryService.API.Middlewares;
 using InventoryService.Application.Behaviors;
 using InventoryService.Application.Handlers;

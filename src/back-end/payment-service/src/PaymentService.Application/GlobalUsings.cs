@@ -4,3 +4,4 @@ global using System.Linq;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using MediatR;
+global using PaymentService.Domain.Entities;

@@ -55,6 +55,9 @@ public class InventoryController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
+
         if (id != command.Id)
             return BadRequest(ErrorMessages.IdMismatch);
 

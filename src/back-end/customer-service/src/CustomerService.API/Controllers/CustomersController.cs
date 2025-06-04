@@ -59,6 +59,9 @@ public class CustomersController(
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
+
         var updatedCommand = new UpdateCustomerCommand(
             id,
             command.FirstName,

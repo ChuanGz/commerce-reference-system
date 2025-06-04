@@ -17,6 +17,8 @@ public class OrderPaymentController(
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var command = new UpdateOrderPaymentStatusCommand(orderId, request.PaymentStatus);
         var result = await mediator.Send(command, cancellationToken);
 
