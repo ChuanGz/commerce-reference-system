@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Enterprise Production Rules" Description="Strict ruleset for production-grade C# code." ToolsVersion="16.0">
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1822" Action="Error" />
+    <Rule Id="CA1801" Action="Error" />
+    <Rule Id="CA1814" Action="Error" />
+    <Rule Id="CA1820" Action="Error" />
+    <Rule Id="CA1823" Action="Error" />
+    <Rule Id="CA1506" Action="Warning" />
+    <Rule Id="CA1501" Action="Error" />
+    <Rule Id="CA2100" Action="Error" />
+    <Rule Id="CA5350" Action="Error" />
+    <Rule Id="CA5122" Action="Error" />
+    <Rule Id="CA1001" Action="Error" />
+    <Rule Id="CA1062" Action="Error" />
+    <Rule Id="CA1014" Action="Error" />
+    <Rule Id="CA1707" Action="Error" />
+    <Rule Id="CA1708" Action="Error" />
+    <Rule Id="CA1720" Action="Error" />
+    <Rule Id="CA1724" Action="Warning" />
+    <Rule Id="CS8618" Action="Error" />
+    <Rule Id="CS1998" Action="Warning" />
+    <Rule Id="CS8602" Action="Error" />
+    <Rule Id="IDE0051" Action="Warning" />
+    <Rule Id="IDE0060" Action="Warning" />
+    <Rule Id="IDE1006" Action="Error" />
+  </Rules>
+  <IncludeAll Action="None" />
+</RuleSet>
