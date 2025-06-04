@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
-using UserService.API.Middlewares;
+using SharedCommon.Middlewares;
+using SharedCommon.ValidationBehavior;
 using UserService.Application.Handlers;
 using UserService.Application.Interfaces;
 using UserService.Infrastructure.Persistence;

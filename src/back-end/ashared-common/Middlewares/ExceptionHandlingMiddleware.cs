@@ -1,8 +1,11 @@
 using System.Net;
 using System.Text.Json;
 using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
-namespace ASharedCommon.Extensions;
+namespace SharedCommon.Middlewares;
 
 public class ExceptionHandlingMiddleware(
     RequestDelegate next,

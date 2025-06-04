@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
+    <ProjectReference Include="..\..\..\ashared-Common\ShareCommon.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
