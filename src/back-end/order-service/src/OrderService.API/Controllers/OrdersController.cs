@@ -80,7 +80,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     )
     {
         if (id != command.Id)
-            return BadRequest("ID mismatch");
+            return BadRequest(ErrorMessages.IdMismatch);
 
         await _mediator.Send(command, cancellationToken);
         return NoContent();

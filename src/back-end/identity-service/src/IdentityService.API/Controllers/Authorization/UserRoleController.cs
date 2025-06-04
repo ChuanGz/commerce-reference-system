@@ -10,7 +10,9 @@ namespace IdentityService.API.Controllers.Authorization;
 [ApiController]
 [Route("api/roles")]
 [Authorize]
-public class RolesController(IMediator mediator) : ControllerBase
+public class RolesController(
+    IMediator mediator
+) : ControllerBase
 {
     [Authorize(Policy = "CanViewRole")]
     [HttpGet]

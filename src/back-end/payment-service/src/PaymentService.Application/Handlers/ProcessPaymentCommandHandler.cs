@@ -18,10 +18,10 @@ public class ProcessPaymentCommandHandler(IPaymentRepository repo)
 
         var payment = await _repo.GetByIdAsync(request.Id, cancellationToken);
         if (payment == null)
-            throw new InvalidOperationException("Payment not found");
+            throw new InvalidOperationException(ErrorMessages.PaymentNotFound);
 
         if (payment.Status != PaymentStatus.Pending)
-            throw new InvalidOperationException("Payment is not in pending status");
+            throw new InvalidOperationException(ErrorMessages.PaymentNotPending);
 
         var isSuccessful = await SimulatePaymentProcessing(payment);
 
