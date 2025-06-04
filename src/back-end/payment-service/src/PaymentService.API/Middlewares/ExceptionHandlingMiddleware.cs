@@ -31,17 +31,23 @@ public class ExceptionHandlingMiddleware(
 
         var response = exception switch
         {
-            ValidationException validationEx => new
+            ValidationException validationEx => new ErrorResponse
             {
-                error = "Validation failed",
-                details = validationEx.Errors.Select(e => new
+                Error = "Validation failed",
+                Details = validationEx.Errors.Select(e => new
                 {
                     field = e.PropertyName,
                     message = e.ErrorMessage,
-                }),
+                })
             },
-            InvalidOperationException => new { error = exception.Message },
-            _ => new { error = "An error occurred while processing your request" },
+            InvalidOperationException => new ErrorResponse
+            {
+                Error = exception.Message
+            },
+            _ => new ErrorResponse
+            {
+                Error = "An error occurred while processing your request"
+            }
         };
 
         context.Response.StatusCode = exception switch
@@ -53,5 +59,11 @@ public class ExceptionHandlingMiddleware(
 
         var jsonResponse = JsonSerializer.Serialize(response);
         await context.Response.WriteAsync(jsonResponse);
+    }
+
+    private class ErrorResponse
+    {
+        public string Error { get; set; } = default!;
+        public object? Details { get; set; }
     }
 }

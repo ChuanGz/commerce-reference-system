@@ -1,6 +1,7 @@
 using PaymentService.Application.Commands;
 using PaymentService.Domain.Constants;
 using PaymentService.Domain.Repositories;
+using PaymentService.Domain.Entities;
 
 namespace PaymentService.Application.Handlers;
 

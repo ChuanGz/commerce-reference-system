@@ -1,7 +1,8 @@
 using MediatR;
 using UserService.Application.Commands;
 using UserService.Domain.Constants;
-using UserService.Domain.Repositories;
+using UserService. Domain. Repositories;
+using UserService. Domain. Constants;
 
 namespace UserService.Application.Handlers;
 
