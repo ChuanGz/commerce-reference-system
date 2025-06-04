@@ -1,12 +1,48 @@
-# Core formatting
+# top-most EditorConfig file
+root = true
+
+# All C# files
 [*.cs]
+charset = utf-8
 indent_style = space
 indent_size = 4
+tab_width = 4
 insert_final_newline = true
-charset = utf-8
 trim_trailing_whitespace = true
+end_of_line = crlf
 
-# Naming rules (like ESLint camelCase)
+###########################
+# C# Code Style Rules
+###########################
+
+# Use 'var' or explicit type
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
+
+dotnet_style_prefer_var_for_built_in_types = false:suggestion
+dotnet_style_prefer_var_when_type_is_apparent = false:suggestion
+dotnet_style_prefer_var_elsewhere = false:suggestion
+
+# Expression preferences
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+
+# Null checks and equality
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+dotnet_style_prefer_throw_expression = true:suggestion
+
+# This. qualification
+dotnet_style_qualification_for_local_variable = false:suggestion
+
+###########################
+# Naming Rules
+###########################
+
 dotnet_naming_rule.interface_should_be_prefixed_with_i.severity = warning
 dotnet_naming_rule.interface_should_be_prefixed_with_i.symbols = interface
 dotnet_naming_rule.interface_should_be_prefixed_with_i.style = prefix_i
@@ -18,27 +54,79 @@ dotnet_naming_symbols.interface.required_modifiers = *
 dotnet_naming_style.prefix_i.required_prefix = I
 dotnet_naming_style.prefix_i.capitalization = pascal_case
 
-# Style rules
-dotnet_style_qualification_for_field = false:suggestion
-dotnet_style_qualification_for_property = false:suggestion
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+# Private fields with _prefix
+dotnet_naming_rule.private_fields_should_be_camel_case_with_underscore.severity = suggestion
+dotnet_naming_rule.private_fields_should_be_camel_case_with_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be_camel_case_with_underscore.style = underscore_prefix_style
 
-# Nullability
-dotnet_diagnostic.CA1062.severity = warning  # Validate arguments of public methods
-dotnet_diagnostic.CS8618.severity = warning  # Nullable warning
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers = readonly
 
-# Unused usings
+dotnet_naming_style.underscore_prefix_style.required_prefix = _
+dotnet_naming_style.underscore_prefix_style.capitalization = camel_case
+
+###########################
+# Analyzer Rules
+###########################
+
+# Remove unused usings
 dotnet_diagnostic.RemoveUnnecessaryUsings.severity = warning
 
-# Dead code detection
-dotnet_diagnostic.IDE0051.severity = warning # Private member is unused
-dotnet_diagnostic.IDE0060.severity = warning # Parameter is unused
+# Nullability and argument checks
+dotnet_diagnostic.CA1062.severity = warning     # Validate arguments of public methods
+dotnet_diagnostic.CS8618.severity = warning     # Non-nullable field must be initialized
 
-# Prefer explicit types
-dotnet_style_prefer_var_for_built_in_types = false:suggestion
-dotnet_style_prefer_var_when_type_is_apparent = false:suggestion
-dotnet_style_prefer_var_elsewhere = false:suggestion
+# Naming suggestions
+dotnet_diagnostic.IDE1006.severity = suggestion
 
-# Expression preferences
-dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
-dotnet_style_prefer_compound_assignment = true:suggestion
+# Code cleanup rules
+dotnet_diagnostic.IDE0051.severity = warning    # Remove unused private members
+dotnet_diagnostic.IDE0060.severity = warning    # Remove unused parameters
+dotnet_diagnostic.IDE0039.severity = suggestion # Use local function instead of lambda
+dotnet_diagnostic.IDE0055.severity = suggestion # Fix formatting
+
+###########################
+# File Layout
+###########################
+
+dotnet_sort_system_directives_first = true
+file_header_template = Licensed under the MIT license.
+
+###########################
+# Formatting Compatibility
+###########################
+
+csharp_new_line_before_open_brace = all:warning
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_indent_labels = one_less_than_current
+csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_blocks = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_cast = true
+csharp_space_before_open_square_brackets = false
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_base_type_declaration = true
+csharp_space_after_comma = true
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_before_open_paren = false
+csharp_space_after_open_square_brackets = false
+csharp_space_before_open_square_brackets = false
+csharp_space_before_dot = false
+csharp_space_after_dot = true
+csharp_space_before_semicolon = false
+csharp_space_after_semicolon = true
+csharp_space_before_colon = false
+csharp_space_after_colon = true
+csharp_space_before_comma = false
+csharp_space_after_comma = true
+csharp_space_before_open_brace = false
+csharp_space_after_open_brace = true
+csharp_space_before_close_brace = false
+csharp_space_after_close_brace = true
+csharp_space_before_question_mark = false
+csharp_space_after_question_mark = true
+csharp_space_before_exclamation_mark = false
+csharp_space_after_exclamation_mark = true
+csharp_space_before_lambda_arrow = false
