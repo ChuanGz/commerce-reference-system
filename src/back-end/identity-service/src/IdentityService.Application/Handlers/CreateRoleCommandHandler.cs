@@ -9,6 +9,8 @@ public class CreateRoleCommandHandler(IRoleRepository roleRepository)
 {
     public async Task<Guid> Handle(CreateRoleCommand command, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var role = new Role
         {
             Id = Guid.NewGuid(),

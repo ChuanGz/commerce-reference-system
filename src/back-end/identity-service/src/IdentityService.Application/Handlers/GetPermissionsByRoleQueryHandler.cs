@@ -11,6 +11,7 @@ public class GetPermissionsByRoleQueryHandler(IRoleRepository roleRepository)
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(query);
         var role = await roleRepository.GetByIdAsync(query.RoleId, cancellationToken);
         if (role is null || role.RolePermissions is null)
             return [];

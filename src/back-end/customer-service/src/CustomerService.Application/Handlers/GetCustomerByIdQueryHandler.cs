@@ -10,10 +10,11 @@ public class GetCustomerByIdQueryHandler(ICustomerRepository repo)
     private readonly ICustomerRepository _repo = repo;
 
     public async Task<Customer?> Handle(
-        GetCustomerByIdQuery request,
+        GetCustomerByIdQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByIdAsync(request.Id, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await _repo.GetByIdAsync(query.Id, cancellationToken);
     }
 }

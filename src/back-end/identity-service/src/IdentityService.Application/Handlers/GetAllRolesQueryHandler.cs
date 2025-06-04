@@ -8,10 +8,12 @@ public class GetAllRolesQueryHandler(IRoleRepository roleRepository)
     : IRequestHandler<GetAllRolesQuery, List<RoleDto>>
 {
     public async Task<List<RoleDto>> Handle(
-        GetAllRolesQuery request,
+        GetAllRolesQuery query,
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(query);
+
         var roles = await roleRepository.GetAllAsync(cancellationToken);
 
         return roles

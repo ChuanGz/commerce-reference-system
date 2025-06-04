@@ -12,6 +12,8 @@ public class AssignUserToGroupCommandHandler(IUserGroupRepository userGroupRepos
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var exists = await userGroupRepository.GetAsync(
             command.UserId,
             command.GroupId,

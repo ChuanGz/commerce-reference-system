@@ -11,6 +11,7 @@ public class RemoveRolePermissionCommandHandler(IRoleRepository roleRepository)
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
         var removed = await roleRepository.RevokePermissionAsync(
             command.RoleId,
             command.PermissionId,

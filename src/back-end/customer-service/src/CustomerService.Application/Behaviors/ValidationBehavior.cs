@@ -16,6 +16,8 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         if (_validators.Any())
         {
             var context = new ValidationContext<TRequest>(request);

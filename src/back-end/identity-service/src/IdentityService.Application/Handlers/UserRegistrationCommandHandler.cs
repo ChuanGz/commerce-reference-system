@@ -16,6 +16,7 @@ public class UserRegistrationCommandHandler(
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(request);
         if (await userRepository.ExistsByUsernameAsync(request.Username, cancellationToken))
             return null;
 

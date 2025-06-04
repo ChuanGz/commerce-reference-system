@@ -11,6 +11,7 @@ public class RemoveUserGroupCommandHandler(IUserGroupRepository userGroupReposit
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
         var userGroup = await userGroupRepository.GetAsync(
             command.UserId,
             command.GroupId,

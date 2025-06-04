@@ -10,10 +10,11 @@ public class GetActiveProductsQueryHandler(IProductRepository repo)
     private readonly IProductRepository _repo = repo;
 
     public async Task<List<Product>> Handle(
-        GetActiveProductsQuery request,
+        GetActiveProductsQuery query,
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(query);
         return await _repo.GetActiveProductsAsync(cancellationToken);
     }
 }

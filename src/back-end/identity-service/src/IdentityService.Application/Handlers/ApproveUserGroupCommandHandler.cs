@@ -11,6 +11,8 @@ public class ApproveUserGroupCommandHandler(IUserGroupRepository userGroupReposi
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var userGroup = await userGroupRepository.GetAsync(
             command.UserId,
             command.GroupId,

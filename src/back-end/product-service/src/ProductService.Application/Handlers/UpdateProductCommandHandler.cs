@@ -9,21 +9,21 @@ public class UpdateProductCommandHandler(IProductRepository repo)
     private readonly IProductRepository _repo = repo;
 
     public async Task<Unit> Handle(
-        UpdateProductCommand request,
+        UpdateProductCommand query,
         CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(query);
 
-        var product = await _repo.GetByIdAsync(request.Id, cancellationToken);
+        var product = await _repo.GetByIdAsync(query.Id, cancellationToken);
         if (product == null)
             return Unit.Value;
 
-        product.Name = request.Name.Trim();
-        product.Description = request.Description.Trim();
-        product.Price = request.Price;
-        product.Category = request.Category.Trim();
-        product.IsActive = request.IsActive;
+        product.Name = query.Name.Trim();
+        product.Description = query.Description.Trim();
+        product.Price = query.Price;
+        product.Category = query.Category.Trim();
+        product.IsActive = query.IsActive;
 
         await _repo.UpdateAsync(product, cancellationToken);
         return Unit.Value;

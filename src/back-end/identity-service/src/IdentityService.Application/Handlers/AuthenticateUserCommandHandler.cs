@@ -13,20 +13,22 @@ public class AuthenticateUserCommandHandler(
 ) : IRequestHandler<AuthenticateUserCommand, string?>
 {
     public async Task<string?> Handle(
-        AuthenticateUserCommand request,
+        AuthenticateUserCommand command,
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         logger.LogInformation(
             "Processing authentication request for user: {Username}",
-            request.Username
+            command.Username
         );
 
         try
         {
             var result = await authService.AuthenticateAsync(
-                request.Username,
-                request.Password,
+                command.Username,
+                command.Password,
                 cancellationToken
             );
 
@@ -34,12 +36,12 @@ public class AuthenticateUserCommandHandler(
             {
                 logger.LogInformation(
                     "Authentication successful for user: {Username}",
-                    request.Username
+                    command.Username
                 );
             }
             else
             {
-                logger.LogWarning("Authentication failed for user: {Username}", request.Username);
+                logger.LogWarning("Authentication failed for user: {Username}", command.Username);
             }
 
             return result;
@@ -49,7 +51,7 @@ public class AuthenticateUserCommandHandler(
             logger.LogError(
                 ex,
                 "Error during authentication for user: {Username}",
-                request.Username
+                command.Username
             );
             throw;
         }
