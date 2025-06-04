@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using CustomerService.Application.Commands;
 using CustomerService.Application.Queries;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerService.API.Controllers;
 
@@ -8,7 +8,6 @@ namespace CustomerService.API.Controllers;
 [Route("api/customers")]
 public class CustomersController(IMediator mediator) : ControllerBase
 {
-
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
         Ok(await mediator.Send(new GetAllCustomersQuery(), cancellationToken));
@@ -25,7 +24,10 @@ public class CustomersController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetByUserId(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetByUserId(
+        Guid userId,
+        CancellationToken cancellationToken = default
+    )
     {
         var customer = await mediator.Send(new GetCustomerByUserIdQuery(userId), cancellationToken);
 
@@ -36,7 +38,10 @@ public class CustomersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateCustomerCommand command, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Create(
+        [FromBody] CreateCustomerCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         var customerId = await mediator.Send(command, cancellationToken);
 
@@ -44,9 +49,19 @@ public class CustomersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCustomerCommand command, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Update(
+        Guid id,
+        [FromBody] UpdateCustomerCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
-        var updatedCommand = new UpdateCustomerCommand(id, command.FirstName, command.LastName, command.Phone, command.Address);
+        var updatedCommand = new UpdateCustomerCommand(
+            id,
+            command.FirstName,
+            command.LastName,
+            command.Phone,
+            command.Address
+        );
 
         var result = await mediator.Send(updatedCommand, cancellationToken);
 

@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using PaymentService.Application.Commands;
 using PaymentService.Application.Queries;
 
@@ -26,28 +26,41 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("order/{orderId:guid}")]
-    public async Task<IActionResult> GetByOrderId(Guid orderId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetByOrderId(
+        Guid orderId,
+        CancellationToken cancellationToken = default
+    )
     {
         var result = await _mediator.Send(new GetPaymentByOrderIdQuery(orderId), cancellationToken);
         return result != null ? Ok(result) : NotFound();
     }
 
     [HttpGet("status/{status}")]
-    public async Task<IActionResult> GetByStatus(string status, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetByStatus(
+        string status,
+        CancellationToken cancellationToken = default
+    )
     {
         var result = await _mediator.Send(new GetPaymentsByStatusQuery(status), cancellationToken);
         return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreatePaymentCommand command, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Create(
+        [FromBody] CreatePaymentCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         var id = await _mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [HttpPut("{id:guid}/status")]
-    public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdatePaymentStatusCommand command, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> UpdateStatus(
+        Guid id,
+        [FromBody] UpdatePaymentStatusCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         if (id != command.Id)
             return BadRequest("ID mismatch");

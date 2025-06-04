@@ -24,9 +24,7 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .Length(10, 500)
             .WithMessage("Description must be between 10 and 500 characters");
 
-        RuleFor(x => x.Price)
-            .GreaterThan(0)
-            .WithMessage("Price must be greater than 0");
+        RuleFor(x => x.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
 
         RuleFor(x => x.Category)
             .NotEmpty()
@@ -39,10 +37,12 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .WithMessage("SKU is required")
             .Length(3, 20)
             .WithMessage("SKU must be between 3 and 20 characters")
-            .MustAsync(async (sku, cancellationToken) =>
-            {
-                return !await _repo.AnyAsync(p => p.SKU == sku.ToUpper(), cancellationToken);
-            })
+            .MustAsync(
+                async (sku, cancellationToken) =>
+                {
+                    return !await _repo.AnyAsync(p => p.SKU == sku.ToUpper(), cancellationToken);
+                }
+            )
             .WithMessage("SKU already exists");
     }
 }

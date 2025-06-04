@@ -26,7 +26,8 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
             entity.HasIndex(e => e.Status);
             entity.HasIndex(e => e.OrderDate);
 
-            entity.HasMany(e => e.OrderItems)
+            entity
+                .HasMany(e => e.OrderItems)
                 .WithOne(e => e.Order)
                 .HasForeignKey(e => e.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -59,7 +60,7 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 Status = "Delivered",
                 OrderDate = DateTime.UtcNow.AddDays(-5),
                 ShippingAddress = "123 Main St, New York, NY 10001",
-                CreatedAt = DateTime.UtcNow.AddDays(-5)
+                CreatedAt = DateTime.UtcNow.AddDays(-5),
             },
             new Order
             {
@@ -69,7 +70,7 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 Status = "Shipped",
                 OrderDate = DateTime.UtcNow.AddDays(-2),
                 ShippingAddress = "456 Oak Ave, Los Angeles, CA 90210",
-                CreatedAt = DateTime.UtcNow.AddDays(-2)
+                CreatedAt = DateTime.UtcNow.AddDays(-2),
             },
             new Order
             {
@@ -79,8 +80,8 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 Status = "Processing",
                 OrderDate = DateTime.UtcNow.AddDays(-1),
                 ShippingAddress = "789 Pine Rd, Chicago, IL 60601",
-                CreatedAt = DateTime.UtcNow.AddDays(-1)
-            }
+                CreatedAt = DateTime.UtcNow.AddDays(-1),
+            },
         };
 
         var orderItems = new[]
@@ -91,7 +92,7 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 OrderId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 ProductId = Guid.Parse("bb222222-2222-2222-2222-222222222222"),
                 Quantity = 1,
-                UnitPrice = 199.99m
+                UnitPrice = 199.99m,
             },
             new OrderItem
             {
@@ -99,7 +100,7 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 OrderId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 ProductId = Guid.Parse("bb333333-3333-3333-3333-333333333333"),
                 Quantity = 2,
-                UnitPrice = 49.99m
+                UnitPrice = 49.99m,
             },
             new OrderItem
             {
@@ -107,7 +108,7 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 OrderId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                 ProductId = Guid.Parse("bb444444-4444-4444-4444-444444444444"),
                 Quantity = 1,
-                UnitPrice = 149.99m
+                UnitPrice = 149.99m,
             },
             new OrderItem
             {
@@ -115,8 +116,8 @@ public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContex
                 OrderId = Guid.Parse("55555555-5555-5555-5555-555555555555"),
                 ProductId = Guid.Parse("bb555555-5555-5555-5555-555555555555"),
                 Quantity = 3,
-                UnitPrice = 29.99m
-            }
+                UnitPrice = 29.99m,
+            },
         };
 
         modelBuilder.Entity<Order>().HasData(orders);

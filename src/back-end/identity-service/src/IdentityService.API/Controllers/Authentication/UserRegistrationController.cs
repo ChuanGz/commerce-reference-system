@@ -13,7 +13,8 @@ public class UserRegistrationController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Register(
         [FromBody] UserRegistrationCommand command,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         var result = await mediator.Send(command, cancellationToken);
 

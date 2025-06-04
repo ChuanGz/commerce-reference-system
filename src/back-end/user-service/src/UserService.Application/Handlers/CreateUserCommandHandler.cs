@@ -8,7 +8,10 @@ public class CreateUserCommandHandler(IUserRepository repo, ILogger<CreateUserCo
     private readonly IUserRepository _repo = repo;
     private readonly ILogger<CreateUserCommandHandler> _logger = logger;
 
-    public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken = default)
+    public async Task<Guid> Handle(
+        CreateUserCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -18,11 +21,11 @@ public class CreateUserCommandHandler(IUserRepository repo, ILogger<CreateUserCo
         {
             Id = Guid.NewGuid(),
             Name = request.Name.Trim(),
-            Email = request.Email.Trim()
+            Email = request.Email.Trim(),
         };
 
         await _repo.AddAsync(user, cancellationToken);
-        
+
         _logger.LogInformation("Successfully created user with ID: {UserId}", user.Id);
         return user.Id;
     }

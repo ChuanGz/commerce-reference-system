@@ -1,4 +1,4 @@
-﻿using IdentityService.Application.Models;
+using IdentityService.Application.Models;
 using IdentityService.Application.Queries;
 using IdentityService.Domain.Repositories;
 
@@ -16,7 +16,7 @@ public class GetRoleByIdQueryHandler(IRoleRepository roleRepository)
             {
                 Id = role.Id,
                 Name = role.Name,
-                PermissionIds = role.RolePermissions.Select(rp => rp.PermissionId).ToList()
+                PermissionIds = role.RolePermissions.Select(rp => rp.PermissionId).ToList(),
             };
     }
 }

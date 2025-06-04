@@ -4,11 +4,15 @@ using CustomerService.Domain.Repositories;
 
 namespace CustomerService.Application.Handlers;
 
-public class CreateCustomerCommandHandler(ICustomerRepository repo) : IRequestHandler<CreateCustomerCommand, Guid>
+public class CreateCustomerCommandHandler(ICustomerRepository repo)
+    : IRequestHandler<CreateCustomerCommand, Guid>
 {
     private readonly ICustomerRepository _repo = repo;
 
-    public async Task<Guid> Handle(CreateCustomerCommand request, CancellationToken cancellationToken = default)
+    public async Task<Guid> Handle(
+        CreateCustomerCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -20,7 +24,7 @@ public class CreateCustomerCommandHandler(ICustomerRepository repo) : IRequestHa
             LastName = request.LastName.Trim(),
             Phone = request.Phone.Trim(),
             Address = request.Address.Trim(),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
         };
 
         await _repo.AddAsync(customer, cancellationToken);

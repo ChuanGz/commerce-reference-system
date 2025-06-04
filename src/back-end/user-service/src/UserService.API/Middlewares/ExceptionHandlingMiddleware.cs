@@ -6,7 +6,10 @@ using Microsoft.Extensions.Logging;
 
 namespace UserService.API.Middlewares;
 
-public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+public class ExceptionHandlingMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionHandlingMiddleware> logger
+)
 {
     private readonly RequestDelegate _next = next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
@@ -19,8 +22,12 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unhandled exception occurred. Request: {Method} {Path}", 
-                context.Request.Method, context.Request.Path);
+            _logger.LogError(
+                ex,
+                "An unhandled exception occurred. Request: {Method} {Path}",
+                context.Request.Method,
+                context.Request.Path
+            );
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -31,26 +38,30 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
 
         var response = exception switch
         {
-            ValidationException validationEx => new
+            ValidationException validationEx => new Dictionary<string, object>
             {
-                error = "Validation failed",
-                details = validationEx.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage })
+                ["error"] = "Validation failed",
+                ["details"] = validationEx.Errors.Select(static e => new Dictionary<string, string>
+                {
+                    ["field"] = e.PropertyName,
+                    ["message"] = e.ErrorMessage,
+                }).ToList()
             },
-            InvalidOperationException => new
+            InvalidOperationException invalidOpEx => new Dictionary<string, object>
             {
-                error = exception.Message
+                ["error"] = invalidOpEx.Message
             },
-            _ => new
+            _ => new Dictionary<string, object>
             {
-                error = "An error occurred while processing your request"
-            }
+                ["error"] = "An error occurred while processing your request"
+            },
         };
 
         context.Response.StatusCode = exception switch
         {
             ValidationException => (int)HttpStatusCode.BadRequest,
             InvalidOperationException => (int)HttpStatusCode.BadRequest,
-            _ => (int)HttpStatusCode.InternalServerError
+            _ => (int)HttpStatusCode.InternalServerError,
         };
 
         var jsonResponse = JsonSerializer.Serialize(response);

@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace IdentityService.API.Middlewares;
 
-public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+public class ExceptionHandlingMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionHandlingMiddleware> logger
+)
 {
     private readonly RequestDelegate _next = next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
@@ -18,7 +21,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unhandled exception occurred. Request: {Method} {Path}", 
+            _logger.LogError(ex, "An unhandled exception occurred. Request: {Method} {Path}",
                 context.Request.Method, context.Request.Path);
             await HandleExceptionAsync(context, ex);
         }

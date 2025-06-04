@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using InventoryService.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryService.Infrastructure.Persistence;
 
@@ -37,7 +37,7 @@ public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : 
                 Quantity = 100,
                 ReservedQuantity = 0,
                 Location = "Warehouse A - Shelf 1",
-                LastUpdated = DateTime.UtcNow
+                LastUpdated = DateTime.UtcNow,
             },
             new Inventory
             {
@@ -46,7 +46,7 @@ public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : 
                 Quantity = 50,
                 ReservedQuantity = 5,
                 Location = "Warehouse B - Shelf 2",
-                LastUpdated = DateTime.UtcNow
+                LastUpdated = DateTime.UtcNow,
             },
             new Inventory
             {
@@ -55,8 +55,8 @@ public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : 
                 Quantity = 25,
                 ReservedQuantity = 0,
                 Location = "Warehouse A - Shelf 3",
-                LastUpdated = DateTime.UtcNow
-            }
+                LastUpdated = DateTime.UtcNow,
+            },
         };
 
         modelBuilder.Entity<Inventory>().HasData(inventories);

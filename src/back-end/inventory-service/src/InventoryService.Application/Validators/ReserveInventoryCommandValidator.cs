@@ -7,12 +7,8 @@ public class ReserveInventoryCommandValidator : AbstractValidator<ReserveInvento
 {
     public ReserveInventoryCommandValidator()
     {
-        RuleFor(x => x.ProductId)
-            .NotEmpty()
-            .WithMessage("ProductId is required");
+        RuleFor(x => x.ProductId).NotEmpty().WithMessage("ProductId is required");
 
-        RuleFor(x => x.Quantity)
-            .GreaterThan(0)
-            .WithMessage("Quantity must be greater than 0");
+        RuleFor(x => x.Quantity).GreaterThan(0).WithMessage("Quantity must be greater than 0");
     }
 }

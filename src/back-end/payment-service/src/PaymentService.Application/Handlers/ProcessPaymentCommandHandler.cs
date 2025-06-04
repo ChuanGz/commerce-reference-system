@@ -1,14 +1,18 @@
 using PaymentService.Application.Commands;
-using PaymentService.Domain.Repositories;
 using PaymentService.Domain.Constants;
+using PaymentService.Domain.Repositories;
 
 namespace PaymentService.Application.Handlers;
 
-public class ProcessPaymentCommandHandler(IPaymentRepository repo) : IRequestHandler<ProcessPaymentCommand, Unit>
+public class ProcessPaymentCommandHandler(IPaymentRepository repo)
+    : IRequestHandler<ProcessPaymentCommand, Unit>
 {
     private readonly IPaymentRepository _repo = repo;
 
-    public async Task<Unit> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken = default)
+    public async Task<Unit> Handle(
+        ProcessPaymentCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -20,7 +24,7 @@ public class ProcessPaymentCommandHandler(IPaymentRepository repo) : IRequestHan
             throw new InvalidOperationException("Payment is not in pending status");
 
         var isSuccessful = await SimulatePaymentProcessing(payment);
-        
+
         payment.Status = isSuccessful ? PaymentStatus.Completed : PaymentStatus.Failed;
         payment.TransactionId = isSuccessful ? $"TXN-{Guid.NewGuid():N}" : null;
         payment.ProcessedAt = DateTime.UtcNow;

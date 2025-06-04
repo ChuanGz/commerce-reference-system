@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -10,12 +10,11 @@ namespace IdentityService.Infrastructure.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Groups",
-                columns: table =>
-                    new
-                    {
-                        Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                    },
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Groups", x => x.Id);
@@ -24,13 +23,12 @@ namespace IdentityService.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Permissions",
-                columns: table =>
-                    new
-                    {
-                        Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                        Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                    },
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Permissions", x => x.Id);
@@ -39,12 +37,11 @@ namespace IdentityService.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Roles",
-                columns: table =>
-                    new
-                    {
-                        Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                    },
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
@@ -53,13 +50,12 @@ namespace IdentityService.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Users",
-                columns: table =>
-                    new
-                    {
-                        Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                        PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                    },
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
@@ -68,12 +64,11 @@ namespace IdentityService.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "GroupRoles",
-                columns: table =>
-                    new
-                    {
-                        GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                    },
+                columns: table => new
+                {
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GroupRoles", x => new { x.GroupId, x.RoleId });
@@ -96,12 +91,11 @@ namespace IdentityService.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "RolePermissions",
-                columns: table =>
-                    new
-                    {
-                        RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        PermissionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                    },
+                columns: table => new
+                {
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PermissionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RolePermissions", x => new { x.RoleId, x.PermissionId });
@@ -124,13 +118,12 @@ namespace IdentityService.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserGroups",
-                columns: table =>
-                    new
-                    {
-                        UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        IsApproved = table.Column<bool>(type: "bit", nullable: false)
-                    },
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserGroups", x => new { x.UserId, x.GroupId });
@@ -169,6 +162,7 @@ namespace IdentityService.Infrastructure.Migrations
                 column: "GroupId"
             );
         }
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(name: "GroupRoles");

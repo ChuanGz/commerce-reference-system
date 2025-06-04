@@ -37,12 +37,13 @@ public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbCo
             {
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 Name = "Wireless Bluetooth Headphones",
-                Description = "High-quality wireless headphones with noise cancellation and 30-hour battery life",
+                Description =
+                    "High-quality wireless headphones with noise cancellation and 30-hour battery life",
                 Price = 199.99m,
                 Category = "Electronics",
                 SKU = "WBH-001",
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
             },
             new Product
             {
@@ -53,18 +54,19 @@ public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbCo
                 Category = "Furniture",
                 SKU = "EOC-002",
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
             },
             new Product
             {
                 Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                 Name = "Stainless Steel Water Bottle",
-                Description = "Insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours",
+                Description =
+                    "Insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours",
                 Price = 29.99m,
                 Category = "Sports",
                 SKU = "SSWB-003",
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
             },
             new Product
             {
@@ -75,7 +77,7 @@ public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbCo
                 Category = "Clothing",
                 SKU = "OCT-004",
                 IsActive = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
             },
             new Product
             {
@@ -86,8 +88,8 @@ public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbCo
                 Category = "Electronics",
                 SKU = "SFT-005",
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            }
+                CreatedAt = DateTime.UtcNow,
+            },
         };
 
         modelBuilder.Entity<Product>().HasData(products);

@@ -1,23 +1,27 @@
-using Microsoft.OpenApi.Models;
-using PaymentService.API.Middlewares;
-using PaymentService.Application.Handlers;
-using PaymentService.Infrastructure.Persistence;
-using PaymentService.Infrastructure.Repositories;
-using PaymentService.Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using PaymentService.API.Middlewares;
 using PaymentService.Application.Behaviors;
+using PaymentService.Application.Handlers;
 using PaymentService.Application.Validators;
+using PaymentService.Domain.Repositories;
+using PaymentService.Infrastructure.Persistence;
+using PaymentService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+builder
+    .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: true
+    )
     .AddEnvironmentVariables();
 
 builder.Services.AddControllers();
@@ -29,7 +33,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<PaymentDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<ICustomerServiceClient, CustomerServiceClient>();
@@ -56,7 +61,8 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-var isDev = app.Environment.IsDevelopment()
+var isDev =
+    app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
     || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
 
@@ -73,7 +79,8 @@ app.MapHealthChecks("/health");
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    DatabaseInitializer.InitializeAsync(app.Services, logger, isDev)
+    DatabaseInitializer
+        .InitializeAsync(app.Services, logger, isDev)
         .ContinueWith(task =>
         {
             if (task.Exception != null)

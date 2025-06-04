@@ -6,7 +6,11 @@ namespace CustomerService.Infrastructure.Persistence;
 
 public static class DatabaseInitializer
 {
-    public static async Task InitializeAsync(IServiceProvider serviceProvider, ILogger logger, bool isDevelopment)
+    public static async Task InitializeAsync(
+        IServiceProvider serviceProvider,
+        ILogger logger,
+        bool isDevelopment
+    )
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
@@ -26,7 +30,10 @@ public static class DatabaseInitializer
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while initializing the database for Customer Service");
+            logger.LogError(
+                ex,
+                "An error occurred while initializing the database for Customer Service"
+            );
             throw;
         }
     }

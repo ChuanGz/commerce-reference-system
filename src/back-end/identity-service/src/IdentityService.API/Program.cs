@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using FluentValidation;
 using IdentityService.API.Middlewares;
 using IdentityService.Application.Constants;
@@ -6,7 +7,6 @@ using IdentityService.Domain.Repositories;
 using IdentityService.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
 using UserService.Application.Validators;
 using IdentityService.Application.Interfaces;
 using IdentityService.Infrastructure.Services;
@@ -16,48 +16,62 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory())
+builder
+    .Configuration.SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: true
+    )
     .AddEnvironmentVariables();
 
-builder.Services.AddControllers().AddJsonOptions(opt =>
-{
-    opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-});
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(opt =>
+    {
+        opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity Service API", Version = "v1" });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT token only (no Bearer prefix)"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+    c.AddSecurityDefinition(
+        "Bearer",
+        new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme { Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT token only (no Bearer prefix)",
         }
-    });
+    );
+
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer",
+                    },
+                },
+                Array.Empty<string>()
+            },
+        }
+    );
 });
 builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
@@ -70,8 +84,8 @@ builder.Services.AddMediatR(typeof(AddRolePermissionCommandHandler).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<UserRegistrationValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -83,7 +97,7 @@ builder.Services
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)
-            )
+            ),
         };
     });
 
@@ -99,9 +113,11 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment() ||
-    app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase) ||
-    app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase))
+if (
+    app.Environment.IsDevelopment()
+    || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
+    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase)
+)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -116,7 +132,8 @@ app.MapHealthChecks("/health");
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    DatabaseInitializer.InitializeAsync(app.Services, logger, app.Environment.IsDevelopment())
+    DatabaseInitializer
+        .InitializeAsync(app.Services, logger, app.Environment.IsDevelopment())
         .ContinueWith(task =>
         {
             if (task.Exception != null)

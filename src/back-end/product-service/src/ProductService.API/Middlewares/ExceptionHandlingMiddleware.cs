@@ -4,7 +4,10 @@ using FluentValidation;
 
 namespace ProductService.API.Middlewares;
 
-public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+public class ExceptionHandlingMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionHandlingMiddleware> logger
+)
 {
     private readonly RequestDelegate _next = next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
@@ -31,23 +34,21 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             ValidationException validationEx => new
             {
                 error = "Validation failed",
-                details = validationEx.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage })
+                details = validationEx.Errors.Select(e => new
+                {
+                    field = e.PropertyName,
+                    message = e.ErrorMessage,
+                }),
             },
-            InvalidOperationException => new
-            {
-                error = exception.Message
-            },
-            _ => new
-            {
-                error = "An error occurred while processing your request"
-            }
+            InvalidOperationException => new { error = exception.Message },
+            _ => new { error = "An error occurred while processing your request" },
         };
 
         context.Response.StatusCode = exception switch
         {
             ValidationException => (int)HttpStatusCode.BadRequest,
             InvalidOperationException => (int)HttpStatusCode.BadRequest,
-            _ => (int)HttpStatusCode.InternalServerError
+            _ => (int)HttpStatusCode.InternalServerError,
         };
 
         var jsonResponse = JsonSerializer.Serialize(response);

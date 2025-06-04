@@ -1,4 +1,4 @@
-﻿using IdentityService.Application.Commands;
+using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 

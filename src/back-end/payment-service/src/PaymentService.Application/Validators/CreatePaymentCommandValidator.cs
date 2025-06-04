@@ -16,10 +16,12 @@ public class CreatePaymentCommandValidator : AbstractValidator<CreatePaymentComm
         RuleFor(x => x.OrderId)
             .NotEmpty()
             .WithMessage("OrderId is required")
-            .MustAsync(async (orderId, cancellationToken) =>
-            {
-                return !await _repo.AnyAsync(p => p.OrderId == orderId, cancellationToken);
-            })
+            .MustAsync(
+                async (orderId, cancellationToken) =>
+                {
+                    return !await _repo.AnyAsync(p => p.OrderId == orderId, cancellationToken);
+                }
+            )
             .WithMessage("Payment for this order already exists");
 
         RuleFor(x => x.Amount)
@@ -33,7 +35,13 @@ public class CreatePaymentCommandValidator : AbstractValidator<CreatePaymentComm
             .WithMessage("PaymentMethod is required")
             .Length(2, 50)
             .WithMessage("PaymentMethod must be between 2 and 50 characters")
-            .Must(method => new[] { "Credit Card", "Debit Card", "PayPal", "Bank Transfer", "Cash" }.Contains(method))
-            .WithMessage("PaymentMethod must be one of: Credit Card, Debit Card, PayPal, Bank Transfer, Cash");
+            .Must(method =>
+                new[] { "Credit Card", "Debit Card", "PayPal", "Bank Transfer", "Cash" }.Contains(
+                    method
+                )
+            )
+            .WithMessage(
+                "PaymentMethod must be one of: Credit Card, Debit Card, PayPal, Bank Transfer, Cash"
+            );
     }
 }

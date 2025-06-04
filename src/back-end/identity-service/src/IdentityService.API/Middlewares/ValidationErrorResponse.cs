@@ -1,4 +1,4 @@
-﻿namespace IdentityService.API.Middlewares;
+namespace IdentityService.API.Middlewares;
 
 public class ValidationErrorResponse
 {

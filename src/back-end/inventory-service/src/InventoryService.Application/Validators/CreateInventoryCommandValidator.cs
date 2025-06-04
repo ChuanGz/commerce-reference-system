@@ -15,10 +15,12 @@ public class CreateInventoryCommandValidator : AbstractValidator<CreateInventory
         RuleFor(x => x.ProductId)
             .NotEmpty()
             .WithMessage("ProductId is required")
-            .MustAsync(async (productId, cancellationToken) =>
-            {
-                return !await _repo.AnyAsync(i => i.ProductId == productId, cancellationToken);
-            })
+            .MustAsync(
+                async (productId, cancellationToken) =>
+                {
+                    return !await _repo.AnyAsync(i => i.ProductId == productId, cancellationToken);
+                }
+            )
             .WithMessage("Inventory for this product already exists");
 
         RuleFor(x => x.Quantity)

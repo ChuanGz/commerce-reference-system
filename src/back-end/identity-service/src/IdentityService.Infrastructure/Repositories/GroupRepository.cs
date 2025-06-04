@@ -10,8 +10,8 @@ public class GroupRepository(IdentityDbContext db) : IGroupRepository
         Guid id,
         CancellationToken cancellationToken = default
     ) =>
-        await db.Groups
-            .AsNoTracking()
+        await db
+            .Groups.AsNoTracking()
             .Include(g => g.GroupRoles)
             .ThenInclude(gr => gr.Role)
             .FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
@@ -22,8 +22,8 @@ public class GroupRepository(IdentityDbContext db) : IGroupRepository
     }
 
     public async Task<List<Group>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        await db.Groups
-            .AsNoTracking()
+        await db
+            .Groups.AsNoTracking()
             .Include(g => g.GroupRoles)
             .ThenInclude(gr => gr.Role)
             .ToListAsync(cancellationToken);

@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using ProductService.Application.Commands;
 using ProductService.Application.Queries;
 
@@ -33,28 +33,44 @@ public class ProductsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("sku/{sku}")]
-    public async Task<IActionResult> GetBySKU(string sku, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetBySKU(
+        string sku,
+        CancellationToken cancellationToken = default
+    )
     {
         var result = await _mediator.Send(new GetProductBySKUQuery(sku), cancellationToken);
         return result != null ? Ok(result) : NotFound();
     }
 
     [HttpGet("category/{category}")]
-    public async Task<IActionResult> GetByCategory(string category, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetByCategory(
+        string category,
+        CancellationToken cancellationToken = default
+    )
     {
-        var result = await _mediator.Send(new GetProductsByCategoryQuery(category), cancellationToken);
+        var result = await _mediator.Send(
+            new GetProductsByCategoryQuery(category),
+            cancellationToken
+        );
         return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateProductCommand command, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Create(
+        [FromBody] CreateProductCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         var id = await _mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Update(
+        Guid id,
+        [FromBody] UpdateProductCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         if (id != command.Id)
             return BadRequest("ID mismatch");

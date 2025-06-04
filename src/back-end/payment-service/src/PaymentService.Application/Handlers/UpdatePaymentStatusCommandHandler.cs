@@ -3,11 +3,15 @@ using PaymentService.Domain.Repositories;
 
 namespace PaymentService.Application.Handlers;
 
-public class UpdatePaymentStatusCommandHandler(IPaymentRepository repo) : IRequestHandler<UpdatePaymentStatusCommand, Unit>
+public class UpdatePaymentStatusCommandHandler(IPaymentRepository repo)
+    : IRequestHandler<UpdatePaymentStatusCommand, Unit>
 {
     private readonly IPaymentRepository _repo = repo;
 
-    public async Task<Unit> Handle(UpdatePaymentStatusCommand request, CancellationToken cancellationToken = default)
+    public async Task<Unit> Handle(
+        UpdatePaymentStatusCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 

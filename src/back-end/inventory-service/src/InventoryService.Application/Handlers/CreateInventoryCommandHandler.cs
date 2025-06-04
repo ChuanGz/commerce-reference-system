@@ -4,11 +4,15 @@ using InventoryService.Domain.Repositories;
 
 namespace InventoryService.Application.Handlers;
 
-public class CreateInventoryCommandHandler(IInventoryRepository repo) : IRequestHandler<CreateInventoryCommand, Guid>
+public class CreateInventoryCommandHandler(IInventoryRepository repo)
+    : IRequestHandler<CreateInventoryCommand, Guid>
 {
     private readonly IInventoryRepository _repo = repo;
 
-    public async Task<Guid> Handle(CreateInventoryCommand request, CancellationToken cancellationToken = default)
+    public async Task<Guid> Handle(
+        CreateInventoryCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -19,7 +23,7 @@ public class CreateInventoryCommandHandler(IInventoryRepository repo) : IRequest
             Quantity = request.Quantity,
             ReservedQuantity = 0,
             Location = request.Location.Trim(),
-            LastUpdated = DateTime.UtcNow
+            LastUpdated = DateTime.UtcNow,
         };
 
         await _repo.AddAsync(inventory, cancellationToken);

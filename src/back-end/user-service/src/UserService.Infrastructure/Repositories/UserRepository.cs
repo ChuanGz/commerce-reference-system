@@ -39,7 +39,10 @@ public class UserRepository(UserDbContext context) : IUserRepository
         }
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken = default)
+    public async Task<bool> AnyAsync(
+        Expression<Func<User, bool>> predicate,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Users.AnyAsync(predicate, cancellationToken);
     }

@@ -8,16 +8,16 @@ public class RoleRepository(IdentityDbContext db) : IRoleRepository
 {
     public async Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await db.Roles
-            .Include(r => r.RolePermissions)
+        return await db
+            .Roles.Include(r => r.RolePermissions)
             .ThenInclude(rp => rp.Permission)
             .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
     }
 
     public async Task<List<Role>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await db.Roles
-            .Include(r => r.RolePermissions)
+        return await db
+            .Roles.Include(r => r.RolePermissions)
             .ThenInclude(rp => rp.Permission)
             .ToListAsync(cancellationToken);
     }
@@ -45,7 +45,11 @@ public class RoleRepository(IdentityDbContext db) : IRoleRepository
         return await db.Roles.AnyAsync(r => r.Id == id, cancellationToken);
     }
 
-    public async Task<bool> HasPermissionAsync(Guid roleId, Guid permissionId, CancellationToken cancellationToken = default)
+    public async Task<bool> HasPermissionAsync(
+        Guid roleId,
+        Guid permissionId,
+        CancellationToken cancellationToken = default
+    )
     {
         return await db.RolePermissions.AnyAsync(
             rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
@@ -53,13 +57,20 @@ public class RoleRepository(IdentityDbContext db) : IRoleRepository
         );
     }
 
-    public async Task AssignPermissionAsync(RolePermission rolePermission, CancellationToken cancellationToken = default)
+    public async Task AssignPermissionAsync(
+        RolePermission rolePermission,
+        CancellationToken cancellationToken = default
+    )
     {
         db.RolePermissions.Add(rolePermission);
         await db.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> RevokePermissionAsync(Guid roleId, Guid permissionId, CancellationToken cancellationToken = default)
+    public async Task<bool> RevokePermissionAsync(
+        Guid roleId,
+        Guid permissionId,
+        CancellationToken cancellationToken = default
+    )
     {
         var existing = await db.RolePermissions.FirstOrDefaultAsync(
             rp => rp.RoleId == roleId && rp.PermissionId == permissionId,
