@@ -2,13 +2,14 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using ProductService.API.Middlewares;
 using ProductService.Application.Behaviors;
 using ProductService.Application.Handlers;
 using ProductService.Application.Validators;
 using ProductService.Domain.Repositories;
 using ProductService.Infrastructure.Persistence;
 using ProductService.Infrastructure.Repositories;
+using SharedCommon.Middlewares;
+using SharedCommon.ValidationBehavior;
 
 var builder = WebApplication.CreateBuilder(args);
 

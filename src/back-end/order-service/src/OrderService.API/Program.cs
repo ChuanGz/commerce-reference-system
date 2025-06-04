@@ -2,7 +2,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using OrderService.API.Middlewares;
 using OrderService.Application.Behaviors;
 using OrderService.Application.Handlers;
 using OrderService.Application.Interfaces;
@@ -11,6 +10,8 @@ using OrderService.Domain.Repositories;
 using OrderService.Infrastructure.Persistence;
 using OrderService.Infrastructure.Repositories;
 using OrderService.Infrastructure.Services;
+using SharedCommon.Middlewares;
+using SharedCommon.ValidationBehavior;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,14 +1,16 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
-using IdentityService.API.Middlewares;
 using IdentityService.Application.Constants;
 using IdentityService.Application.Handlers;
 using IdentityService.Application.Interfaces;
 using IdentityService.Domain.Repositories;
 using IdentityService.Infrastructure.Repositories;
 using IdentityService.Infrastructure.Services;
+using ISharedCommon.Middlewares;
 using MediatR;
 using Microsoft.OpenApi.Models;
+using SharedCommon.Middlewares;
+using SharedCommon.ValidationBehavior;
 using UserService.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);

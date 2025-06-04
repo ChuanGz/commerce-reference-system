@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace AShared.Common.Behaviors;
+namespace SharedCommon.ValidationBehavior;
 
 public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>

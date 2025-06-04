@@ -1,5 +1,4 @@
 using FluentValidation;
-using InventoryService.API.Middlewares;
 using InventoryService.Application.Behaviors;
 using InventoryService.Application.Handlers;
 using InventoryService.Application.Validators;
@@ -9,6 +8,8 @@ using InventoryService.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SharedCommon.Middlewares;
+using SharedCommon.ValidationBehavior;
 
 var builder = WebApplication.CreateBuilder(args);
 

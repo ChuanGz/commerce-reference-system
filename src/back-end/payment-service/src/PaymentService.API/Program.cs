@@ -2,7 +2,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using PaymentService.API.Middlewares;
 using PaymentService.Application.Behaviors;
 using PaymentService.Application.Handlers;
 using PaymentService.Application.Interfaces;
@@ -11,6 +10,8 @@ using PaymentService.Domain.Repositories;
 using PaymentService.Infrastructure.Persistence;
 using PaymentService.Infrastructure.Repositories;
 using PaymentService.Infrastructure.Services;
+using SharedCommon.Middlewares;
+using SharedCommon.ValidationBehavior;
 
 var builder = WebApplication.CreateBuilder(args);
 

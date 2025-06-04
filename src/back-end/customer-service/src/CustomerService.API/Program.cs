@@ -1,4 +1,3 @@
-using CustomerService.API.Middlewares;
 using CustomerService.Application.Handlers;
 using CustomerService.Domain.Repositories;
 using CustomerService.Infrastructure.Persistence;
@@ -7,6 +6,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SharedCommon.Middlewares;
+using SharedCommon.ValidationBehavior;
 
 var builder = WebApplication.CreateBuilder(args);
 
