@@ -1,23 +1,27 @@
-using Microsoft.OpenApi.Models;
-using OrderService.API.Middlewares;
-using OrderService.Application.Handlers;
-using OrderService.Infrastructure.Persistence;
-using OrderService.Infrastructure.Repositories;
-using OrderService.Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using OrderService.API.Middlewares;
 using OrderService.Application.Behaviors;
+using OrderService.Application.Handlers;
 using OrderService.Application.Validators;
+using OrderService.Domain.Repositories;
+using OrderService.Infrastructure.Persistence;
+using OrderService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+builder
+    .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: true
+    )
     .AddEnvironmentVariables();
 
 builder.Services.AddControllers();
@@ -29,7 +33,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICustomerServiceClient, CustomerServiceClient>();
@@ -63,7 +68,8 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-var isDev = app.Environment.IsDevelopment()
+var isDev =
+    app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
     || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
 
@@ -80,7 +86,8 @@ app.MapHealthChecks("/health");
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    DatabaseInitializer.InitializeAsync(app.Services, logger, isDev)
+    DatabaseInitializer
+        .InitializeAsync(app.Services, logger, isDev)
         .ContinueWith(task =>
         {
             if (task.Exception != null)

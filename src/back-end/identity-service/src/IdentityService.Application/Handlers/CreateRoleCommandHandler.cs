@@ -1,4 +1,4 @@
-﻿using IdentityService.Application.Commands;
+using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
@@ -13,9 +13,9 @@ public class CreateRoleCommandHandler(IRoleRepository roleRepository)
         {
             Id = Guid.NewGuid(),
             Name = command.Name,
-            RolePermissions = command.PermissionIds
-                .Select(pid => new RolePermission { PermissionId = pid })
-                .ToList()
+            RolePermissions = command
+                .PermissionIds.Select(pid => new RolePermission { PermissionId = pid })
+                .ToList(),
         };
 
         await roleRepository.AddAsync(role, cancellationToken);

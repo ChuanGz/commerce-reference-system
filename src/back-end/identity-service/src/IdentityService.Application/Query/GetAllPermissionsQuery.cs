@@ -1,4 +1,4 @@
-﻿using IdentityService.Application.Models;
+using IdentityService.Application.Models;
 
 namespace IdentityService.Application.Queries;
 

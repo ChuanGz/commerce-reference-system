@@ -1,0 +1,44 @@
+# Core formatting
+[*.cs]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+charset = utf-8
+trim_trailing_whitespace = true
+
+# Naming rules (like ESLint camelCase)
+dotnet_naming_rule.interface_should_be_prefixed_with_i.severity = warning
+dotnet_naming_rule.interface_should_be_prefixed_with_i.symbols = interface
+dotnet_naming_rule.interface_should_be_prefixed_with_i.style = prefix_i
+
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = *
+dotnet_naming_symbols.interface.required_modifiers = *
+
+dotnet_naming_style.prefix_i.required_prefix = I
+dotnet_naming_style.prefix_i.capitalization = pascal_case
+
+# Style rules
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+
+# Nullability
+dotnet_diagnostic.CA1062.severity = warning  # Validate arguments of public methods
+dotnet_diagnostic.CS8618.severity = warning  # Nullable warning
+
+# Unused usings
+dotnet_diagnostic.RemoveUnnecessaryUsings.severity = warning
+
+# Dead code detection
+dotnet_diagnostic.IDE0051.severity = warning # Private member is unused
+dotnet_diagnostic.IDE0060.severity = warning # Parameter is unused
+
+# Prefer explicit types
+dotnet_style_prefer_var_for_built_in_types = false:suggestion
+dotnet_style_prefer_var_when_type_is_apparent = false:suggestion
+dotnet_style_prefer_var_elsewhere = false:suggestion
+
+# Expression preferences
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion

@@ -1,7 +1,7 @@
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 using CustomerService.Application.Commands;
 using CustomerService.Domain.Repositories;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
 {
@@ -11,40 +11,50 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
     {
         _scopeFactory = scopeFactory;
 
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("UserId is required.");
+        RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
 
         RuleFor(x => x.FirstName)
-            .NotEmpty().WithMessage("FirstName is required.")
+            .NotEmpty()
+            .WithMessage("FirstName is required.")
             .MinimumLength(2)
             .MaximumLength(50);
 
         RuleFor(x => x.LastName)
-            .NotEmpty().WithMessage("LastName is required.")
+            .NotEmpty()
+            .WithMessage("LastName is required.")
             .MinimumLength(2)
             .MaximumLength(50);
 
         RuleFor(x => x.Phone)
-            .NotEmpty().WithMessage("Phone is required.")
+            .NotEmpty()
+            .WithMessage("Phone is required.")
             .MinimumLength(10)
             .MaximumLength(20);
 
         RuleFor(x => x.Address)
-            .NotEmpty().WithMessage("Address is required.")
+            .NotEmpty()
+            .WithMessage("Address is required.")
             .MinimumLength(10)
             .MaximumLength(200);
 
-        RuleFor(x => x).CustomAsync(async (command, context, cancellationToken) =>
-        {
-            using var scope = _scopeFactory.CreateScope();
-            var repo = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
+        RuleFor(x => x)
+            .CustomAsync(
+                async (command, context, cancellationToken) =>
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var repo = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
 
-            var userIdExists = await repo.AnyAsync(
-                c => c.UserId == command.UserId,
-                cancellationToken);
+                    var userIdExists = await repo.AnyAsync(
+                        c => c.UserId == command.UserId,
+                        cancellationToken
+                    );
 
-            if (userIdExists)
-                context.AddFailure(nameof(command.UserId), $"Customer with UserId `{command.UserId}` already exists.");
-        });
+                    if (userIdExists)
+                        context.AddFailure(
+                            nameof(command.UserId),
+                            $"Customer with UserId `{command.UserId}` already exists."
+                        );
+                }
+            );
     }
 }

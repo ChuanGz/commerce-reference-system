@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using ProductService.Domain.Entities;
 using ProductService.Domain.Repositories;
 using ProductService.Infrastructure.Persistence;
@@ -20,23 +20,29 @@ public class ProductRepository(ProductDbContext context) : IProductRepository
         return await _context.Products.FindAsync([id], cancellationToken);
     }
 
-    public async Task<Product?> GetBySKUAsync(string sku, CancellationToken cancellationToken = default)
+    public async Task<Product?> GetBySKUAsync(
+        string sku,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Products.FirstOrDefaultAsync(p => p.SKU == sku, cancellationToken);
     }
 
-    public async Task<List<Product>> GetByCategoryAsync(string category, CancellationToken cancellationToken = default)
+    public async Task<List<Product>> GetByCategoryAsync(
+        string category,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Products
-            .Where(p => p.Category == category)
+        return await _context
+            .Products.Where(p => p.Category == category)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Product>> GetActiveProductsAsync(CancellationToken cancellationToken = default)
+    public async Task<List<Product>> GetActiveProductsAsync(
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Products
-            .Where(p => p.IsActive)
-            .ToListAsync(cancellationToken);
+        return await _context.Products.Where(p => p.IsActive).ToListAsync(cancellationToken);
     }
 
     public async Task AddAsync(Product product, CancellationToken cancellationToken = default)
@@ -61,7 +67,10 @@ public class ProductRepository(ProductDbContext context) : IProductRepository
         }
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<Product, bool>> predicate, CancellationToken cancellationToken = default)
+    public async Task<bool> AnyAsync(
+        Expression<Func<Product, bool>> predicate,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Products.AnyAsync(predicate, cancellationToken);
     }

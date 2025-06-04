@@ -1,4 +1,4 @@
-﻿namespace UserService.API.Middlewares;
+namespace UserService.API.Middlewares;
 
 public class ValidationErrorResponse
 {

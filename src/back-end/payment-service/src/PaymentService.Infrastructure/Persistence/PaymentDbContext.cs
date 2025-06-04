@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PaymentService.Domain.Entities;
 using PaymentService.Domain.Constants;
+using PaymentService.Domain.Entities;
 
 namespace PaymentService.Infrastructure.Persistence;
 
@@ -45,7 +45,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 Status = PaymentStatus.Completed,
                 TransactionId = "TXN-ABC123456789",
                 ProcessedAt = DateTime.UtcNow.AddDays(-2),
-                CreatedAt = DateTime.UtcNow.AddDays(-2)
+                CreatedAt = DateTime.UtcNow.AddDays(-2),
             },
             new Payment
             {
@@ -56,7 +56,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 Status = PaymentStatus.Completed,
                 TransactionId = "TXN-DEF987654321",
                 ProcessedAt = DateTime.UtcNow.AddDays(-1),
-                CreatedAt = DateTime.UtcNow.AddDays(-1)
+                CreatedAt = DateTime.UtcNow.AddDays(-1),
             },
             new Payment
             {
@@ -67,7 +67,7 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 Status = PaymentStatus.Pending,
                 TransactionId = null,
                 ProcessedAt = DateTime.UtcNow,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
             },
             new Payment
             {
@@ -78,8 +78,8 @@ public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbCo
                 Status = PaymentStatus.Failed,
                 TransactionId = null,
                 ProcessedAt = DateTime.UtcNow.AddHours(-6),
-                CreatedAt = DateTime.UtcNow.AddHours(-6)
-            }
+                CreatedAt = DateTime.UtcNow.AddHours(-6),
+            },
         };
 
         modelBuilder.Entity<Payment>().HasData(payments);

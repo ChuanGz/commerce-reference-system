@@ -1,6 +1,3 @@
-﻿namespace InventoryService.Application;
+namespace InventoryService.Application;
 
-public class Class1
-{
-
-}
+public class Class1 { }

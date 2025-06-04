@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -12,13 +12,12 @@ namespace UserService.Infrastructure.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Users",
-                columns: table =>
-                    new
-                    {
-                        Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                        Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                        Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                    },
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
@@ -33,57 +32,57 @@ namespace UserService.Infrastructure.Migrations
                     {
                         new Guid("00000000-0000-0000-0000-000000000001"),
                         "user001@example.com",
-                        "User Test 001"
+                        "User Test 001",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000002"),
                         "user002@example.com",
-                        "User Test 002"
+                        "User Test 002",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000003"),
                         "user003@example.com",
-                        "User Test 003"
+                        "User Test 003",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000004"),
                         "user004@example.com",
-                        "User Test 004"
+                        "User Test 004",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000005"),
                         "user005@example.com",
-                        "User Test 005"
+                        "User Test 005",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000006"),
                         "user006@example.com",
-                        "User Test 006"
+                        "User Test 006",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000007"),
                         "user007@example.com",
-                        "User Test 007"
+                        "User Test 007",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000008"),
                         "user008@example.com",
-                        "User Test 008"
+                        "User Test 008",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000009"),
                         "user009@example.com",
-                        "User Test 009"
+                        "User Test 009",
                     },
                     {
                         new Guid("00000000-0000-0000-0000-000000000010"),
                         "user010@example.com",
-                        "User Test 010"
+                        "User Test 010",
                     },
-
                 }
             );
         }
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(name: "Users");

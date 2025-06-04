@@ -1,4 +1,5 @@
 namespace IdentityService.Domain.Entities;
+
 public class UserGroup
 {
     public Guid UserId { get; set; }

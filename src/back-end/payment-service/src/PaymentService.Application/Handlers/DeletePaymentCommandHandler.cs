@@ -3,11 +3,15 @@ using PaymentService.Domain.Repositories;
 
 namespace PaymentService.Application.Handlers;
 
-public class DeletePaymentCommandHandler(IPaymentRepository repo) : IRequestHandler<DeletePaymentCommand, Unit>
+public class DeletePaymentCommandHandler(IPaymentRepository repo)
+    : IRequestHandler<DeletePaymentCommand, Unit>
 {
     private readonly IPaymentRepository _repo = repo;
 
-    public async Task<Unit> Handle(DeletePaymentCommand request, CancellationToken cancellationToken = default)
+    public async Task<Unit> Handle(
+        DeletePaymentCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 

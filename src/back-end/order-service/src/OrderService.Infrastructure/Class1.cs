@@ -1,6 +1,3 @@
-﻿namespace OrderService.Infrastructure;
+namespace OrderService.Infrastructure;
 
-public class Class1
-{
-
-}
+public class Class1 { }

@@ -15,14 +15,23 @@ public class CustomerRepository(CustomerDbContext context) : ICustomerRepository
         return await _context.Customers.ToListAsync(cancellationToken);
     }
 
-    public async Task<Customer?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Customer?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Customers.FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<Customer?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<Customer?> GetByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId, cancellationToken);
+        return await _context.Customers.FirstOrDefaultAsync(
+            c => c.UserId == userId,
+            cancellationToken
+        );
     }
 
     public async Task AddAsync(Customer customer, CancellationToken cancellationToken = default)
@@ -47,7 +56,10 @@ public class CustomerRepository(CustomerDbContext context) : ICustomerRepository
         }
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<Customer, bool>> predicate, CancellationToken cancellationToken = default)
+    public async Task<bool> AnyAsync(
+        Expression<Func<Customer, bool>> predicate,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Customers.AnyAsync(predicate, cancellationToken);
     }

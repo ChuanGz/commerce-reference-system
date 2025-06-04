@@ -11,5 +11,8 @@ public interface ICustomerRepository
     Task AddAsync(Customer customer, CancellationToken cancellationToken = default);
     Task UpdateAsync(Customer customer, CancellationToken cancellationToken = default);
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<bool> AnyAsync(Expression<Func<Customer, bool>> predicate, CancellationToken cancellationToken = default);
+    Task<bool> AnyAsync(
+        Expression<Func<Customer, bool>> predicate,
+        CancellationToken cancellationToken = default
+    );
 }

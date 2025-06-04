@@ -4,11 +4,15 @@ using ProductService.Domain.Repositories;
 
 namespace ProductService.Application.Handlers;
 
-public class CreateProductCommandHandler(IProductRepository repo) : IRequestHandler<CreateProductCommand, Guid>
+public class CreateProductCommandHandler(IProductRepository repo)
+    : IRequestHandler<CreateProductCommand, Guid>
 {
     private readonly IProductRepository _repo = repo;
 
-    public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken = default)
+    public async Task<Guid> Handle(
+        CreateProductCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -21,7 +25,7 @@ public class CreateProductCommandHandler(IProductRepository repo) : IRequestHand
             Category = request.Category.Trim(),
             SKU = request.SKU.Trim().ToUpper(),
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
         };
 
         await _repo.AddAsync(product, cancellationToken);

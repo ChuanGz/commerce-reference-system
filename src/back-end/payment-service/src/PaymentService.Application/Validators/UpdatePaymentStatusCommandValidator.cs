@@ -8,14 +8,21 @@ public class UpdatePaymentStatusCommandValidator : AbstractValidator<UpdatePayme
 {
     public UpdatePaymentStatusCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty()
-            .WithMessage("Id is required");
+        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
 
         RuleFor(x => x.Status)
             .NotEmpty()
             .WithMessage("Status is required")
-            .Must(status => new[] { PaymentStatus.Pending, PaymentStatus.Completed, PaymentStatus.Failed, PaymentStatus.Cancelled, PaymentStatus.Refunded }.Contains(status))
+            .Must(status =>
+                new[]
+                {
+                    PaymentStatus.Pending,
+                    PaymentStatus.Completed,
+                    PaymentStatus.Failed,
+                    PaymentStatus.Cancelled,
+                    PaymentStatus.Refunded,
+                }.Contains(status)
+            )
             .WithMessage("Status must be one of: Pending, Completed, Failed, Cancelled, Refunded");
 
         RuleFor(x => x.TransactionId)

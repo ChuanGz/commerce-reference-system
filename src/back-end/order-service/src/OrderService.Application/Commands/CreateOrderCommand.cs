@@ -8,8 +8,4 @@ public record CreateOrderCommand(
     List<OrderItemDto> OrderItems
 ) : IRequest<Guid>;
 
-public record OrderItemDto(
-    Guid ProductId,
-    int Quantity,
-    decimal UnitPrice
-);
+public record OrderItemDto(Guid ProductId, int Quantity, decimal UnitPrice);

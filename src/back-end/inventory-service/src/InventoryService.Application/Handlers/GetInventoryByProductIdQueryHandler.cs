@@ -4,11 +4,15 @@ using InventoryService.Domain.Repositories;
 
 namespace InventoryService.Application.Handlers;
 
-public class GetInventoryByProductIdQueryHandler(IInventoryRepository repo) : IRequestHandler<GetInventoryByProductIdQuery, Inventory?>
+public class GetInventoryByProductIdQueryHandler(IInventoryRepository repo)
+    : IRequestHandler<GetInventoryByProductIdQuery, Inventory?>
 {
     private readonly IInventoryRepository _repo = repo;
 
-    public async Task<Inventory?> Handle(GetInventoryByProductIdQuery request, CancellationToken cancellationToken = default)
+    public async Task<Inventory?> Handle(
+        GetInventoryByProductIdQuery request,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _repo.GetByProductIdAsync(request.ProductId, cancellationToken);
     }

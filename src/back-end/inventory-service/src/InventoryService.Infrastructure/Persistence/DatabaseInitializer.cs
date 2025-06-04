@@ -6,7 +6,11 @@ namespace InventoryService.Infrastructure.Persistence;
 
 public static class DatabaseInitializer
 {
-    public static async Task InitializeAsync(IServiceProvider serviceProvider, ILogger logger, bool isDevelopment)
+    public static async Task InitializeAsync(
+        IServiceProvider serviceProvider,
+        ILogger logger,
+        bool isDevelopment
+    )
     {
         try
         {
@@ -26,7 +30,10 @@ public static class DatabaseInitializer
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while initializing the database for Inventory Service");
+            logger.LogError(
+                ex,
+                "An error occurred while initializing the database for Inventory Service"
+            );
             throw;
         }
     }

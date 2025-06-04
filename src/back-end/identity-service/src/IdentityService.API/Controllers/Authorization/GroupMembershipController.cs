@@ -12,7 +12,9 @@ namespace IdentityService.API.Controllers.Authorization;
 public class PermissionsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<PermissionDto>>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<ActionResult<List<PermissionDto>>> GetAll(
+        CancellationToken cancellationToken = default
+    )
     {
         var permissions = await mediator.Send(new GetAllPermissionsQuery(), cancellationToken);
         return Ok(permissions);

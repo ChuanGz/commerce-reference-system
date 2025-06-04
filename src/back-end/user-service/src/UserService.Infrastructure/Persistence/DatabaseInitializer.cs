@@ -5,7 +5,11 @@ namespace UserService.Infrastructure.Persistence
 {
     public static class DatabaseInitializer
     {
-        public static async Task InitializeAsync(IServiceProvider services, ILogger logger, bool isDevelopmentEnv)
+        public static async Task InitializeAsync(
+            IServiceProvider services,
+            ILogger logger,
+            bool isDevelopmentEnv
+        )
         {
             await using var scope = services.CreateAsyncScope();
             var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();

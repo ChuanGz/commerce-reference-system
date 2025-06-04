@@ -1,4 +1,4 @@
-﻿namespace IdentityService.Application.Constants;
+namespace IdentityService.Application.Constants;
 
 public static class AuthorizationPolicies
 {
@@ -22,6 +22,6 @@ public static class AuthorizationPolicies
         [CanViewRole] = "CAN_VIEW_ROLE",
         [CanEditRole] = "CAN_EDIT_ROLE",
         [CanDeleteRole] = "CAN_DELETE_ROLE",
-        [CanAssignRolePermission] = "CAN_ASSIGN_ROLE_PERMISSION"
+        [CanAssignRolePermission] = "CAN_ASSIGN_ROLE_PERMISSION",
     };
 }

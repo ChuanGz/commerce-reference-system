@@ -3,11 +3,15 @@ using ProductService.Domain.Repositories;
 
 namespace ProductService.Application.Handlers;
 
-public class UpdateProductCommandHandler(IProductRepository repo) : IRequestHandler<UpdateProductCommand, Unit>
+public class UpdateProductCommandHandler(IProductRepository repo)
+    : IRequestHandler<UpdateProductCommand, Unit>
 {
     private readonly IProductRepository _repo = repo;
 
-    public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken = default)
+    public async Task<Unit> Handle(
+        UpdateProductCommand request,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(request);
 

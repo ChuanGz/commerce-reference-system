@@ -1,4 +1,4 @@
-﻿using IdentityService.Domain.Entities;
+using IdentityService.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -6,7 +6,11 @@ namespace IdentityService.Infrastructure.Persistence;
 
 public static class DatabaseInitializer
 {
-    public static async Task InitializeAsync(IServiceProvider serviceProvider, ILogger logger, bool isDevelopment)
+    public static async Task InitializeAsync(
+        IServiceProvider serviceProvider,
+        ILogger logger,
+        bool isDevelopment
+    )
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
@@ -34,17 +38,39 @@ public static class DatabaseInitializer
 
         var permissions = new[]
         {
-            new Permission { Id = Guid.NewGuid(), Key = "CAN_VIEW_GROUP", Description = "View group information" },
-            new Permission { Id = Guid.NewGuid(), Key = "CAN_APPROVE_GROUP", Description = "Approve group requests" },
-            new Permission { Id = Guid.NewGuid(), Key = "CAN_EDIT_GROUP", Description = "Edit group details" },
-            new Permission { Id = Guid.NewGuid(), Key = "CAN_DELETE_GROUP", Description = "Delete groups" },
+            new Permission
+            {
+                Id = Guid.NewGuid(),
+                Key = "CAN_VIEW_GROUP",
+                Description = "View group information",
+            },
+            new Permission
+            {
+                Id = Guid.NewGuid(),
+                Key = "CAN_APPROVE_GROUP",
+                Description = "Approve group requests",
+            },
+            new Permission
+            {
+                Id = Guid.NewGuid(),
+                Key = "CAN_EDIT_GROUP",
+                Description = "Edit group details",
+            },
+            new Permission
+            {
+                Id = Guid.NewGuid(),
+                Key = "CAN_DELETE_GROUP",
+                Description = "Delete groups",
+            },
         };
 
         var adminRole = new Role
         {
             Id = Guid.NewGuid(),
             Name = "Admin",
-            RolePermissions = permissions.Select(p => new RolePermission { Permission = p }).ToList()
+            RolePermissions = permissions
+                .Select(p => new RolePermission { Permission = p })
+                .ToList(),
         };
 
         var managerRole = new Role
@@ -53,7 +79,8 @@ public static class DatabaseInitializer
             Name = "Manager",
             RolePermissions = permissions
                 .Where(p => p.Key != "CAN_DELETE_GROUP")
-                .Select(p => new RolePermission { Permission = p }).ToList()
+                .Select(p => new RolePermission { Permission = p })
+                .ToList(),
         };
 
         var employeeRole = new Role
@@ -62,7 +89,8 @@ public static class DatabaseInitializer
             Name = "Employee",
             RolePermissions = permissions
                 .Where(p => p.Key == "CAN_VIEW_GROUP")
-                .Select(p => new RolePermission { Permission = p }).ToList()
+                .Select(p => new RolePermission { Permission = p })
+                .ToList(),
         };
 
         var auditorRole = new Role
@@ -71,16 +99,42 @@ public static class DatabaseInitializer
             Name = "Auditor",
             RolePermissions = permissions
                 .Where(p => p.Key == "CAN_VIEW_GROUP")
-                .Select(p => new RolePermission { Permission = p }).ToList()
+                .Select(p => new RolePermission { Permission = p })
+                .ToList(),
         };
 
         var groups = new[]
         {
-            new Group { Id = Guid.NewGuid(), Name = "SystemAdmin", GroupRoles = [new GroupRole { Role = adminRole }] },
-            new Group { Id = Guid.NewGuid(), Name = "BOD", GroupRoles = [new GroupRole { Role = managerRole }] },
-            new Group { Id = Guid.NewGuid(), Name = "Customer", GroupRoles = [new GroupRole { Role = employeeRole }] },
-            new Group { Id = Guid.NewGuid(), Name = "Employee", GroupRoles = [new GroupRole { Role = employeeRole }] },
-            new Group { Id = Guid.NewGuid(), Name = "Auditor", GroupRoles = [new GroupRole { Role = auditorRole }] },
+            new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "SystemAdmin",
+                GroupRoles = [new GroupRole { Role = adminRole }],
+            },
+            new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "BOD",
+                GroupRoles = [new GroupRole { Role = managerRole }],
+            },
+            new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "Customer",
+                GroupRoles = [new GroupRole { Role = employeeRole }],
+            },
+            new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "Employee",
+                GroupRoles = [new GroupRole { Role = employeeRole }],
+            },
+            new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "Auditor",
+                GroupRoles = [new GroupRole { Role = auditorRole }],
+            },
         };
 
         var users = new List<User>();
@@ -91,13 +145,15 @@ public static class DatabaseInitializer
 
             for (int i = 1; i <= userCount; i++)
             {
-                users.Add(new User
-                {
-                    Id = Guid.NewGuid(),
-                    Username = $"{group.Name.ToLower()}_{i}",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Abcd@@1234"),
-                    UserGroups = [new UserGroup { Group = group }]
-                });
+                users.Add(
+                    new User
+                    {
+                        Id = Guid.NewGuid(),
+                        Username = $"{group.Name.ToLower()}_{i}",
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("Abcd@@1234"),
+                        UserGroups = [new UserGroup { Group = group }],
+                    }
+                );
             }
         }
 

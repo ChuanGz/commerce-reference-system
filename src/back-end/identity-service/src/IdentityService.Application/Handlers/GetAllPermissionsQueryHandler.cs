@@ -1,10 +1,11 @@
-﻿using IdentityService.Application.Models;
+using IdentityService.Application.Models;
 using IdentityService.Application.Queries;
 using IdentityService.Domain.Repositories;
 
 namespace IdentityService.Application.Handlers;
 
-public class GetAllPermissionsQueryHandler : IRequestHandler<GetAllPermissionsQuery, List<PermissionDto>>
+public class GetAllPermissionsQueryHandler
+    : IRequestHandler<GetAllPermissionsQuery, List<PermissionDto>>
 {
     private readonly IPermissionRepository _permissionRepository;
 
@@ -13,7 +14,10 @@ public class GetAllPermissionsQueryHandler : IRequestHandler<GetAllPermissionsQu
         _permissionRepository = permissionRepository;
     }
 
-    public async Task<List<PermissionDto>> Handle(GetAllPermissionsQuery request, CancellationToken cancellationToken)
+    public async Task<List<PermissionDto>> Handle(
+        GetAllPermissionsQuery request,
+        CancellationToken cancellationToken
+    )
     {
         var permissions = await _permissionRepository.GetAllAsync(cancellationToken);
 
@@ -22,7 +26,7 @@ public class GetAllPermissionsQueryHandler : IRequestHandler<GetAllPermissionsQu
             {
                 Id = p.Id,
                 Key = p.Key,
-                Description = p.Description
+                Description = p.Description,
             })
             .ToList();
     }

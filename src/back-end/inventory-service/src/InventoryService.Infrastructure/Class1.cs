@@ -1,6 +1,3 @@
-﻿namespace InventoryService.Infrastructure;
+namespace InventoryService.Infrastructure;
 
-public class Class1
-{
-
-}
+public class Class1 { }

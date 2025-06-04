@@ -18,8 +18,8 @@ public class UserRepository : IUserRepository
         CancellationToken cancellationToken = default
     )
     {
-        return await _db.Users
-            .Include(u => u.UserGroups)
+        return await _db
+            .Users.Include(u => u.UserGroups)
             .ThenInclude(ug => ug.Group)
             .ThenInclude(g => g.GroupRoles)
             .ThenInclude(gr => gr.Role)
@@ -30,8 +30,8 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _db.Users
-            .Include(u => u.UserGroups)
+        return await _db
+            .Users.Include(u => u.UserGroups)
             .ThenInclude(ug => ug.Group)
             .ThenInclude(g => g.GroupRoles)
             .ThenInclude(gr => gr.Role)

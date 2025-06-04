@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using PaymentService.Domain.Entities;
 using PaymentService.Domain.Repositories;
 using PaymentService.Infrastructure.Persistence;
@@ -20,27 +20,45 @@ public class PaymentRepository(PaymentDbContext context) : IPaymentRepository
         return await _context.Payments.FindAsync([id], cancellationToken);
     }
 
-    public async Task<Payment?> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)
+    public async Task<Payment?> GetByOrderIdAsync(
+        Guid orderId,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId, cancellationToken);
+        return await _context.Payments.FirstOrDefaultAsync(
+            p => p.OrderId == orderId,
+            cancellationToken
+        );
     }
 
-    public async Task<Payment?> GetByTransactionIdAsync(string transactionId, CancellationToken cancellationToken = default)
+    public async Task<Payment?> GetByTransactionIdAsync(
+        string transactionId,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Payments.FirstOrDefaultAsync(p => p.TransactionId == transactionId, cancellationToken);
+        return await _context.Payments.FirstOrDefaultAsync(
+            p => p.TransactionId == transactionId,
+            cancellationToken
+        );
     }
 
-    public async Task<List<Payment>> GetByStatusAsync(string status, CancellationToken cancellationToken = default)
+    public async Task<List<Payment>> GetByStatusAsync(
+        string status,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Payments
-            .Where(p => p.Status == status)
+        return await _context
+            .Payments.Where(p => p.Status == status)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Payment>> GetByPaymentMethodAsync(string paymentMethod, CancellationToken cancellationToken = default)
+    public async Task<List<Payment>> GetByPaymentMethodAsync(
+        string paymentMethod,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Payments
-            .Where(p => p.PaymentMethod == paymentMethod)
+        return await _context
+            .Payments.Where(p => p.PaymentMethod == paymentMethod)
             .ToListAsync(cancellationToken);
     }
 
@@ -66,7 +84,10 @@ public class PaymentRepository(PaymentDbContext context) : IPaymentRepository
         }
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<Payment, bool>> predicate, CancellationToken cancellationToken = default)
+    public async Task<bool> AnyAsync(
+        Expression<Func<Payment, bool>> predicate,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Payments.AnyAsync(predicate, cancellationToken);
     }

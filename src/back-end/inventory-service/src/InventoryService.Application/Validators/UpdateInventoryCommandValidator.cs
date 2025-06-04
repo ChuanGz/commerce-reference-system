@@ -7,9 +7,7 @@ public class UpdateInventoryCommandValidator : AbstractValidator<UpdateInventory
 {
     public UpdateInventoryCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty()
-            .WithMessage("Id is required");
+        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
 
         RuleFor(x => x.Quantity)
             .GreaterThanOrEqualTo(0)

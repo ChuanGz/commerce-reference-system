@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using InventoryService.Domain.Entities;
 using InventoryService.Domain.Repositories;
 using InventoryService.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryService.Infrastructure.Repositories;
 
@@ -15,14 +15,23 @@ public class InventoryRepository(InventoryDbContext context) : IInventoryReposit
         return await _context.Inventories.ToListAsync(cancellationToken);
     }
 
-    public async Task<Inventory?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Inventory?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Inventories.FindAsync([id], cancellationToken);
     }
 
-    public async Task<Inventory?> GetByProductIdAsync(Guid productId, CancellationToken cancellationToken = default)
+    public async Task<Inventory?> GetByProductIdAsync(
+        Guid productId,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Inventories.FirstOrDefaultAsync(i => i.ProductId == productId, cancellationToken);
+        return await _context.Inventories.FirstOrDefaultAsync(
+            i => i.ProductId == productId,
+            cancellationToken
+        );
     }
 
     public async Task AddAsync(Inventory inventory, CancellationToken cancellationToken = default)
@@ -31,7 +40,10 @@ public class InventoryRepository(InventoryDbContext context) : IInventoryReposit
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(Inventory inventory, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(
+        Inventory inventory,
+        CancellationToken cancellationToken = default
+    )
     {
         _context.Inventories.Update(inventory);
         await _context.SaveChangesAsync(cancellationToken);
@@ -47,12 +59,19 @@ public class InventoryRepository(InventoryDbContext context) : IInventoryReposit
         }
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<Inventory, bool>> predicate, CancellationToken cancellationToken = default)
+    public async Task<bool> AnyAsync(
+        Expression<Func<Inventory, bool>> predicate,
+        CancellationToken cancellationToken = default
+    )
     {
         return await _context.Inventories.AnyAsync(predicate, cancellationToken);
     }
 
-    public async Task ReserveQuantityAsync(Guid productId, int quantity, CancellationToken cancellationToken = default)
+    public async Task ReserveQuantityAsync(
+        Guid productId,
+        int quantity,
+        CancellationToken cancellationToken = default
+    )
     {
         var inventory = await GetByProductIdAsync(productId, cancellationToken);
         if (inventory != null && inventory.Quantity >= quantity)
@@ -67,7 +86,11 @@ public class InventoryRepository(InventoryDbContext context) : IInventoryReposit
         }
     }
 
-    public async Task ReleaseReservedQuantityAsync(Guid productId, int quantity, CancellationToken cancellationToken = default)
+    public async Task ReleaseReservedQuantityAsync(
+        Guid productId,
+        int quantity,
+        CancellationToken cancellationToken = default
+    )
     {
         var inventory = await GetByProductIdAsync(productId, cancellationToken);
         if (inventory != null && inventory.ReservedQuantity >= quantity)

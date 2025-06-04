@@ -1,6 +1,3 @@
-﻿namespace ProductService.Application;
+namespace ProductService.Application;
 
-public class Class1
-{
-
-}
+public class Class1 { }

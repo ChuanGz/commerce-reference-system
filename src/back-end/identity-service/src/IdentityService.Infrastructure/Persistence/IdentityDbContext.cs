@@ -4,7 +4,6 @@ namespace IdentityService.Infrastructure.Persistence;
 
 public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : DbContext(options)
 {
-
     public DbSet<User> Users => Set<User>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Role> Roles => Set<Role>();
@@ -13,6 +12,7 @@ public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : Db
     public DbSet<UserGroup> UserGroups => Set<UserGroup>();
     public DbSet<GroupRole> GroupRoles => Set<GroupRole>();
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
