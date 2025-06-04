@@ -10,10 +10,11 @@ public class GetProductsByCategoryQueryHandler(IProductRepository repo)
     private readonly IProductRepository _repo = repo;
 
     public async Task<List<Product>> Handle(
-        GetProductsByCategoryQuery request,
+        GetProductsByCategoryQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByCategoryAsync(request.Category, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await _repo.GetByCategoryAsync(query.Category, cancellationToken);
     }
 }

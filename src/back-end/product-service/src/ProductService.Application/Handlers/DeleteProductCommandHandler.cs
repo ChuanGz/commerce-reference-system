@@ -9,13 +9,13 @@ public class DeleteProductCommandHandler(IProductRepository repo)
     private readonly IProductRepository _repo = repo;
 
     public async Task<Unit> Handle(
-        DeleteProductCommand request,
+        DeleteProductCommand command,
         CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(command);
 
-        await _repo.DeleteAsync(request.Id, cancellationToken);
+        await _repo.DeleteAsync(command.Id, cancellationToken);
         return Unit.Value;
     }
 }

@@ -8,6 +8,8 @@ public class DeleteRoleCommandHandler(IRoleRepository roleRepository)
 {
     public async Task<bool> Handle(DeleteRoleCommand command, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var role = await roleRepository.GetByIdAsync(command.Id, cancellationToken);
         if (role is null)
             return false;

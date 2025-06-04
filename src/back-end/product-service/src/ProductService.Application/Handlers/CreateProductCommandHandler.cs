@@ -10,20 +10,20 @@ public class CreateProductCommandHandler(IProductRepository repo)
     private readonly IProductRepository _repo = repo;
 
     public async Task<Guid> Handle(
-        CreateProductCommand request,
+        CreateProductCommand command,
         CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(command);
 
         var product = new Product
         {
             Id = Guid.NewGuid(),
-            Name = request.Name.Trim(),
-            Description = request.Description.Trim(),
-            Price = request.Price,
-            Category = request.Category.Trim(),
-            SKU = request.SKU.Trim().ToUpper(),
+            Name = command.Name.Trim(),
+            Description = command.Description.Trim(),
+            Price = command.Price,
+            Category = command.Category.Trim(),
+            SKU = command.SKU.Trim().ToUpper(),
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
         };

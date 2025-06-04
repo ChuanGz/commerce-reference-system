@@ -10,10 +10,11 @@ public class GetProductByIdQueryHandler(IProductRepository repo)
     private readonly IProductRepository _repo = repo;
 
     public async Task<Product?> Handle(
-        GetProductByIdQuery request,
+        GetProductByIdQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByIdAsync(request.Id, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await _repo.GetByIdAsync(query.Id, cancellationToken);
     }
 }

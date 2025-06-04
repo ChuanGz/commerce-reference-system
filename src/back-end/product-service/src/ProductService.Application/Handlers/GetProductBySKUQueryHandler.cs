@@ -10,10 +10,11 @@ public class GetProductBySKUQueryHandler(IProductRepository repo)
     private readonly IProductRepository _repo = repo;
 
     public async Task<Product?> Handle(
-        GetProductBySKUQuery request,
+        GetProductBySKUQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetBySKUAsync(request.SKU, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await _repo.GetBySKUAsync(query.SKU, cancellationToken);
     }
 }

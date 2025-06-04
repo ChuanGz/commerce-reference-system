@@ -12,6 +12,8 @@ public class AddRolePermissionCommandHandler(IRoleRepository roleRepository)
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var hasPermission = await roleRepository.HasPermissionAsync(
             command.RoleId,
             command.PermissionId,

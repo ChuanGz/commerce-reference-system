@@ -10,10 +10,11 @@ public class GetAllCustomersQueryHandler(ICustomerRepository repo)
     private readonly ICustomerRepository _repo = repo;
 
     public async Task<List<Customer>> Handle(
-        GetAllCustomersQuery request,
+        GetAllCustomersQuery query,
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(query);
         return await _repo.GetAllAsync(cancellationToken);
     }
 }

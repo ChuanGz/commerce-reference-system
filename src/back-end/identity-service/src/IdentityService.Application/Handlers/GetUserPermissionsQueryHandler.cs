@@ -10,16 +10,17 @@ public class GetUserPermissionsQueryHandler(
 ) : IRequestHandler<GetUserPermissionsQuery, IEnumerable<string>>
 {
     public async Task<IEnumerable<string>> Handle(
-        GetUserPermissionsQuery request,
+        GetUserPermissionsQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        logger.LogInformation("Getting permissions for user: {UserId}", request.UserId);
+        ArgumentNullException.ThrowIfNull(query);
+        logger.LogInformation("Getting permissions for user: {UserId}", query.UserId);
 
-        var user = await userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var user = await userRepository.GetByIdAsync(query.UserId, cancellationToken);
         if (user == null)
         {
-            logger.LogWarning("User not found: {UserId}", request.UserId);
+            logger.LogWarning("User not found: {UserId}", query.UserId);
             return [];
         }
 

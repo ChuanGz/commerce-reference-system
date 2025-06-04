@@ -8,10 +8,11 @@ public class GetAllUserGroupsQueryHandler(IUserRepository userRepository)
     : IRequestHandler<GetAllUserGroupsQuery, List<UserGroupResponseDto>>
 {
     public async Task<List<UserGroupResponseDto>> Handle(
-        GetAllUserGroupsQuery request,
+        GetAllUserGroupsQuery query,
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(query);
         var users = await userRepository.GetAllAsync(cancellationToken);
 
         return users
