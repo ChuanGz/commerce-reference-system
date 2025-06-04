@@ -10,10 +10,11 @@ public class GetPaymentByIdQueryHandler(IPaymentRepository repo)
     private readonly IPaymentRepository _repo = repo;
 
     public async Task<Payment?> Handle(
-        GetPaymentByIdQuery request,
+        GetPaymentByIdQuery query,
         CancellationToken cancellationToken = default
     )
     {
-        return await _repo.GetByIdAsync(request.Id, cancellationToken);
+        ArgumentNullException.ThrowIfNull(query);
+        return await _repo.GetByIdAsync(query.Id, cancellationToken);
     }
 }
