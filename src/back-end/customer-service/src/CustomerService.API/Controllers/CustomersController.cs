@@ -1,5 +1,7 @@
 using CustomerService.Application.Commands;
 using CustomerService.Application.Queries;
+using MediatR;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerService.API.Controllers;
