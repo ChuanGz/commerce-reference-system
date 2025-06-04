@@ -1,11 +1,16 @@
 using FluentValidation;
+
+
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PaymentService.API.Middlewares;
 using PaymentService.Application.Behaviors;
-using PaymentService.Application.Handlers;
 using PaymentService.Application.Validators;
+using PaymentService.Application.Handlers;
+
+using PaymentService.Application.Interfaces;
+using PaymentService.Infrastructure.Services;
 using PaymentService.Domain.Repositories;
 using PaymentService.Infrastructure.Persistence;
 using PaymentService.Infrastructure.Repositories;
