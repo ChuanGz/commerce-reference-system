@@ -20,7 +20,7 @@ public class UserRegistrationCommandHandler(
 
         var customerGroup = await groupRepository.GetByNameAsync("Customer", cancellationToken);
         if (customerGroup is null)
-            throw new InvalidOperationException("Default group not found.");
+            throw new InvalidOperationException(ErrorMessages.DefaultGroupNotFound);
 
         var user = new User
         {

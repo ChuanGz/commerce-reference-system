@@ -6,7 +6,9 @@ namespace UserService.API.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController(IMediator mediator) : ControllerBase
+public class UsersController(
+    IMediator mediator
+) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
