@@ -82,7 +82,7 @@ public class InventoryRepository(InventoryDbContext context) : IInventoryReposit
         }
         else
         {
-            throw new InvalidOperationException("Insufficient inventory to reserve");
+            throw new InvalidOperationException(ErrorMessages.InsufficientInventory);
         }
     }
 
@@ -101,7 +101,7 @@ public class InventoryRepository(InventoryDbContext context) : IInventoryReposit
         }
         else
         {
-            throw new InvalidOperationException("Insufficient reserved quantity to release");
+            throw new InvalidOperationException(ErrorMessages.InsufficientReservedQuantity);
         }
     }
 }

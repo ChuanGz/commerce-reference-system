@@ -10,7 +10,9 @@ namespace IdentityService.API.Controllers.Authorization;
 [ApiController]
 [Route("api/usergroups")]
 [Authorize]
-public class UserGroupController(IMediator mediator) : ControllerBase
+public class UserGroupController(
+    IMediator mediator
+) : ControllerBase
 {
     [Authorize(Policy = "CanViewGroup")]
     [HttpGet]

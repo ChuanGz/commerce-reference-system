@@ -6,7 +6,9 @@ namespace OrderService.API.Controllers;
 
 [ApiController]
 [Route("api/orders")]
-public class OrderPaymentController(IMediator mediator) : ControllerBase
+public class OrderPaymentController(
+    IMediator mediator
+) : ControllerBase
 {
     [HttpPut("{orderId:guid}/payment-status")]
     public async Task<IActionResult> UpdatePaymentStatus(
