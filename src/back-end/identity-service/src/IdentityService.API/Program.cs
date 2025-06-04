@@ -3,13 +3,13 @@ using FluentValidation;
 using IdentityService.API.Middlewares;
 using IdentityService.Application.Constants;
 using IdentityService.Application.Handlers;
+using IdentityService.Application.Interfaces;
 using IdentityService.Domain.Repositories;
 using IdentityService.Infrastructure.Repositories;
+using IdentityService.Infrastructure.Services;
 using MediatR;
 using Microsoft.OpenApi.Models;
 using UserService.Application.Validators;
-using IdentityService.Application.Interfaces;
-using IdentityService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

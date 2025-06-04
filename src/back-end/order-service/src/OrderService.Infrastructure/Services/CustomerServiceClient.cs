@@ -1,29 +1,46 @@
 using System.Text.Json;
-using OrderService.Application.Interfaces;
 using Microsoft.Extensions.Logging;
+using OrderService.Application.Interfaces;
 
 namespace OrderService.Infrastructure.Services;
 
-public class CustomerServiceClient(HttpClient httpClient, ILogger<CustomerServiceClient> logger) : ICustomerServiceClient
+public class CustomerServiceClient(HttpClient httpClient, ILogger<CustomerServiceClient> logger)
+    : ICustomerServiceClient
 {
-    public async Task<CustomerInfo?> GetCustomerAsync(Guid customerId, CancellationToken cancellationToken = default)
+    public async Task<CustomerInfo?> GetCustomerAsync(
+        Guid customerId,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
             logger.LogInformation("Fetching customer info: {CustomerId}", customerId);
-            
-            var response = await httpClient.GetAsync($"api/customers/{customerId}", cancellationToken);
-            
+
+            var response = await httpClient.GetAsync(
+                $"api/customers/{customerId}",
+                cancellationToken
+            );
+
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                var customer = JsonSerializer.Deserialize<CustomerInfo>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                
-                logger.LogInformation("Customer info retrieved successfully: {CustomerId}", customerId);
+                var customer = JsonSerializer.Deserialize<CustomerInfo>(
+                    content,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+
+                logger.LogInformation(
+                    "Customer info retrieved successfully: {CustomerId}",
+                    customerId
+                );
                 return customer;
             }
-            
-            logger.LogWarning("Customer not found: {CustomerId} - Status: {StatusCode}", customerId, response.StatusCode);
+
+            logger.LogWarning(
+                "Customer not found: {CustomerId} - Status: {StatusCode}",
+                customerId,
+                response.StatusCode
+            );
             return null;
         }
         catch (Exception ex)
@@ -33,16 +50,23 @@ public class CustomerServiceClient(HttpClient httpClient, ILogger<CustomerServic
         }
     }
 
-    public async Task<bool> ValidateCustomerAsync(Guid customerId, CancellationToken cancellationToken = default)
+    public async Task<bool> ValidateCustomerAsync(
+        Guid customerId,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
             logger.LogInformation("Validating customer: {CustomerId}", customerId);
-            
+
             var customer = await GetCustomerAsync(customerId, cancellationToken);
             var isValid = customer != null && customer.IsActive;
-            
-            logger.LogInformation("Customer validation result: {CustomerId} - {IsValid}", customerId, isValid);
+
+            logger.LogInformation(
+                "Customer validation result: {CustomerId} - {IsValid}",
+                customerId,
+                isValid
+            );
             return isValid;
         }
         catch (Exception ex)

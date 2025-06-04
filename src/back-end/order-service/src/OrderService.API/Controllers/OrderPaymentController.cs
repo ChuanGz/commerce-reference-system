@@ -9,11 +9,15 @@ namespace OrderService.API.Controllers;
 public class OrderPaymentController(IMediator mediator) : ControllerBase
 {
     [HttpPut("{orderId:guid}/payment-status")]
-    public async Task<IActionResult> UpdatePaymentStatus(Guid orderId, [FromBody] UpdatePaymentStatusRequest request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> UpdatePaymentStatus(
+        Guid orderId,
+        [FromBody] UpdatePaymentStatusRequest request,
+        CancellationToken cancellationToken = default
+    )
     {
         var command = new UpdateOrderPaymentStatusCommand(orderId, request.PaymentStatus);
         var result = await mediator.Send(command, cancellationToken);
-        
+
         return result ? Ok() : NotFound();
     }
 }
