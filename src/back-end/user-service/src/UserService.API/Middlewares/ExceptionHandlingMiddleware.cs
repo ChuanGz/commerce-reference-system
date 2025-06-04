@@ -41,19 +41,21 @@ public class ExceptionHandlingMiddleware(
             ValidationException validationEx => new Dictionary<string, object>
             {
                 ["error"] = "Validation failed",
-                ["details"] = validationEx.Errors.Select(static e => new Dictionary<string, string>
-                {
-                    ["field"] = e.PropertyName,
-                    ["message"] = e.ErrorMessage,
-                }).ToList()
+                ["details"] = validationEx
+                    .Errors.Select(static e => new Dictionary<string, string>
+                    {
+                        ["field"] = e.PropertyName,
+                        ["message"] = e.ErrorMessage,
+                    })
+                    .ToList(),
             },
             InvalidOperationException invalidOpEx => new Dictionary<string, object>
             {
-                ["error"] = invalidOpEx.Message
+                ["error"] = invalidOpEx.Message,
             },
             _ => new Dictionary<string, object>
             {
-                ["error"] = "An error occurred while processing your request"
+                ["error"] = "An error occurred while processing your request",
             },
         };
 

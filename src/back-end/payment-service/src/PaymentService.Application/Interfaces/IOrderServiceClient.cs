@@ -4,7 +4,11 @@ public interface IOrderServiceClient
 {
     Task<OrderInfo?> GetOrderAsync(Guid orderId, CancellationToken cancellationToken = default);
     Task<bool> ValidateOrderAsync(Guid orderId, CancellationToken cancellationToken = default);
-    Task<bool> UpdateOrderPaymentStatusAsync(Guid orderId, string paymentStatus, CancellationToken cancellationToken = default);
+    Task<bool> UpdateOrderPaymentStatusAsync(
+        Guid orderId,
+        string paymentStatus,
+        CancellationToken cancellationToken = default
+    );
 }
 
 public class OrderInfo

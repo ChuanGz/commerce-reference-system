@@ -2,8 +2,14 @@ namespace PaymentService.Application.Interfaces;
 
 public interface ICustomerServiceClient
 {
-    Task<CustomerInfo?> GetCustomerAsync(Guid customerId, CancellationToken cancellationToken = default);
-    Task<bool> ValidateCustomerAsync(Guid customerId, CancellationToken cancellationToken = default);
+    Task<CustomerInfo?> GetCustomerAsync(
+        Guid customerId,
+        CancellationToken cancellationToken = default
+    );
+    Task<bool> ValidateCustomerAsync(
+        Guid customerId,
+        CancellationToken cancellationToken = default
+    );
 }
 
 public class CustomerInfo

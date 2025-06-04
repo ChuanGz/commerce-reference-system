@@ -1,9 +1,12 @@
-using UserService.Application.Commands;
 using Microsoft.Extensions.Logging;
+using UserService.Application.Commands;
 
 namespace UserService.Application.Handlers;
 
-public class CreateUserCommandHandler(IUserRepository repo, ILogger<CreateUserCommandHandler> logger) : IRequestHandler<CreateUserCommand, Guid>
+public class CreateUserCommandHandler(
+    IUserRepository repo,
+    ILogger<CreateUserCommandHandler> logger
+) : IRequestHandler<CreateUserCommand, Guid>
 {
     private readonly IUserRepository _repo = repo;
     private readonly ILogger<CreateUserCommandHandler> _logger = logger;

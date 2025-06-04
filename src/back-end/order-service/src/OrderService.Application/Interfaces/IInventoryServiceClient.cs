@@ -2,10 +2,25 @@ namespace OrderService.Application.Interfaces;
 
 public interface IInventoryServiceClient
 {
-    Task<bool> CheckStockAvailabilityAsync(Guid productId, int quantity, CancellationToken cancellationToken = default);
-    Task<bool> ReserveStockAsync(Guid productId, int quantity, CancellationToken cancellationToken = default);
-    Task<bool> ReleaseStockAsync(Guid productId, int quantity, CancellationToken cancellationToken = default);
-    Task<InventoryInfo?> GetInventoryAsync(Guid productId, CancellationToken cancellationToken = default);
+    Task<bool> CheckStockAvailabilityAsync(
+        Guid productId,
+        int quantity,
+        CancellationToken cancellationToken = default
+    );
+    Task<bool> ReserveStockAsync(
+        Guid productId,
+        int quantity,
+        CancellationToken cancellationToken = default
+    );
+    Task<bool> ReleaseStockAsync(
+        Guid productId,
+        int quantity,
+        CancellationToken cancellationToken = default
+    );
+    Task<InventoryInfo?> GetInventoryAsync(
+        Guid productId,
+        CancellationToken cancellationToken = default
+    );
 }
 
 public class InventoryInfo

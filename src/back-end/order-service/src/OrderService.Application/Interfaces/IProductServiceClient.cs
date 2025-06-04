@@ -2,9 +2,15 @@ namespace OrderService.Application.Interfaces;
 
 public interface IProductServiceClient
 {
-    Task<ProductInfo?> GetProductAsync(Guid productId, CancellationToken cancellationToken = default);
+    Task<ProductInfo?> GetProductAsync(
+        Guid productId,
+        CancellationToken cancellationToken = default
+    );
     Task<bool> ValidateProductAsync(Guid productId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<ProductInfo>> GetProductsAsync(IEnumerable<Guid> productIds, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ProductInfo>> GetProductsAsync(
+        IEnumerable<Guid> productIds,
+        CancellationToken cancellationToken = default
+    );
 }
 
 public class ProductInfo

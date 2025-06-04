@@ -1,24 +1,29 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Models;
 using IdentityService.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace IdentityService.Infrastructure.Services;
 
 public class JwtAuthenticationService(
-    IUserRepository userRepository, 
-    IConfiguration config, 
-    ILogger<JwtAuthenticationService> logger) : IAuthenticationService
+    IUserRepository userRepository,
+    IConfiguration config,
+    ILogger<JwtAuthenticationService> logger
+) : IAuthenticationService
 {
-    public async Task<string?> AuthenticateAsync(string username, string password, CancellationToken cancellationToken = default)
+    public async Task<string?> AuthenticateAsync(
+        string username,
+        string password,
+        CancellationToken cancellationToken = default
+    )
     {
         logger.LogInformation("Attempting authentication for user: {Username}", username);
-        
+
         var user = await userRepository.GetByUsernameAsync(username, cancellationToken);
         if (user is null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
         {
@@ -27,9 +32,9 @@ public class JwtAuthenticationService(
         }
 
         logger.LogInformation("Authentication successful for user: {Username}", username);
-        
-        var permissions = user.UserGroups
-            .SelectMany(ug => ug.Group.GroupRoles)
+
+        var permissions = user
+            .UserGroups.SelectMany(ug => ug.Group.GroupRoles)
             .SelectMany(gr => gr.Role.RolePermissions)
             .Select(rp => rp.Permission.Key)
             .Distinct()
@@ -58,33 +63,42 @@ public class JwtAuthenticationService(
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<TokenValidationResult> ValidateTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<TokenValidationResult> ValidateTokenAsync(
+        string token,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(config["Jwt:Secret"]!);
-            
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidIssuer = config["Jwt:Issuer"],
-                ValidateAudience = true,
-                ValidAudience = config["Jwt:Audience"],
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+
+            tokenHandler.ValidateToken(
+                token,
+                new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = config["Jwt:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = config["Jwt:Audience"],
+                    ClockSkew = TimeSpan.Zero,
+                },
+                out SecurityToken validatedToken
+            );
 
             var jwtToken = (JwtSecurityToken)validatedToken;
             var userId = jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            var permissions = jwtToken.Claims.Where(x => x.Type == "permission").Select(x => x.Value);
+            var permissions = jwtToken
+                .Claims.Where(x => x.Type == "permission")
+                .Select(x => x.Value);
 
             return new TokenValidationResult
             {
                 IsValid = true,
                 UserId = userId,
-                Permissions = permissions
+                Permissions = permissions,
             };
         }
         catch (Exception ex)

@@ -1,9 +1,9 @@
 using Microsoft.OpenApi.Models;
 using UserService.API.Middlewares;
 using UserService.Application.Handlers;
+using UserService.Application.Interfaces;
 using UserService.Infrastructure.Persistence;
 using UserService.Infrastructure.Repositories;
-using UserService.Application.Interfaces;
 using UserService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,13 +37,17 @@ builder.Services.AddScoped<IIdentityServiceClient, IdentityServiceClient>();
 
 builder.Services.AddHttpClient<IIdentityServiceClient, IdentityServiceClient>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["Services:IdentityService:BaseUrl"] ?? "http://localhost:5070");
+    client.BaseAddress = new Uri(
+        builder.Configuration["Services:IdentityService:BaseUrl"] ?? "http://localhost:5070"
+    );
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
 builder.Services.AddHttpClient<IIdentityServiceClient, IdentityServiceClient>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["Services:IdentityService:BaseUrl"] ?? "http://localhost:5070");
+    client.BaseAddress = new Uri(
+        builder.Configuration["Services:IdentityService:BaseUrl"] ?? "http://localhost:5070"
+    );
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 

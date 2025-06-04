@@ -21,8 +21,12 @@ public class ExceptionHandlingMiddleware(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unhandled exception occurred. Request: {Method} {Path}",
-                context.Request.Method, context.Request.Path);
+            _logger.LogError(
+                ex,
+                "An unhandled exception occurred. Request: {Method} {Path}",
+                context.Request.Method,
+                context.Request.Path
+            );
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -36,23 +40,21 @@ public class ExceptionHandlingMiddleware(
             ValidationException validationEx => new
             {
                 error = "Validation failed",
-                details = validationEx.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage })
+                details = validationEx.Errors.Select(e => new
+                {
+                    field = e.PropertyName,
+                    message = e.ErrorMessage,
+                }),
             },
-            InvalidOperationException => new
-            {
-                error = exception.Message
-            },
-            _ => new
-            {
-                error = "An error occurred while processing your request"
-            }
+            InvalidOperationException => new { error = exception.Message },
+            _ => new { error = "An error occurred while processing your request" },
         };
 
         context.Response.StatusCode = exception switch
         {
             ValidationException => (int)HttpStatusCode.BadRequest,
             InvalidOperationException => (int)HttpStatusCode.BadRequest,
-            _ => (int)HttpStatusCode.InternalServerError
+            _ => (int)HttpStatusCode.InternalServerError,
         };
 
         var jsonResponse = JsonSerializer.Serialize(response);

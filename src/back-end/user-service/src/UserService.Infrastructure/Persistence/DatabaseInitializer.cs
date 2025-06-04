@@ -19,7 +19,9 @@ namespace UserService.Infrastructure.Persistence
                 var dbExists = await context.Database.CanConnectAsync();
                 if (dbExists)
                 {
-                    logger.LogInformation("Database exists. Deleting and recreating for development environment...");
+                    logger.LogInformation(
+                        "Database exists. Deleting and recreating for development environment..."
+                    );
                     await context.Database.EnsureDeletedAsync();
                     logger.LogInformation("Database deleted successfully");
                 }
