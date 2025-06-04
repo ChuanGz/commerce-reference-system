@@ -9,6 +9,8 @@ using OrderService.Application.Validators;
 using OrderService.Domain.Repositories;
 using OrderService.Infrastructure.Persistence;
 using OrderService.Infrastructure.Repositories;
+using OrderService.Application.Interfaces;
+using OrderService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

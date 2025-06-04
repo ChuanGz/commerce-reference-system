@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Application.Commands;
 using PaymentService.Application.Queries;
+using PaymentService.Domain.Constants;
 
 namespace PaymentService.API.Controllers;
 
