@@ -17,7 +17,7 @@ namespace UserService.Infrastructure.Repositories
             CancellationToken cancellationToken = default
         )
         {
-            return await _context.Users.FindAsync(new object[] { id }, cancellationToken);
+            return await _context.Users.FindAsync([id], cancellationToken);
         }
 
         public async Task AddAsync(User user, CancellationToken cancellationToken = default)
@@ -34,7 +34,7 @@ namespace UserService.Infrastructure.Repositories
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var user = await _context.Users.FindAsync(new object[] { id }, cancellationToken);
+            var user = await _context.Users.FindAsync([id], cancellationToken);
             if (user != null)
             {
                 _context.Users.Remove(user);
