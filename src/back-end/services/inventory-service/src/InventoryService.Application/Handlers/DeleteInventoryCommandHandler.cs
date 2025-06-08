@@ -1,19 +1,20 @@
 using InventoryService.Application.Commands;
 using InventoryService.Domain.Repositories;
 
-namespace InventoryService.Application.Handlers;
-
-public class DeleteInventoryCommandHandler(IInventoryRepository repo)
-    : IRequestHandler<DeleteInventoryCommand, Unit>
+namespace InventoryService.Application.Handlers
 {
-    public async Task<Unit> Handle(
-        DeleteInventoryCommand request,
-        CancellationToken cancellationToken = default
-    )
+    public class DeleteInventoryCommandHandler(IInventoryRepository repo)
+        : IRequestHandler<DeleteInventoryCommand, Unit>
     {
-        ArgumentNullException.ThrowIfNull(request);
+        public async Task<Unit> Handle(
+            DeleteInventoryCommand request,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(request);
 
-        await repo.DeleteAsync(request.Id, cancellationToken);
-        return Unit.Value;
+            await repo.DeleteAsync(request.Id, cancellationToken);
+            return Unit.Value;
+        }
     }
 }

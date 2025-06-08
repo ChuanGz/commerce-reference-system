@@ -1,24 +1,25 @@
 using FluentValidation;
 using OrderService.Application.Commands;
 
-namespace OrderService.Application.Validators;
-
-public class UpdateOrderStatusCommandValidator : AbstractValidator<UpdateOrderStatusCommand>
+namespace OrderService.Application.Validators
 {
-    public UpdateOrderStatusCommandValidator()
+    public class UpdateOrderStatusCommandValidator : AbstractValidator<UpdateOrderStatusCommand>
     {
-        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
+        public UpdateOrderStatusCommandValidator()
+        {
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
 
-        RuleFor(x => x.Status)
-            .NotEmpty()
-            .WithMessage("Status is required")
-            .Must(status =>
-                new[] { "Pending", "Processing", "Shipped", "Delivered", "Cancelled" }.Contains(
-                    status
+            RuleFor(x => x.Status)
+                .NotEmpty()
+                .WithMessage("Status is required")
+                .Must(status =>
+                    new[] { "Pending", "Processing", "Shipped", "Delivered", "Cancelled" }.Contains(
+                        status
+                    )
                 )
-            )
-            .WithMessage(
-                "Status must be one of: Pending, Processing, Shipped, Delivered, Cancelled"
-            );
+                .WithMessage(
+                    "Status must be one of: Pending, Processing, Shipped, Delivered, Cancelled"
+                );
+        }
     }
 }

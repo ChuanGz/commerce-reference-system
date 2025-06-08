@@ -3,84 +3,94 @@ using CustomerService.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CustomerService.API.Controllers;
-
-[ApiController]
-[Route("api/customers")]
-public class CustomersController(IMediator mediator) : ControllerBase
+namespace CustomerService.API.Controllers
 {
-    [HttpGet]
-    public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
-        Ok(await mediator.Send(new GetAllCustomersQuery(), cancellationToken));
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken = default)
+    [ApiController]
+    [Route("api/customers")]
+    public class CustomersController(IMediator mediator) : ControllerBase
     {
-        var customer = await mediator.Send(new GetCustomerByIdQuery(id), cancellationToken);
+        [HttpGet]
+        public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
+            Ok(await mediator.Send(new GetAllCustomersQuery(), cancellationToken));
 
-        if (customer == null)
-            return NotFound();
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(
+            Guid id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var customer = await mediator.Send(new GetCustomerByIdQuery(id), cancellationToken);
 
-        return Ok(customer);
-    }
+            if (customer == null)
+                return NotFound();
 
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetByUserId(
-        Guid userId,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var customer = await mediator.Send(new GetCustomerByUserIdQuery(userId), cancellationToken);
+            return Ok(customer);
+        }
 
-        if (customer == null)
-            return NotFound();
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetByUserId(
+            Guid userId,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var customer = await mediator.Send(
+                new GetCustomerByUserIdQuery(userId),
+                cancellationToken
+            );
 
-        return Ok(customer);
-    }
+            if (customer == null)
+                return NotFound();
 
-    [HttpPost]
-    public async Task<IActionResult> Create(
-        [FromBody] CreateCustomerCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var customerId = await mediator.Send(command, cancellationToken);
+            return Ok(customer);
+        }
 
-        return CreatedAtAction(nameof(GetById), new { id = customerId }, command);
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create(
+            [FromBody] CreateCustomerCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var customerId = await mediator.Send(command, cancellationToken);
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(
-        Guid id,
-        [FromBody] UpdateCustomerCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        ArgumentNullException.ThrowIfNull(command, nameof(command));
-        var updatedCommand = new UpdateCustomerCommand(
-            id,
-            command.FirstName,
-            command.LastName,
-            command.Phone,
-            command.Address
-        );
+            return CreatedAtAction(nameof(GetById), new { id = customerId }, command);
+        }
 
-        var result = await mediator.Send(updatedCommand, cancellationToken);
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromBody] UpdateCustomerCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(command, nameof(command));
+            var updatedCommand = new UpdateCustomerCommand(
+                id,
+                command.FirstName,
+                command.LastName,
+                command.Phone,
+                command.Address
+            );
 
-        if (!result.Equals(Unit.Value))
-            return NotFound();
+            var result = await mediator.Send(updatedCommand, cancellationToken);
 
-        return NoContent();
-    }
+            if (!result.Equals(Unit.Value))
+                return NotFound();
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken = default)
-    {
-        var result = await mediator.Send(new DeleteCustomerCommand(id), cancellationToken);
+            return NoContent();
+        }
 
-        if (!result.Equals(Unit.Value))
-            return NotFound();
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(
+            Guid id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var result = await mediator.Send(new DeleteCustomerCommand(id), cancellationToken);
 
-        return NoContent();
+            if (!result.Equals(Unit.Value))
+                return NotFound();
+
+            return NoContent();
+        }
     }
 }

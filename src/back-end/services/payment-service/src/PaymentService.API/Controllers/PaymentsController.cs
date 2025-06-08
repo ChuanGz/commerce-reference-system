@@ -1,87 +1,102 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Application.Commands;
 using PaymentService.Application.Queries;
 using PaymentService.Domain.Constants;
 
-namespace PaymentService.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class PaymentsController(IMediator mediator) : ControllerBase
+namespace PaymentService.API.Controllers
 {
-    private readonly IMediator _mediator = mediator;
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PaymentsController(IMediator mediator) : ControllerBase
     {
-        var result = await _mediator.Send(new GetAllPaymentsQuery(), cancellationToken);
-        return Ok(result);
-    }
+        private readonly IMediator _mediator = mediator;
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken = default)
-    {
-        var result = await _mediator.Send(new GetPaymentByIdQuery(id), cancellationToken);
-        return result != null ? Ok(result) : NotFound();
-    }
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(new GetAllPaymentsQuery(), cancellationToken);
+            return Ok(result);
+        }
 
-    [HttpGet("order/{orderId:guid}")]
-    public async Task<IActionResult> GetByOrderId(
-        Guid orderId,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var result = await _mediator.Send(new GetPaymentByOrderIdQuery(orderId), cancellationToken);
-        return result != null ? Ok(result) : NotFound();
-    }
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(
+            Guid id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var result = await _mediator.Send(new GetPaymentByIdQuery(id), cancellationToken);
+            return result != null ? Ok(result) : NotFound();
+        }
 
-    [HttpGet("status/{status}")]
-    public async Task<IActionResult> GetByStatus(
-        string status,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var result = await _mediator.Send(new GetPaymentsByStatusQuery(status), cancellationToken);
-        return Ok(result);
-    }
+        [HttpGet("order/{orderId:guid}")]
+        public async Task<IActionResult> GetByOrderId(
+            Guid orderId,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var result = await _mediator.Send(
+                new GetPaymentByOrderIdQuery(orderId),
+                cancellationToken
+            );
+            return result != null ? Ok(result) : NotFound();
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(
-        [FromBody] CreatePaymentCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var id = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
-    }
+        [HttpGet("status/{status}")]
+        public async Task<IActionResult> GetByStatus(
+            string status,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var result = await _mediator.Send(
+                new GetPaymentsByStatusQuery(status),
+                cancellationToken
+            );
+            return Ok(result);
+        }
 
-    [HttpPut("{id:guid}/status")]
-    public async Task<IActionResult> UpdateStatus(
-        Guid id,
-        [FromBody] UpdatePaymentStatusCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        ArgumentNullException.ThrowIfNull(command, nameof(command));
-        if (id != command.Id)
-            return BadRequest(ErrorMessages.IdMismatch);
+        [HttpPost]
+        public async Task<IActionResult> Create(
+            [FromBody] CreatePaymentCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var id = await _mediator.Send(command, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        }
 
-        await _mediator.Send(command, cancellationToken);
-        return NoContent();
-    }
+        [HttpPut("{id:guid}/status")]
+        public async Task<IActionResult> UpdateStatus(
+            Guid id,
+            [FromBody] UpdatePaymentStatusCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(command, nameof(command));
+            if (id != command.Id)
+                return BadRequest(ErrorMessages.IdMismatch);
 
-    [HttpPost("{id:guid}/process")]
-    public async Task<IActionResult> Process(Guid id, CancellationToken cancellationToken = default)
-    {
-        await _mediator.Send(new ProcessPaymentCommand(id), cancellationToken);
-        return Ok();
-    }
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken = default)
-    {
-        await _mediator.Send(new DeletePaymentCommand(id), cancellationToken);
-        return NoContent();
+        [HttpPost("{id:guid}/process")]
+        public async Task<IActionResult> Process(
+            Guid id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            await _mediator.Send(new ProcessPaymentCommand(id), cancellationToken);
+            return Ok();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(
+            Guid id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            await _mediator.Send(new DeletePaymentCommand(id), cancellationToken);
+            return NoContent();
+        }
     }
 }

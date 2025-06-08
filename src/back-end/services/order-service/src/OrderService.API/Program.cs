@@ -1,7 +1,17 @@
+using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using OrderService.Application.Handlers;
+using OrderService.Application.Validators;
+using OrderService.Domain.Repositories;
+using OrderService.Infrastructure.Persistence;
+using OrderService.Infrastructure.Repositories;
+using Platform.Core.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+builder.UseDefaultLogging();
 
 builder
     .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -24,10 +34,14 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<ICustomerServiceClient, CustomerServiceClient>();
-builder.Services.AddScoped<IProductServiceClient, ProductServiceClient>();
-builder.Services.AddScoped<IInventoryServiceClient, InventoryServiceClient>();
+builder
+    .Services.AddScoped<IOrderRepository, OrderRepository>()
+    .AddScoped<ICustomerServiceClient, CustomerServiceClient>()
+    .AddScoped<IProductServiceClient, ProductServiceClient>()
+    .AddScoped<IInventoryServiceClient, InventoryServiceClient>()
+    .AddPlatformMediatR(typeof(CreateOrderCommandHandler).Assembly)
+    .AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>()
+    .AddPlatformValidation();
 
 builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client =>
 {
@@ -53,21 +67,15 @@ builder.Services.AddHttpClient<IInventoryServiceClient, InventoryServiceClient>(
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-builder.Services.AddMediatR(typeof(CreateOrderCommandHandler).Assembly);
-
-builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UsePlatformExceptionHandling();
 
-var isDev =
+if (
     app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
-    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
-
-if (isDev)
+    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase)
+)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -81,7 +89,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
     DatabaseInitializer
-        .InitializeAsync(app.Services, logger, isDev)
+        .InitializeAsync(app.Services, logger, app.Environment.IsDevelopment())
         .ContinueWith(task =>
         {
             if (task.Exception != null)

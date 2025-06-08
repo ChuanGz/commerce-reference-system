@@ -1,23 +1,24 @@
 using InventoryService.Application.Commands;
 using InventoryService.Domain.Repositories;
 
-namespace InventoryService.Application.Handlers;
-
-public class ReleaseReservedInventoryCommandHandler(IInventoryRepository repo)
-    : IRequestHandler<ReleaseReservedInventoryCommand, Unit>
+namespace InventoryService.Application.Handlers
 {
-    public async Task<Unit> Handle(
-        ReleaseReservedInventoryCommand request,
-        CancellationToken cancellationToken = default
-    )
+    public class ReleaseReservedInventoryCommandHandler(IInventoryRepository repo)
+        : IRequestHandler<ReleaseReservedInventoryCommand, Unit>
     {
-        ArgumentNullException.ThrowIfNull(request);
+        public async Task<Unit> Handle(
+            ReleaseReservedInventoryCommand request,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(request);
 
-        await repo.ReleaseReservedQuantityAsync(
-            request.ProductId,
-            request.Quantity,
-            cancellationToken
-        );
-        return Unit.Value;
+            await repo.ReleaseReservedQuantityAsync(
+                request.ProductId,
+                request.Quantity,
+                cancellationToken
+            );
+            return Unit.Value;
+        }
     }
 }

@@ -3,31 +3,32 @@ using PaymentService.Domain.Constants;
 using PaymentService.Domain.Entities;
 using PaymentService.Domain.Repositories;
 
-namespace PaymentService.Application.Handlers;
-
-public class CreatePaymentCommandHandler(IPaymentRepository repo)
-    : IRequestHandler<CreatePaymentCommand, Guid>
+namespace PaymentService.Application.Handlers
 {
-    public async Task<Guid> Handle(
-        CreatePaymentCommand request,
-        CancellationToken cancellationToken = default
-    )
+    public class CreatePaymentCommandHandler(IPaymentRepository repo)
+        : IRequestHandler<CreatePaymentCommand, Guid>
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var payment = new Payment
+        public async Task<Guid> Handle(
+            CreatePaymentCommand request,
+            CancellationToken cancellationToken = default
+        )
         {
-            Id = Guid.NewGuid(),
-            OrderId = request.OrderId,
-            Amount = request.Amount,
-            PaymentMethod = request.PaymentMethod.Trim(),
-            Status = PaymentStatus.Pending,
-            TransactionId = null,
-            ProcessedAt = DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow,
-        };
+            ArgumentNullException.ThrowIfNull(request);
 
-        await repo.AddAsync(payment, cancellationToken);
-        return payment.Id;
+            var payment = new Payment
+            {
+                Id = Guid.NewGuid(),
+                OrderId = request.OrderId,
+                Amount = request.Amount,
+                PaymentMethod = request.PaymentMethod.Trim(),
+                Status = PaymentStatus.Pending,
+                TransactionId = null,
+                ProcessedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
+            };
+
+            await repo.AddAsync(payment, cancellationToken);
+            return payment.Id;
+        }
     }
 }

@@ -1,13 +1,17 @@
 using UserService.Application.Queries;
 
-namespace UserService.Application.Handlers;
-
-public class GetUserByIdQueryHandler(IUserRepository repo)
-    : IRequestHandler<GetUserByIdQuery, User?>
+namespace UserService.Application.Handlers
 {
-    public Task<User?> Handle(GetUserByIdQuery query, CancellationToken cancellationToken = default)
+    public class GetUserByIdQueryHandler(IUserRepository repo)
+        : IRequestHandler<GetUserByIdQuery, User?>
     {
-        ArgumentNullException.ThrowIfNull(query);
-        return repo.GetByIdAsync(query.Id, cancellationToken);
+        public Task<User?> Handle(
+            GetUserByIdQuery query,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            return repo.GetByIdAsync(query.Id, cancellationToken);
+        }
     }
 }

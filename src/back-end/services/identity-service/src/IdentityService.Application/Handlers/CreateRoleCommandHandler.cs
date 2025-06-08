@@ -2,25 +2,29 @@ using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers;
-
-public class CreateRoleCommandHandler(IRoleRepository roleRepository)
-    : IRequestHandler<CreateRoleCommand, Guid>
+namespace IdentityService.Application.Handlers
 {
-    public async Task<Guid> Handle(CreateRoleCommand command, CancellationToken cancellationToken)
+    public class CreateRoleCommandHandler(IRoleRepository roleRepository)
+        : IRequestHandler<CreateRoleCommand, Guid>
     {
-        ArgumentNullException.ThrowIfNull(command);
-
-        var role = new Role
+        public async Task<Guid> Handle(
+            CreateRoleCommand command,
+            CancellationToken cancellationToken
+        )
         {
-            Id = Guid.NewGuid(),
-            Name = command.Name,
-            RolePermissions = command
-                .PermissionIds.Select(pid => new RolePermission { PermissionId = pid })
-                .ToList(),
-        };
+            ArgumentNullException.ThrowIfNull(command);
 
-        await roleRepository.AddAsync(role, cancellationToken);
-        return role.Id;
+            var role = new Role
+            {
+                Id = Guid.NewGuid(),
+                Name = command.Name,
+                RolePermissions = command
+                    .PermissionIds.Select(pid => new RolePermission { PermissionId = pid })
+                    .ToList(),
+            };
+
+            await roleRepository.AddAsync(role, cancellationToken);
+            return role.Id;
+        }
     }
 }

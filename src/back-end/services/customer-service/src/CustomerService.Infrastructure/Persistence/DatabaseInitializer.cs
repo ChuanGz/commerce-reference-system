@@ -2,39 +2,40 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace CustomerService.Infrastructure.Persistence;
-
-public static class DatabaseInitializer
+namespace CustomerService.Infrastructure.Persistence
 {
-    public static async Task InitializeAsync(
-        IServiceProvider serviceProvider,
-        ILogger logger,
-        bool isDevelopment
-    )
+    public static class DatabaseInitializer
     {
-        using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
+        public static async Task InitializeAsync(
+            IServiceProvider serviceProvider,
+            ILogger logger,
+            bool isDevelopment
+        )
+        {
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
 
-        try
-        {
-            if (isDevelopment)
+            try
             {
-                await context.Database.EnsureCreatedAsync();
-                logger.LogInformation("Database ensured created for Customer Service");
+                if (isDevelopment)
+                {
+                    await context.Database.EnsureCreatedAsync();
+                    logger.LogInformation("Database ensured created for Customer Service");
+                }
+                else
+                {
+                    await context.Database.MigrateAsync();
+                    logger.LogInformation("Database migrated for Customer Service");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await context.Database.MigrateAsync();
-                logger.LogInformation("Database migrated for Customer Service");
+                logger.LogError(
+                    ex,
+                    "An error occurred while initializing the database for Customer Service"
+                );
+                throw;
             }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(
-                ex,
-                "An error occurred while initializing the database for Customer Service"
-            );
-            throw;
         }
     }
 }
