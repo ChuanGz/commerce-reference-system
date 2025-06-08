@@ -4,5 +4,4 @@ global using FluentValidation;
 global using MediatR;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
-global using Platform.Core.Validation;
 global using UserService.Domain.Repositories;
