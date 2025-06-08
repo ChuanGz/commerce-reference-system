@@ -2,34 +2,35 @@ using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers;
-
-public class AssignUserToGroupCommandHandler(IUserGroupRepository userGroupRepository)
-    : IRequestHandler<AssignUserToGroupCommand, bool>
+namespace IdentityService.Application.Handlers
 {
-    public async Task<bool> Handle(
-        AssignUserToGroupCommand command,
-        CancellationToken cancellationToken
-    )
+    public class AssignUserToGroupCommandHandler(IUserGroupRepository userGroupRepository)
+        : IRequestHandler<AssignUserToGroupCommand, bool>
     {
-        ArgumentNullException.ThrowIfNull(command);
-
-        var exists = await userGroupRepository.GetAsync(
-            command.UserId,
-            command.GroupId,
-            cancellationToken
-        );
-        if (exists is not null)
-            return false;
-
-        var userGroup = new UserGroup
+        public async Task<bool> Handle(
+            AssignUserToGroupCommand command,
+            CancellationToken cancellationToken
+        )
         {
-            UserId = command.UserId,
-            GroupId = command.GroupId,
-            IsApproved = false,
-        };
+            ArgumentNullException.ThrowIfNull(command);
 
-        await userGroupRepository.AddAsync(userGroup, cancellationToken);
-        return true;
+            var exists = await userGroupRepository.GetAsync(
+                command.UserId,
+                command.GroupId,
+                cancellationToken
+            );
+            if (exists is not null)
+                return false;
+
+            var userGroup = new UserGroup
+            {
+                UserId = command.UserId,
+                GroupId = command.GroupId,
+                IsApproved = false,
+            };
+
+            await userGroupRepository.AddAsync(userGroup, cancellationToken);
+            return true;
+        }
     }
 }

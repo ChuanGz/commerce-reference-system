@@ -1,27 +1,28 @@
 using IdentityService.Application.Queries;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers;
-
-public class GetPermissionsByRoleQueryHandler(IRoleRepository roleRepository)
-    : IRequestHandler<GetPermissionsByRoleQuery, List<RolePermissionDto>>
+namespace IdentityService.Application.Handlers
 {
-    public async Task<List<RolePermissionDto>> Handle(
-        GetPermissionsByRoleQuery query,
-        CancellationToken cancellationToken
-    )
+    public class GetPermissionsByRoleQueryHandler(IRoleRepository roleRepository)
+        : IRequestHandler<GetPermissionsByRoleQuery, List<RolePermissionDto>>
     {
-        ArgumentNullException.ThrowIfNull(query);
-        var role = await roleRepository.GetByIdAsync(query.RoleId, cancellationToken);
-        if (role is null || role.RolePermissions is null)
-            return [];
+        public async Task<List<RolePermissionDto>> Handle(
+            GetPermissionsByRoleQuery query,
+            CancellationToken cancellationToken
+        )
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            var role = await roleRepository.GetByIdAsync(query.RoleId, cancellationToken);
+            if (role is null || role.RolePermissions is null)
+                return [];
 
-        return role
-            .RolePermissions.Select(rp => new RolePermissionDto(
-                rp.PermissionId,
-                rp.Permission?.Key ?? string.Empty,
-                rp.Permission?.Description
-            ))
-            .ToList();
+            return role
+                .RolePermissions.Select(rp => new RolePermissionDto(
+                    rp.PermissionId,
+                    rp.Permission?.Key ?? string.Empty,
+                    rp.Permission?.Description
+                ))
+                .ToList();
+        }
     }
 }

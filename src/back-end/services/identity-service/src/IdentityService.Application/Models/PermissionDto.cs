@@ -1,8 +1,9 @@
-namespace IdentityService.Application.Models;
-
-public class PermissionDto
+namespace IdentityService.Application.Models
 {
-    public Guid Id { get; set; }
-    public string Key { get; set; } = default!;
-    public string Description { get; set; } = string.Empty;
+    public class PermissionDto
+    {
+        public Guid Id { get; set; }
+        public string Key { get; set; } = default!;
+        public string Description { get; set; } = string.Empty;
+    }
 }

@@ -2,29 +2,30 @@ using InventoryService.Application.Commands;
 using InventoryService.Domain.Entities;
 using InventoryService.Domain.Repositories;
 
-namespace InventoryService.Application.Handlers;
-
-public class CreateInventoryCommandHandler(IInventoryRepository repo)
-    : IRequestHandler<CreateInventoryCommand, Guid>
+namespace InventoryService.Application.Handlers
 {
-    public async Task<Guid> Handle(
-        CreateInventoryCommand request,
-        CancellationToken cancellationToken = default
-    )
+    public class CreateInventoryCommandHandler(IInventoryRepository repo)
+        : IRequestHandler<CreateInventoryCommand, Guid>
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var inventory = new Inventory
+        public async Task<Guid> Handle(
+            CreateInventoryCommand request,
+            CancellationToken cancellationToken = default
+        )
         {
-            Id = Guid.NewGuid(),
-            ProductId = request.ProductId,
-            Quantity = request.Quantity,
-            ReservedQuantity = 0,
-            Location = request.Location.Trim(),
-            LastUpdated = DateTime.UtcNow,
-        };
+            ArgumentNullException.ThrowIfNull(request);
 
-        await repo.AddAsync(inventory, cancellationToken);
-        return inventory.Id;
+            var inventory = new Inventory
+            {
+                Id = Guid.NewGuid(),
+                ProductId = request.ProductId,
+                Quantity = request.Quantity,
+                ReservedQuantity = 0,
+                Location = request.Location.Trim(),
+                LastUpdated = DateTime.UtcNow,
+            };
+
+            await repo.AddAsync(inventory, cancellationToken);
+            return inventory.Id;
+        }
     }
 }

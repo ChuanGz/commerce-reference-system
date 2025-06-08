@@ -1,3 +1,4 @@
-namespace UserService.Application.Commands;
-
-public record DeleteUserCommand(Guid Id) : IRequest;
+namespace UserService.Application.Commands
+{
+    public record DeleteUserCommand(Guid Id) : IRequest;
+}

@@ -1,20 +1,24 @@
 using IdentityService.Application.Commands;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers;
-
-public class DeleteRoleCommandHandler(IRoleRepository roleRepository)
-    : IRequestHandler<DeleteRoleCommand, bool>
+namespace IdentityService.Application.Handlers
 {
-    public async Task<bool> Handle(DeleteRoleCommand command, CancellationToken cancellationToken)
+    public class DeleteRoleCommandHandler(IRoleRepository roleRepository)
+        : IRequestHandler<DeleteRoleCommand, bool>
     {
-        ArgumentNullException.ThrowIfNull(command);
+        public async Task<bool> Handle(
+            DeleteRoleCommand command,
+            CancellationToken cancellationToken
+        )
+        {
+            ArgumentNullException.ThrowIfNull(command);
 
-        var role = await roleRepository.GetByIdAsync(command.Id, cancellationToken);
-        if (role is null)
-            return false;
+            var role = await roleRepository.GetByIdAsync(command.Id, cancellationToken);
+            if (role is null)
+                return false;
 
-        await roleRepository.DeleteAsync(role, cancellationToken);
-        return true;
+            await roleRepository.DeleteAsync(role, cancellationToken);
+            return true;
+        }
     }
 }

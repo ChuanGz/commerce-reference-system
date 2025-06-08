@@ -1,34 +1,35 @@
 using Microsoft.Extensions.Logging;
 using UserService.Application.Commands;
 
-namespace UserService.Application.Handlers;
-
-public class CreateUserCommandHandler(
-    IUserRepository repo,
-    ILogger<CreateUserCommandHandler> logger
-) : IRequestHandler<CreateUserCommand, Guid>
+namespace UserService.Application.Handlers
 {
-    private readonly ILogger<CreateUserCommandHandler> _logger = logger;
-
-    public async Task<Guid> Handle(
-        CreateUserCommand request,
-        CancellationToken cancellationToken = default
-    )
+    public class CreateUserCommandHandler(
+        IUserRepository repo,
+        ILogger<CreateUserCommandHandler> logger
+    ) : IRequestHandler<CreateUserCommand, Guid>
     {
-        ArgumentNullException.ThrowIfNull(request);
+        private readonly ILogger<CreateUserCommandHandler> _logger = logger;
 
-        _logger.LogInformation("Creating new user with email: {Email}", request.Email);
-
-        var user = new User
+        public async Task<Guid> Handle(
+            CreateUserCommand request,
+            CancellationToken cancellationToken = default
+        )
         {
-            Id = Guid.NewGuid(),
-            Name = request.Name.Trim(),
-            Email = request.Email.Trim(),
-        };
+            ArgumentNullException.ThrowIfNull(request);
 
-        await repo.AddAsync(user, cancellationToken);
+            _logger.LogInformation("Creating new user with email: {Email}", request.Email);
 
-        _logger.LogInformation("Successfully created user with ID: {UserId}", user.Id);
-        return user.Id;
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name.Trim(),
+                Email = request.Email.Trim(),
+            };
+
+            await repo.AddAsync(user, cancellationToken);
+
+            _logger.LogInformation("Successfully created user with ID: {UserId}", user.Id);
+            return user.Id;
+        }
     }
 }

@@ -2,39 +2,40 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ProductService.Infrastructure.Persistence;
-
-public static class DatabaseInitializer
+namespace ProductService.Infrastructure.Persistence
 {
-    public static async Task InitializeAsync(
-        IServiceProvider serviceProvider,
-        ILogger logger,
-        bool isDevelopment
-    )
+    public static class DatabaseInitializer
     {
-        try
+        public static async Task InitializeAsync(
+            IServiceProvider serviceProvider,
+            ILogger logger,
+            bool isDevelopment
+        )
         {
-            using var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+            try
+            {
+                using var scope = serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
-            if (isDevelopment)
-            {
-                await context.Database.EnsureCreatedAsync();
-                logger.LogInformation("Database ensured for Product Service");
+                if (isDevelopment)
+                {
+                    await context.Database.EnsureCreatedAsync();
+                    logger.LogInformation("Database ensured for Product Service");
+                }
+                else
+                {
+                    await context.Database.MigrateAsync();
+                    logger.LogInformation("Database migrated for Product Service");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await context.Database.MigrateAsync();
-                logger.LogInformation("Database migrated for Product Service");
+                logger.LogError(
+                    ex,
+                    "An error occurred while initializing the database for Product Service"
+                );
+                throw;
             }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(
-                ex,
-                "An error occurred while initializing the database for Product Service"
-            );
-            throw;
         }
     }
 }

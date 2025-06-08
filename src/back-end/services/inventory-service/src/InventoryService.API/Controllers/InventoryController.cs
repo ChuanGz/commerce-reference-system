@@ -4,91 +4,98 @@ using InventoryService.Domain.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InventoryService.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class InventoryController(IMediator mediator) : ControllerBase
+namespace InventoryService.API.Controllers
 {
-    private readonly IMediator _mediator = mediator;
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class InventoryController(IMediator mediator) : ControllerBase
     {
-        var result = await _mediator.Send(new GetAllInventoryQuery(), cancellationToken);
-        return Ok(result);
-    }
+        private readonly IMediator _mediator = mediator;
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken = default)
-    {
-        var result = await _mediator.Send(new GetInventoryByIdQuery(id), cancellationToken);
-        return result != null ? Ok(result) : NotFound();
-    }
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(new GetAllInventoryQuery(), cancellationToken);
+            return Ok(result);
+        }
 
-    [HttpGet("product/{productId:guid}")]
-    public async Task<IActionResult> GetByProductId(
-        Guid productId,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var result = await _mediator.Send(
-            new GetInventoryByProductIdQuery(productId),
-            cancellationToken
-        );
-        return result != null ? Ok(result) : NotFound();
-    }
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(
+            Guid id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var result = await _mediator.Send(new GetInventoryByIdQuery(id), cancellationToken);
+            return result != null ? Ok(result) : NotFound();
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(
-        [FromBody] CreateInventoryCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var id = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
-    }
+        [HttpGet("product/{productId:guid}")]
+        public async Task<IActionResult> GetByProductId(
+            Guid productId,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var result = await _mediator.Send(
+                new GetInventoryByProductIdQuery(productId),
+                cancellationToken
+            );
+            return result != null ? Ok(result) : NotFound();
+        }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(
-        Guid id,
-        [FromBody] UpdateInventoryCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        ArgumentNullException.ThrowIfNull(command, nameof(command));
+        [HttpPost]
+        public async Task<IActionResult> Create(
+            [FromBody] CreateInventoryCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var id = await _mediator.Send(command, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        }
 
-        if (id != command.Id)
-            return BadRequest(ErrorMessages.IdMismatch);
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromBody] UpdateInventoryCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-        await _mediator.Send(command, cancellationToken);
-        return NoContent();
-    }
+            if (id != command.Id)
+                return BadRequest(ErrorMessages.IdMismatch);
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken = default)
-    {
-        await _mediator.Send(new DeleteInventoryCommand(id), cancellationToken);
-        return NoContent();
-    }
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
 
-    [HttpPost("reserve")]
-    public async Task<IActionResult> Reserve(
-        [FromBody] ReserveInventoryCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        await _mediator.Send(command, cancellationToken);
-        return Ok();
-    }
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(
+            Guid id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            await _mediator.Send(new DeleteInventoryCommand(id), cancellationToken);
+            return NoContent();
+        }
 
-    [HttpPost("release")]
-    public async Task<IActionResult> ReleaseReserved(
-        [FromBody] ReleaseReservedInventoryCommand command,
-        CancellationToken cancellationToken = default
-    )
-    {
-        await _mediator.Send(command, cancellationToken);
-        return Ok();
+        [HttpPost("reserve")]
+        public async Task<IActionResult> Reserve(
+            [FromBody] ReserveInventoryCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPost("release")]
+        public async Task<IActionResult> ReleaseReserved(
+            [FromBody] ReleaseReservedInventoryCommand command,
+            CancellationToken cancellationToken = default
+        )
+        {
+            await _mediator.Send(command, cancellationToken);
+            return Ok();
+        }
     }
 }

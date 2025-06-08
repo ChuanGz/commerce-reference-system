@@ -1,15 +1,16 @@
-namespace UserService.Application.Interfaces;
-
-public interface IIdentityServiceClient
+namespace UserService.Application.Interfaces
 {
-    Task<bool> ValidateUserAsync(Guid userId, CancellationToken cancellationToken = default);
-    Task<UserPermissions> GetUserPermissionsAsync(
-        Guid userId,
-        CancellationToken cancellationToken = default
-    );
-}
+    public interface IIdentityServiceClient
+    {
+        Task<bool> ValidateUserAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<UserPermissions> GetUserPermissionsAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default
+        );
+    }
 
-public class UserPermissions
-{
-    public IEnumerable<string> Permissions { get; set; } = [];
+    public class UserPermissions
+    {
+        public IEnumerable<string> Permissions { get; set; } = [];
+    }
 }

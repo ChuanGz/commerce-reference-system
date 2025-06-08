@@ -2,17 +2,18 @@ using PaymentService.Application.Queries;
 using PaymentService.Domain.Entities;
 using PaymentService.Domain.Repositories;
 
-namespace PaymentService.Application.Handlers;
-
-public class GetPaymentByIdQueryHandler(IPaymentRepository repo)
-    : IRequestHandler<GetPaymentByIdQuery, Payment?>
+namespace PaymentService.Application.Handlers
 {
-    public async Task<Payment?> Handle(
-        GetPaymentByIdQuery query,
-        CancellationToken cancellationToken = default
-    )
+    public class GetPaymentByIdQueryHandler(IPaymentRepository repo)
+        : IRequestHandler<GetPaymentByIdQuery, Payment?>
     {
-        ArgumentNullException.ThrowIfNull(query);
-        return await repo.GetByIdAsync(query.Id, cancellationToken);
+        public async Task<Payment?> Handle(
+            GetPaymentByIdQuery query,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            return await repo.GetByIdAsync(query.Id, cancellationToken);
+        }
     }
 }

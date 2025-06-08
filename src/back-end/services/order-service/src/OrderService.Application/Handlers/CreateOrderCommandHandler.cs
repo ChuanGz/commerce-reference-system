@@ -2,40 +2,41 @@ using OrderService.Application.Commands;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;
 
-namespace OrderService.Application.Handlers;
-
-public class CreateOrderCommandHandler(IOrderRepository repo)
-    : IRequestHandler<CreateOrderCommand, Guid>
+namespace OrderService.Application.Handlers
 {
-    public async Task<Guid> Handle(
-        CreateOrderCommand command,
-        CancellationToken cancellationToken = default
-    )
+    public class CreateOrderCommandHandler(IOrderRepository repo)
+        : IRequestHandler<CreateOrderCommand, Guid>
     {
-        ArgumentNullException.ThrowIfNull(command);
-
-        var order = new Order
+        public async Task<Guid> Handle(
+            CreateOrderCommand command,
+            CancellationToken cancellationToken = default
+        )
         {
-            Id = Guid.NewGuid(),
-            CustomerId = command.CustomerId,
-            ShippingAddress = command.ShippingAddress.Trim(),
-            Status = "Pending",
-            OrderDate = DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow,
-            OrderItems = command
-                .OrderItems.Select(item => new OrderItem
-                {
-                    Id = Guid.NewGuid(),
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice,
-                })
-                .ToList(),
-        };
+            ArgumentNullException.ThrowIfNull(command);
 
-        order.TotalAmount = order.OrderItems.Sum(item => item.Quantity * item.UnitPrice);
+            var order = new Order
+            {
+                Id = Guid.NewGuid(),
+                CustomerId = command.CustomerId,
+                ShippingAddress = command.ShippingAddress.Trim(),
+                Status = "Pending",
+                OrderDate = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
+                OrderItems = command
+                    .OrderItems.Select(item => new OrderItem
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice,
+                    })
+                    .ToList(),
+            };
 
-        await repo.AddAsync(order, cancellationToken);
-        return order.Id;
+            order.TotalAmount = order.OrderItems.Sum(item => item.Quantity * item.UnitPrice);
+
+            await repo.AddAsync(order, cancellationToken);
+            return order.Id;
+        }
     }
 }

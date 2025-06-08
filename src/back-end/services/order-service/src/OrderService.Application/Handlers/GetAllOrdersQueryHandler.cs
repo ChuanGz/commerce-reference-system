@@ -2,18 +2,19 @@ using OrderService.Application.Queries;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;
 
-namespace OrderService.Application.Handlers;
-
-public class GetAllOrdersQueryHandler(IOrderRepository repo)
-    : IRequestHandler<GetAllOrdersQuery, List<Order>>
+namespace OrderService.Application.Handlers
 {
-    public async Task<List<Order>> Handle(
-        GetAllOrdersQuery query,
-        CancellationToken cancellationToken = default
-    )
+    public class GetAllOrdersQueryHandler(IOrderRepository repo)
+        : IRequestHandler<GetAllOrdersQuery, List<Order>>
     {
-        ArgumentNullException.ThrowIfNull(query);
+        public async Task<List<Order>> Handle(
+            GetAllOrdersQuery query,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(query);
 
-        return await repo.GetAllAsync(cancellationToken);
+            return await repo.GetAllAsync(cancellationToken);
+        }
     }
 }

@@ -1,4 +1,3 @@
 global using Microsoft.EntityFrameworkCore;
-global using Platform.Core.Validation;
 global using UserService.Domain.Entities;
 global using UserService.Domain.Repositories;

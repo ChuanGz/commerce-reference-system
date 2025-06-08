@@ -1,8 +1,9 @@
-namespace IdentityService.Application.Models;
-
-public class RoleDto
+namespace IdentityService.Application.Models
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = default!;
-    public List<Guid> PermissionIds { get; set; } = [];
+    public class RoleDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = default!;
+        public List<Guid> PermissionIds { get; set; } = [];
+    }
 }

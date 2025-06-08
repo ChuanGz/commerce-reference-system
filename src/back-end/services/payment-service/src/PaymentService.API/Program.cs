@@ -9,11 +9,11 @@ using PaymentService.Domain.Repositories;
 using PaymentService.Infrastructure.Persistence;
 using PaymentService.Infrastructure.Repositories;
 using PaymentService.Infrastructure.Services;
+using Platform.Core.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+builder.UseDefaultLogging();
 
 builder
     .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -36,9 +36,13 @@ builder.Services.AddDbContext<PaymentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-builder.Services.AddScoped<ICustomerServiceClient, CustomerServiceClient>();
-builder.Services.AddScoped<IOrderServiceClient, OrderServiceClient>();
+builder
+    .Services.AddScoped<IPaymentRepository, PaymentRepository>()
+    .AddScoped<ICustomerServiceClient, CustomerServiceClient>()
+    .AddScoped<IOrderServiceClient, OrderServiceClient>()
+    .AddPlatformMediatR(typeof(CreatePaymentCommandHandler).Assembly)
+    .AddValidatorsFromAssemblyContaining<CreatePaymentCommandValidator>()
+    .AddPlatformValidation();
 
 builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client =>
 {
@@ -56,21 +60,15 @@ builder.Services.AddHttpClient<IOrderServiceClient, OrderServiceClient>(client =
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-builder.Services.AddMediatR(typeof(CreatePaymentCommandHandler).Assembly);
-
-builder.Services.AddValidatorsFromAssemblyContaining<CreatePaymentCommandValidator>();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UsePlatformExceptionHandling();
 
-var isDev =
+if (
     app.Environment.IsDevelopment()
     || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
-    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
-
-if (isDev)
+    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase)
+)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -84,7 +82,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
     DatabaseInitializer
-        .InitializeAsync(app.Services, logger, isDev)
+        .InitializeAsync(app.Services, logger, app.Environment.IsDevelopment())
         .ContinueWith(task =>
         {
             if (task.Exception != null)

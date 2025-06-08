@@ -3,40 +3,41 @@ using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers;
-
-public class UserRegistrationCommandHandler(
-    IUserRepository userRepository,
-    IGroupRepository groupRepository,
-    IUserGroupRepository userGroupRepository
-) : IRequestHandler<UserRegistrationCommand, UserRegistrationResult?>
+namespace IdentityService.Application.Handlers
 {
-    public async Task<UserRegistrationResult?> Handle(
-        UserRegistrationCommand request,
-        CancellationToken cancellationToken = default
-    )
+    public class UserRegistrationCommandHandler(
+        IUserRepository userRepository,
+        IGroupRepository groupRepository,
+        IUserGroupRepository userGroupRepository
+    ) : IRequestHandler<UserRegistrationCommand, UserRegistrationResult?>
     {
-        ArgumentNullException.ThrowIfNull(request);
-        if (await userRepository.ExistsByUsernameAsync(request.Username, cancellationToken))
-            return null;
-
-        var customerGroup = await groupRepository.GetByNameAsync("Customer", cancellationToken);
-        if (customerGroup is null)
-            throw new InvalidOperationException(ErrorMessages.DefaultGroupNotFound);
-
-        var user = new User
+        public async Task<UserRegistrationResult?> Handle(
+            UserRegistrationCommand request,
+            CancellationToken cancellationToken = default
+        )
         {
-            Id = Guid.NewGuid(),
-            Username = request.Username,
-            PasswordHash = request.Password,
-        };
+            ArgumentNullException.ThrowIfNull(request);
+            if (await userRepository.ExistsByUsernameAsync(request.Username, cancellationToken))
+                return null;
 
-        await userRepository.AddAsync(user, cancellationToken);
+            var customerGroup = await groupRepository.GetByNameAsync("Customer", cancellationToken);
+            if (customerGroup is null)
+                throw new InvalidOperationException(ErrorMessages.DefaultGroupNotFound);
 
-        var userGroup = new UserGroup { UserId = user.Id, GroupId = customerGroup.Id };
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Username = request.Username,
+                PasswordHash = request.Password,
+            };
 
-        await userGroupRepository.AddAsync(userGroup, cancellationToken);
+            await userRepository.AddAsync(user, cancellationToken);
 
-        return new UserRegistrationResult(user.Id, user.Username);
+            var userGroup = new UserGroup { UserId = user.Id, GroupId = customerGroup.Id };
+
+            await userGroupRepository.AddAsync(userGroup, cancellationToken);
+
+            return new UserRegistrationResult(user.Id, user.Username);
+        }
     }
 }

@@ -2,17 +2,18 @@ using ProductService.Application.Queries;
 using ProductService.Domain.Entities;
 using ProductService.Domain.Repositories;
 
-namespace ProductService.Application.Handlers;
-
-public class GetProductsByCategoryQueryHandler(IProductRepository repo)
-    : IRequestHandler<GetProductsByCategoryQuery, List<Product>>
+namespace ProductService.Application.Handlers
 {
-    public async Task<List<Product>> Handle(
-        GetProductsByCategoryQuery query,
-        CancellationToken cancellationToken = default
-    )
+    public class GetProductsByCategoryQueryHandler(IProductRepository repo)
+        : IRequestHandler<GetProductsByCategoryQuery, List<Product>>
     {
-        ArgumentNullException.ThrowIfNull(query);
-        return await repo.GetByCategoryAsync(query.Category, cancellationToken);
+        public async Task<List<Product>> Handle(
+            GetProductsByCategoryQuery query,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            return await repo.GetByCategoryAsync(query.Category, cancellationToken);
+        }
     }
 }

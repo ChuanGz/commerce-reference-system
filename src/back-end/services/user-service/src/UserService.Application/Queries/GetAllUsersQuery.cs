@@ -1,3 +1,4 @@
-namespace UserService.Application.Queries;
-
-public record GetAllUsersQuery() : IRequest<List<User>>;
+namespace UserService.Application.Queries
+{
+    public record GetAllUsersQuery() : IRequest<List<User>>;
+}

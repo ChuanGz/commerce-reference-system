@@ -1,3 +1,4 @@
-namespace OrderService.Application.Commands;
-
-public record DeleteOrderCommand(Guid Id) : IRequest<Unit>;
+namespace OrderService.Application.Commands
+{
+    public record DeleteOrderCommand(Guid Id) : IRequest<Unit>;
+}

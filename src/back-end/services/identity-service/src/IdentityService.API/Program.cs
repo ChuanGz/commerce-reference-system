@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using IdentityService.Application.Constants;
@@ -7,13 +8,15 @@ using IdentityService.Domain.Repositories;
 using IdentityService.Infrastructure.Repositories;
 using IdentityService.Infrastructure.Services;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Platform.Core.Extensions;
 using UserService.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+builder.UseDefaultLogging();
 
 builder
     .Configuration.SetBasePath(Directory.GetCurrentDirectory())
@@ -33,6 +36,7 @@ builder
     });
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity Service API", Version = "v1" });
@@ -66,22 +70,23 @@ builder.Services.AddSwaggerGen(c =>
         }
     );
 });
+
 builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-builder.Services.AddScoped<IUserGroupRepository, UserGroupRepository>();
-builder.Services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
-builder.Services.AddMediatR(typeof(AddRolePermissionCommandHandler).Assembly);
-
-builder.Services.AddValidatorsFromAssemblyContaining<UserRegistrationValidator>();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder
+    .Services.AddScoped<IUserRepository, UserRepository>()
+    .AddScoped<IRoleRepository, RoleRepository>()
+    .AddScoped<IPermissionRepository, PermissionRepository>()
+    .AddScoped<IGroupRepository, GroupRepository>()
+    .AddScoped<IUserGroupRepository, UserGroupRepository>()
+    .AddScoped<IAuthenticationService, JwtAuthenticationService>()
+    .AddPlatformMediatR(typeof(AddRolePermissionCommandHandler).Assembly)
+    .AddValidatorsFromAssemblyContaining<UserRegistrationValidator>()
+    .AddPlatformValidation();
 
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -110,7 +115,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UsePlatformExceptionHandling();
 
 if (
     app.Environment.IsDevelopment()

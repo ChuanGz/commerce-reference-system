@@ -1,10 +1,11 @@
-namespace IdentityService.Domain.Entities;
-
-public class RolePermission
+namespace IdentityService.Domain.Entities
 {
-    public Guid RoleId { get; set; }
-    public Role Role { get; set; } = default!;
+    public class RolePermission
+    {
+        public Guid RoleId { get; set; }
+        public Role Role { get; set; } = default!;
 
-    public Guid PermissionId { get; set; }
-    public Permission Permission { get; set; } = default!;
+        public Guid PermissionId { get; set; }
+        public Permission Permission { get; set; } = default!;
+    }
 }

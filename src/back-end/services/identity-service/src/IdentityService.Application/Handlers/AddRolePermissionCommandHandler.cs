@@ -2,33 +2,34 @@ using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers;
-
-public class AddRolePermissionCommandHandler(IRoleRepository roleRepository)
-    : IRequestHandler<AddRolePermissionCommand, bool>
+namespace IdentityService.Application.Handlers
 {
-    public async Task<bool> Handle(
-        AddRolePermissionCommand command,
-        CancellationToken cancellationToken
-    )
+    public class AddRolePermissionCommandHandler(IRoleRepository roleRepository)
+        : IRequestHandler<AddRolePermissionCommand, bool>
     {
-        ArgumentNullException.ThrowIfNull(command);
-
-        var hasPermission = await roleRepository.HasPermissionAsync(
-            command.RoleId,
-            command.PermissionId,
-            cancellationToken
-        );
-        if (hasPermission)
-            return false;
-
-        var rolePermission = new RolePermission
+        public async Task<bool> Handle(
+            AddRolePermissionCommand command,
+            CancellationToken cancellationToken
+        )
         {
-            RoleId = command.RoleId,
-            PermissionId = command.PermissionId,
-        };
+            ArgumentNullException.ThrowIfNull(command);
 
-        await roleRepository.AssignPermissionAsync(rolePermission, cancellationToken);
-        return true;
+            var hasPermission = await roleRepository.HasPermissionAsync(
+                command.RoleId,
+                command.PermissionId,
+                cancellationToken
+            );
+            if (hasPermission)
+                return false;
+
+            var rolePermission = new RolePermission
+            {
+                RoleId = command.RoleId,
+                PermissionId = command.PermissionId,
+            };
+
+            await roleRepository.AssignPermissionAsync(rolePermission, cancellationToken);
+            return true;
+        }
     }
 }

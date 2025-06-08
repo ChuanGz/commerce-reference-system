@@ -2,61 +2,62 @@ using Microsoft.Extensions.Logging;
 using OrderService.Application.Commands;
 using OrderService.Domain.Repositories;
 
-namespace OrderService.Application.Handlers;
-
-public class UpdateOrderPaymentStatusCommandHandler(
-    IOrderRepository repo,
-    ILogger<UpdateOrderPaymentStatusCommandHandler> logger
-) : IRequestHandler<UpdateOrderPaymentStatusCommand, bool>
+namespace OrderService.Application.Handlers
 {
-    public async Task<bool> Handle(
-        UpdateOrderPaymentStatusCommand command,
-        CancellationToken cancellationToken = default
-    )
+    public class UpdateOrderPaymentStatusCommandHandler(
+        IOrderRepository repo,
+        ILogger<UpdateOrderPaymentStatusCommandHandler> logger
+    ) : IRequestHandler<UpdateOrderPaymentStatusCommand, bool>
     {
-        ArgumentNullException.ThrowIfNull(command);
-
-        logger.LogInformation(
-            "Updating payment status for order: {OrderId} - Status: {PaymentStatus}",
-            command.OrderId,
-            command.PaymentStatus
-        );
-
-        try
+        public async Task<bool> Handle(
+            UpdateOrderPaymentStatusCommand command,
+            CancellationToken cancellationToken = default
+        )
         {
-            var order = await repo.GetByIdAsync(command.OrderId, cancellationToken);
-            if (order == null)
-            {
-                logger.LogWarning("Order not found: {OrderId}", command.OrderId);
-                return false;
-            }
-
-            if (command.PaymentStatus == "Completed")
-            {
-                order.Status = "Confirmed";
-            }
-            else if (command.PaymentStatus == "Failed")
-            {
-                order.Status = "PaymentFailed";
-            }
-
-            await repo.UpdateAsync(order, cancellationToken);
+            ArgumentNullException.ThrowIfNull(command);
 
             logger.LogInformation(
-                "Order payment status updated successfully: {OrderId} - New Status: {Status}",
+                "Updating payment status for order: {OrderId} - Status: {PaymentStatus}",
                 command.OrderId,
-                order.Status
+                command.PaymentStatus
             );
-            return true;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(
-                ex,
-                "Error updating payment status for order: {OrderId}",
-                command.OrderId
-            );
-            return false;
+
+            try
+            {
+                var order = await repo.GetByIdAsync(command.OrderId, cancellationToken);
+                if (order == null)
+                {
+                    logger.LogWarning("Order not found: {OrderId}", command.OrderId);
+                    return false;
+                }
+
+                if (command.PaymentStatus == "Completed")
+                {
+                    order.Status = "Confirmed";
+                }
+                else if (command.PaymentStatus == "Failed")
+                {
+                    order.Status = "PaymentFailed";
+                }
+
+                await repo.UpdateAsync(order, cancellationToken);
+
+                logger.LogInformation(
+                    "Order payment status updated successfully: {OrderId} - New Status: {Status}",
+                    command.OrderId,
+                    order.Status
+                );
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "Error updating payment status for order: {OrderId}",
+                    command.OrderId
+                );
+                return false;
+            }
         }
     }
 }

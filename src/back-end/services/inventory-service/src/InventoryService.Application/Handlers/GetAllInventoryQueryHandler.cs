@@ -2,16 +2,17 @@ using InventoryService.Application.Queries;
 using InventoryService.Domain.Entities;
 using InventoryService.Domain.Repositories;
 
-namespace InventoryService.Application.Handlers;
-
-public class GetAllInventoryQueryHandler(IInventoryRepository repo)
-    : IRequestHandler<GetAllInventoryQuery, List<Inventory>>
+namespace InventoryService.Application.Handlers
 {
-    public async Task<List<Inventory>> Handle(
-        GetAllInventoryQuery request,
-        CancellationToken cancellationToken = default
-    )
+    public class GetAllInventoryQueryHandler(IInventoryRepository repo)
+        : IRequestHandler<GetAllInventoryQuery, List<Inventory>>
     {
-        return await repo.GetAllAsync(cancellationToken);
+        public async Task<List<Inventory>> Handle(
+            GetAllInventoryQuery request,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return await repo.GetAllAsync(cancellationToken);
+        }
     }
 }

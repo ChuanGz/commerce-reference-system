@@ -2,17 +2,18 @@ using CustomerService.Application.Queries;
 using CustomerService.Domain.Entities;
 using CustomerService.Domain.Repositories;
 
-namespace CustomerService.Application.Handlers;
-
-public class GetCustomerByIdQueryHandler(ICustomerRepository repo)
-    : IRequestHandler<GetCustomerByIdQuery, Customer?>
+namespace CustomerService.Application.Handlers
 {
-    public async Task<Customer?> Handle(
-        GetCustomerByIdQuery query,
-        CancellationToken cancellationToken = default
-    )
+    public class GetCustomerByIdQueryHandler(ICustomerRepository repo)
+        : IRequestHandler<GetCustomerByIdQuery, Customer?>
     {
-        ArgumentNullException.ThrowIfNull(query);
-        return await repo.GetByIdAsync(query.Id, cancellationToken);
+        public async Task<Customer?> Handle(
+            GetCustomerByIdQuery query,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            return await repo.GetByIdAsync(query.Id, cancellationToken);
+        }
     }
 }
