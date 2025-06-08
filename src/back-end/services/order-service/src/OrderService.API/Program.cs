@@ -1,47 +1,11 @@
-using FluentValidation;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using OrderService.Application.Handlers;
-using OrderService.Application.Validators;
-using OrderService.Domain.Repositories;
-using OrderService.Infrastructure.Persistence;
-using OrderService.Infrastructure.Repositories;
+using OrderService;
 using Platform.Core.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApp.CreateWithDefaults<OrderServiceEntry>(args);
 
-builder.UseDefaultLogging();
-
-builder
-    .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile(
-        $"appsettings.{builder.Environment.EnvironmentName}.json",
-        optional: true,
-        reloadOnChange: true
-    )
-    .AddEnvironmentVariables();
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order Service API", Version = "v1" });
-});
-builder.Services.AddHealthChecks();
-
-builder.Services.AddDbContext<OrderDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-
-builder
-    .Services.AddScoped<IOrderRepository, OrderRepository>()
-    .AddScoped<ICustomerServiceClient, CustomerServiceClient>()
-    .AddScoped<IProductServiceClient, ProductServiceClient>()
-    .AddScoped<IInventoryServiceClient, InventoryServiceClient>()
-    .AddPlatformMediatR(typeof(CreateOrderCommandHandler).Assembly)
-    .AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>()
-    .AddPlatformValidation();
+builder.Services.AddScoped<ICustomerServiceClient, CustomerServiceClient>();
+builder.Services.AddScoped<IProductServiceClient, ProductServiceClient>();
+builder.Services.AddScoped<IInventoryServiceClient, InventoryServiceClient>();
 
 builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client =>
 {
@@ -69,32 +33,6 @@ builder.Services.AddHttpClient<IInventoryServiceClient, InventoryServiceClient>(
 
 var app = builder.Build();
 
-app.UsePlatformExceptionHandling();
-
-if (
-    app.Environment.IsDevelopment()
-    || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
-    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase)
-)
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-app.MapControllers();
-app.MapHealthChecks("/health");
-
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    DatabaseInitializer
-        .InitializeAsync(app.Services, logger, app.Environment.IsDevelopment())
-        .ContinueWith(task =>
-        {
-            if (task.Exception != null)
-                logger.LogError(task.Exception, "Database initialization failed");
-        });
-});
+app.UseAppDefaults();
 
 await app.RunAsync();

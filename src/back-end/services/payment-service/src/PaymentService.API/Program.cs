@@ -1,48 +1,18 @@
-using FluentValidation;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using PaymentService.Application.Handlers;
+using PaymentService;
 using PaymentService.Application.Interfaces;
-using PaymentService.Application.Validators;
 using PaymentService.Domain.Repositories;
-using PaymentService.Infrastructure.Persistence;
 using PaymentService.Infrastructure.Repositories;
 using PaymentService.Infrastructure.Services;
 using Platform.Core.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApp.CreateWithDefaults<PaymentServiceEntry>(args);
 
-builder.UseDefaultLogging();
-
-builder
-    .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile(
-        $"appsettings.{builder.Environment.EnvironmentName}.json",
-        optional: true,
-        reloadOnChange: true
-    )
-    .AddEnvironmentVariables();
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Payment Service API", Version = "v1" });
-});
-builder.Services.AddHealthChecks();
-
-builder.Services.AddDbContext<PaymentDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+var app = builder.Build();
 
 builder
     .Services.AddScoped<IPaymentRepository, PaymentRepository>()
     .AddScoped<ICustomerServiceClient, CustomerServiceClient>()
-    .AddScoped<IOrderServiceClient, OrderServiceClient>()
-    .AddPlatformMediatR(typeof(CreatePaymentCommandHandler).Assembly)
-    .AddValidatorsFromAssemblyContaining<CreatePaymentCommandValidator>()
-    .AddPlatformValidation();
+    .AddScoped<IOrderServiceClient, OrderServiceClient>();
 
 builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client =>
 {
@@ -60,34 +30,6 @@ builder.Services.AddHttpClient<IOrderServiceClient, OrderServiceClient>(client =
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-var app = builder.Build();
-
-app.UsePlatformExceptionHandling();
-
-if (
-    app.Environment.IsDevelopment()
-    || app.Environment.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
-    || app.Environment.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase)
-)
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-app.MapControllers();
-app.MapHealthChecks("/health");
-
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    DatabaseInitializer
-        .InitializeAsync(app.Services, logger, app.Environment.IsDevelopment())
-        .ContinueWith(task =>
-        {
-            if (task.Exception != null)
-                logger.LogError(task.Exception, "Database initialization failed");
-        });
-});
+app.UseAppDefaults();
 
 await app.RunAsync();

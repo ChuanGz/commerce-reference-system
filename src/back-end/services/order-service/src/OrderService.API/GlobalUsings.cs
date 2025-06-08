@@ -1,12 +1,3 @@
-global using FluentValidation;
 global using MediatR;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.OpenApi.Models;
-global using OrderService.Application.Handlers;
 global using OrderService.Application.Interfaces;
-global using OrderService.Application.Validators;
-global using OrderService.Domain.Repositories;
-global using OrderService.Infrastructure.Persistence;
-global using OrderService.Infrastructure.Repositories;
 global using OrderService.Infrastructure.Services;
-global using Platform.Core.Validation;
