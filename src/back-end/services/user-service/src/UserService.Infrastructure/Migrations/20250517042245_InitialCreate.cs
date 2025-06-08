@@ -26,7 +26,7 @@ namespace UserService.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "Name" },
+                columns: ["Id", "Email", "Name"],
                 values: new object[,]
                 {
                     {

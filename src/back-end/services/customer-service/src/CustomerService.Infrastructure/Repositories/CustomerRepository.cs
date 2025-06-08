@@ -20,7 +20,7 @@ namespace CustomerService.Infrastructure.Repositories
             CancellationToken cancellationToken = default
         )
         {
-            return await _context.Customers.FindAsync(new object[] { id }, cancellationToken);
+            return await _context.Customers.FindAsync([id], cancellationToken);
         }
 
         public async Task<Customer?> GetByUserIdAsync(
@@ -51,10 +51,7 @@ namespace CustomerService.Infrastructure.Repositories
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var customer = await _context.Customers.FindAsync(
-                new object[] { id },
-                cancellationToken
-            );
+            var customer = await _context.Customers.FindAsync([id], cancellationToken);
             if (customer != null)
             {
                 _context.Customers.Remove(customer);
