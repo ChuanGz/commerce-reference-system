@@ -1,9 +1,17 @@
 {
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
-    "diffEditor.codeLens": true,
-    "[csharp]": {
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "diffEditor.codeLens": true,
+
+  // Cấu hình riêng cho C#
+  "[csharp]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp",
     "editor.formatOnSave": true
+  },
+
+  // Ẩn thư mục bin và obj toàn cục
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true
   }
 }
