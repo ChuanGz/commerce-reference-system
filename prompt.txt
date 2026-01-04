@@ -1,2 +1,0 @@
-Follow AI_FRONTEND_APPLICATION_GUIDE.md
-Execute tasks using COPILOT_AGENT_WORKFLOW.md
