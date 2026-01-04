@@ -21,117 +21,18 @@ public static class WebApp {
         where TEntry : class {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Configure default logging
         builder.UseDefaultLogging();
 
-        // Load configuration from environment-specific appsettings files and environment variables
-        builder
-            .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile(
-                $"appsettings.{builder.Environment.EnvironmentName}.json",
-                optional: true,
-                reloadOnChange: true
-            )
-            .AddEnvironmentVariables();
+        ConfigureConfiguration(builder);
 
-        // Determine service name and assembly
         var assembly = typeof(TEntry).Assembly;
-        var namespaceName = typeof(TEntry).Namespace;
-        var serviceName = namespaceName?.Split('.').FirstOrDefault() ?? "API";
+        var serviceName = GetServiceName(typeof(TEntry));
 
-        // Register common services
-        var authAuthority = builder.Configuration["Auth:Authority"];
-        var authAudience = builder.Configuration["Auth:Audience"];
-
-        if (string.IsNullOrWhiteSpace(authAuthority) || string.IsNullOrWhiteSpace(authAudience)) {
-            throw new InvalidOperationException(
-                "Missing auth configuration. Set Auth:Authority and Auth:Audience."
-            );
-        }
-
-        builder
-            .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options => {
-                options.Authority = authAuthority;
-                options.Audience = authAudience;
-                options.RequireHttpsMetadata = true;
-            });
-
-        builder.Services.AddAuthorization(options => {
-            options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-        });
-
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddHealthChecks();
-
-        // Configure Swagger with inferred service name
-        builder.Services.AddSwaggerGen(c => {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = $"{serviceName} API", Version = "v1" });
-        });
-
-        // Locate the DbContext implementation within the same assembly
-        var dbContextType = assembly
-            .GetTypes()
-            .FirstOrDefault(t =>
-                typeof(DbContext).IsAssignableFrom(t)
-                && !t.IsAbstract
-                && t.Name.EndsWith("DbContext")
-            );
-
-        if (dbContextType == null) {
-            if (builder.Environment.IsEnvironment("Test")) {
-                return builder;
-            }
-
-            throw new InvalidOperationException(
-                "No concrete DbContext type found in the service assembly."
-            );
-        }
-
-        // Find the EF Core AddDbContext<TContext> method via reflection
-        var efMethods = typeof(EntityFrameworkServiceCollectionExtensions).GetMethods(
-            BindingFlags.Public | BindingFlags.Static
-        );
-
-        var addDbContextMethod = efMethods.FirstOrDefault(m =>
-            m.Name == "AddDbContext"
-            && m.IsGenericMethodDefinition
-            && m.GetGenericArguments().Length == 1
-            && m.GetParameters().Length == 2
-            && m.GetParameters()[1].ParameterType.Name.Contains("Action")
-        );
-
-        if (addDbContextMethod == null) {
-            throw new InvalidOperationException("Unable to locate AddDbContext<TContext> method.");
-        }
-
-        // Generate the generic method with the actual DbContext type
-        var addDbContextGenericMethod = addDbContextMethod.MakeGenericMethod(dbContextType);
-
-        // Build the options delegate using the configured connection string
-        var dbContextOptionsDelegate = new Action<DbContextOptionsBuilder>(options => {
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-            if (string.IsNullOrEmpty(connectionString)) {
-                throw new InvalidOperationException(
-                    "Missing 'DefaultConnection' in configuration."
-                );
-            }
-
-            options.UseSqlServer(connectionString);
-        });
-
-        // Invoke AddDbContext<TContext>(IServiceCollection, Action<DbContextOptionsBuilder>)
-        addDbContextGenericMethod.Invoke(null, [builder.Services, dbContextOptionsDelegate]);
-
-        // Register MediatR, FluentValidation, and validation pipeline behaviors
-        builder
-            .Services.AddPlatformMediatR(assembly)
-            .AddValidatorsFromAssembly(assembly)
-            .AddPlatformValidation();
+        ConfigureAuth(builder);
+        ConfigureApiDefaults(builder);
+        ConfigureSwagger(builder, serviceName);
+        ConfigureDbContext(builder, assembly);
+        ConfigurePlatformServices(builder, assembly);
 
         return builder;
     }
@@ -166,6 +67,118 @@ public static class WebApp {
         return env.IsDevelopment()
             || env.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
             || env.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void ConfigureConfiguration(WebApplicationBuilder builder) {
+        builder
+            .Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile(
+                $"appsettings.{builder.Environment.EnvironmentName}.json",
+                optional: true,
+                reloadOnChange: true
+            )
+            .AddEnvironmentVariables();
+    }
+
+    private static string GetServiceName(Type entryType) {
+        var namespaceName = entryType.Namespace;
+        return namespaceName?.Split('.').FirstOrDefault() ?? "API";
+    }
+
+    private static void ConfigureAuth(WebApplicationBuilder builder) {
+        var authAuthority = builder.Configuration["Auth:Authority"];
+        var authAudience = builder.Configuration["Auth:Audience"];
+
+        if (string.IsNullOrWhiteSpace(authAuthority) || string.IsNullOrWhiteSpace(authAudience)) {
+            throw new InvalidOperationException(
+                "Missing auth configuration. Set Auth:Authority and Auth:Audience."
+            );
+        }
+
+        builder
+            .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options => {
+                options.Authority = authAuthority;
+                options.Audience = authAudience;
+                options.RequireHttpsMetadata = true;
+            });
+
+        builder.Services.AddAuthorization(options => {
+            options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+        });
+    }
+
+    private static void ConfigureApiDefaults(WebApplicationBuilder builder) {
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddHealthChecks();
+    }
+
+    private static void ConfigureSwagger(WebApplicationBuilder builder, string serviceName) {
+        builder.Services.AddSwaggerGen(c => {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = $"{serviceName} API", Version = "v1" });
+        });
+    }
+
+    private static void ConfigureDbContext(WebApplicationBuilder builder, Assembly assembly) {
+        var dbContextType = assembly
+            .GetTypes()
+            .FirstOrDefault(t =>
+                typeof(DbContext).IsAssignableFrom(t)
+                && !t.IsAbstract
+                && t.Name.EndsWith("DbContext")
+            );
+
+        if (dbContextType == null) {
+            if (builder.Environment.IsEnvironment("Test")) {
+                return;
+            }
+
+            throw new InvalidOperationException(
+                "No concrete DbContext type found in the service assembly."
+            );
+        }
+
+        var efMethods = typeof(EntityFrameworkServiceCollectionExtensions).GetMethods(
+            BindingFlags.Public | BindingFlags.Static
+        );
+
+        var addDbContextMethod = efMethods.FirstOrDefault(m =>
+            m.Name == "AddDbContext"
+            && m.IsGenericMethodDefinition
+            && m.GetGenericArguments().Length == 1
+            && m.GetParameters().Length == 2
+            && m.GetParameters()[1].ParameterType.Name.Contains("Action")
+        );
+
+        if (addDbContextMethod == null) {
+            throw new InvalidOperationException("Unable to locate AddDbContext<TContext> method.");
+        }
+
+        var addDbContextGenericMethod = addDbContextMethod.MakeGenericMethod(dbContextType);
+
+        var dbContextOptionsDelegate = new Action<DbContextOptionsBuilder>(options => {
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            if (string.IsNullOrEmpty(connectionString)) {
+                throw new InvalidOperationException(
+                    "Missing 'DefaultConnection' in configuration."
+                );
+            }
+
+            options.UseSqlServer(connectionString);
+        });
+
+        addDbContextGenericMethod.Invoke(null, [builder.Services, dbContextOptionsDelegate]);
+    }
+
+    private static void ConfigurePlatformServices(WebApplicationBuilder builder, Assembly assembly) {
+        builder
+            .Services.AddPlatformMediatR(assembly)
+            .AddValidatorsFromAssembly(assembly)
+            .AddPlatformValidation();
     }
 
     /// <summary>
