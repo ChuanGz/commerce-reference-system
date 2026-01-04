@@ -1,227 +1,115 @@
-
 # Template Architect
 
-**Template Architect** is a comprehensive repository designed to streamline the development of web-based applications. This project includes both **frontend applications** (Storefront and Backoffice) and **backend microservices**, providing a robust and modular architecture for developers.
+Template Architect is a full-stack reference project that matches the current
+requirements: a customer Storefront (React), an internal Backoffice (Angular),
+and .NET microservices for users, products, orders, and inventory.
 
-## Table of Contents
-
-- [Template Architect](#template-architect)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Features](#features)
-  - [Tech Stack](#tech-stack)
-    - [Frontend:](#frontend)
-    - [Backend:](#backend)
-    - [DevOps:](#devops)
-  - [Project Structure](#project-structure)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Running the Project](#running-the-project)
-  - [Frontend Applications](#frontend-applications)
-    - [Storefront](#storefront)
-    - [Backoffice](#backoffice)
-  - [Backend Microservices](#backend-microservices)
-    - [Identity Service](#identity-service)
-    - [User Service](#user-service)
-    - [Customer Service](#customer-service)
-    - [Product Service](#product-service)
-    - [Inventory Service](#inventory-service)
-    - [Order Service](#order-service)
-  - [Deployment](#deployment)
-    - [Frontend Deployment](#frontend-deployment)
-    - [Backend Deployment](#backend-deployment)
-  - [Contributing](#contributing)
-  - [License](#license)
-  - [Contact](#contact)
+Use this repo to understand **what the system does**, **where each part lives**,
+and **how to run the basics**.
 
 ---
 
-## Overview
+## What This Repository Contains
 
-Template Architect is an example architecture for full-stack applications, designed to demonstrate best practices in development, deployment, and scalability. The repository provides:
+- **Storefront (React)**: customer-facing product browsing and ordering
+- **Backoffice (Angular)**: internal CRUD for users/products/orders
+- **.NET microservices**: identity, user, customer, product, inventory, order, payment
+- **Docs**: requirements and technical notes under `docs/`
 
-- **A storefront React application** for customer interactions.
-- **A backoffice Angular application** for administrative workflows.
-- **6 backend microservices** implementing various business logic layers.
-
-The project is highly modular, enabling developers to extend or modify individual components without affecting the entire system.
-
----
-
-## Features
-
-- **Frontend Applications**:
-  - Responsive and accessible user interfaces.
-  - Modularized components and state management.
-- **Backend Microservices**:
-  - Authentication and authorization (Identity Service).
-  - RESTful APIs for managing users, customers, products, orders, and inventory.
-  - Scalable and isolated services.
-- **Modern DevOps Integration**:
-  - Docker Compose for local development and container orchestration.
-  - GitHub Actions for CI/CD pipelines.
-- **Easy Deployment**:
-  - Host frontend applications on GitHub Pages.
-  - Containerized backend services for seamless deployment.
-
----
-
-## Tech Stack
-
-### Frontend:
-- **React** (Storefront)
-- **Angular** (Backoffice)
-- **TypeScript** and **JavaScript**
-- **React Router** and **Angular Router**
-
-### Backend:
-- **.NET 8.0**
-- **Docker** for containerization
-
-### DevOps:
-- **GitHub Actions** for CI/CD
-- **Docker Compose** for orchestration
-- **GitHub Pages** for hosting static files
+See requirements in `docs/requirements/1-requirement.adoc`.
 
 ---
 
 ## Project Structure
 
-The repository is organized as follows:
-
 ```
 template-architect/
-│
-├── src/frontend/
-│   ├── storefront/       # React Storefront application
-│   ├── backoffice/       # Angular Backoffice application
-│
-├── src/backend/
-│   ├── identity-service/ # Authentication and authorization
-│   ├── user-service/     # User profile management
-│   ├── customer-service/ # Customer-related data
-│   ├── product-service/  # Product catalog
-│   ├── inventory-service/# Inventory and stock tracking
-│   ├── order-service/    # Order lifecycle management
-│
-├── docker-compose.yaml   # Service orchestration file
-├── README.md             # Project documentation
-└── CONTRIBUTING.md       # Contribution guidelines
+├── src/
+│   ├── front-end/
+│   │   ├── storefront/   # React storefront app
+│   │   └── backoffice/   # Angular backoffice app
+│   └── back-end/
+│       ├── BackEnd.sln   # .NET solution
+│       └── services/
+│           ├── identity-service/
+│           ├── user-service/
+│           ├── customer-service/
+│           ├── product-service/
+│           ├── inventory-service/
+│           ├── order-service/
+│           └── payment-service/
+├── docs/
+└── .github/workflows/    # CI/CD workflows per service
 ```
 
 ---
 
-## Getting Started
+## Service Responsibilities (High Level)
+
+### Frontend
+- **Storefront (React)**: product listing, login, order creation, order history
+- **Backoffice (Angular)**: CRUD for users/products, order review and status changes
+
+### Backend
+- **Identity service**: authentication, token issuance, SSO/MFA (per requirements)
+- **User service**: roles and user CRUD
+- **Customer service**: customer profile data used by orders
+- **Product service**: catalog and pricing
+- **Inventory service**: stock, commit, and availability
+- **Order service**: order creation and lifecycle
+- **Payment service**: extension point for payment flows
+
+---
+
+## Why One Repository (Monorepo)
+
+- **Single source of truth** for requirements, docs, and contracts
+- **Cross-service changes** are easier to review in one PR
+- **Consistent tooling** (lint/test/build) across all services
+- **Shared UI Core** and frontend conventions stay aligned
+
+---
+
+## CI/CD Workflows (Why They Exist)
+
+Workflows in `.github/workflows/*-service.yaml` are **per service** and trigger
+on path changes. This keeps builds focused and avoids rebuilding the whole repo
+for a small change.
+
+If directories move, update the workflow path filters so CI triggers correctly.
+
+---
+
+## Quick Start (Basic)
 
 ### Prerequisites
+- Node.js (for frontends)
+- .NET 8 SDK (for services)
 
-- **Node.js** (>= 16.0)
-- **npm** or **yarn**
-- **Angular CLI** (for backoffice)
-- **Docker** and **Docker Compose**
-
-### Installation
-
-Clone the repository to your local machine:
-
+### Run Storefront
 ```bash
-git clone https://github.com/chuangz/template-architect.git
-cd template-architect
+cd src/front-end/storefront
+npm install
+npm start
 ```
 
-### Running the Project
+### Run Backoffice
+```bash
+cd src/front-end/backoffice
+npm install
+npm start
+```
 
-1. **Frontend Applications**:
-   - Navigate to the desired app directory (e.g., `storefront`):
-     ```bash
-     cd src/frontend/storefront
-     npm install
-     npm start
-     ```
-   - For the Angular backoffice:
-     ```bash
-     cd src/frontend/backoffice
-     npm install
-     ng serve
-     ```
+### Run a Backend Service (example: Order Service)
+```bash
+dotnet run --project src/back-end/services/order-service/src/OrderService.API
+```
 
-2. **Backend Services**:
-   - Start all backend services using Docker Compose:
-     ```bash
-     docker-compose up --build
-     ```
+For full orchestration, see `docs/technical-notes/HOW_TO_RUN.md`.
 
 ---
 
-## Frontend Applications
+## Docs
 
-### Storefront
-- React-based customer-facing application.
-- URL: `https://chuangz.github.io/template-architect/storefront`.
-
-### Backoffice
-- Angular-based administrative application.
-- URL: `https://chuangz.github.io/template-architect/backoffice`.
-
----
-
-## Backend Microservices
-
-### Identity Service
-- Handles authentication and authorization.
-
-### User Service
-- Manages user profiles and preferences.
-
-### Customer Service
-- Provides customer-related data.
-
-### Product Service
-- Manages product catalog and pricing.
-
-### Inventory Service
-- Tracks stock levels and inventory.
-
-### Order Service
-- Handles order creation, updates, and fulfillment.
-
----
-
-## Deployment
-
-### Frontend Deployment
-- Use `gh-pages` for `storefront`:
-  ```bash
-  npm run deploy
-  ```
-- Use `angular-cli-ghpages` for `backoffice`:
-  ```bash
-  npx angular-cli-ghpages --dir=dist/backoffice
-  ```
-
-### Backend Deployment
-- Deploy backend services using Docker Compose in production mode:
-  ```bash
-  docker-compose -f docker-compose.prod.yaml up -d
-  ```
-
----
-
-## Contributing
-
-We welcome contributions! Check out our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## Contact
-
-For any questions or suggestions, please contact:
-- **GitHub**: [chuangz](https://github.com/chuangz)
-- **Email**: thanhnhan.lionus@gmail.com
+- Requirements: `docs/requirements/1-requirement.adoc`
+- Technical notes: `docs/technical-notes/`
