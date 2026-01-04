@@ -45,6 +45,7 @@ namespace OrderService.Infrastructure.Persistence {
         }
 
         private static void SeedData(ModelBuilder modelBuilder) {
+            var baseDate = new DateTime(2024, 01, 01, 0, 0, 0, DateTimeKind.Utc);
             var orders = new[]
             {
                 new Order
@@ -53,9 +54,9 @@ namespace OrderService.Infrastructure.Persistence {
                     CustomerId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                     TotalAmount = 299.98m,
                     Status = "Delivered",
-                    OrderDate = DateTime.UtcNow.AddDays(-5),
+                    OrderDate = baseDate.AddDays(-5),
                     ShippingAddress = "123 Main St, New York, NY 10001",
-                    CreatedAt = DateTime.UtcNow.AddDays(-5),
+                    CreatedAt = baseDate.AddDays(-5),
                 },
                 new Order
                 {
@@ -63,9 +64,9 @@ namespace OrderService.Infrastructure.Persistence {
                     CustomerId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                     TotalAmount = 149.99m,
                     Status = "Shipped",
-                    OrderDate = DateTime.UtcNow.AddDays(-2),
+                    OrderDate = baseDate.AddDays(-2),
                     ShippingAddress = "456 Oak Ave, Los Angeles, CA 90210",
-                    CreatedAt = DateTime.UtcNow.AddDays(-2),
+                    CreatedAt = baseDate.AddDays(-2),
                 },
                 new Order
                 {
@@ -73,9 +74,9 @@ namespace OrderService.Infrastructure.Persistence {
                     CustomerId = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                     TotalAmount = 89.99m,
                     Status = "Processing",
-                    OrderDate = DateTime.UtcNow.AddDays(-1),
+                    OrderDate = baseDate.AddDays(-1),
                     ShippingAddress = "789 Pine Rd, Chicago, IL 60601",
-                    CreatedAt = DateTime.UtcNow.AddDays(-1),
+                    CreatedAt = baseDate.AddDays(-1),
                 },
             };
 
