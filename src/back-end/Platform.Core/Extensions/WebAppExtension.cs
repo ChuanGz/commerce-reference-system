@@ -1,4 +1,6 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +40,29 @@ public static class WebApp {
         var serviceName = namespaceName?.Split('.').FirstOrDefault() ?? "API";
 
         // Register common services
+        var authAuthority = builder.Configuration["Auth:Authority"];
+        var authAudience = builder.Configuration["Auth:Audience"];
+
+        if (string.IsNullOrWhiteSpace(authAuthority) || string.IsNullOrWhiteSpace(authAudience)) {
+            throw new InvalidOperationException(
+                "Missing auth configuration. Set Auth:Authority and Auth:Audience."
+            );
+        }
+
+        builder
+            .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options => {
+                options.Authority = authAuthority;
+                options.Audience = authAudience;
+                options.RequireHttpsMetadata = true;
+            });
+
+        builder.Services.AddAuthorization(options => {
+            options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+        });
+
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddHealthChecks();
@@ -120,8 +145,10 @@ public static class WebApp {
         }
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapControllers();
-        app.MapHealthChecks("/health");
+        app.MapHealthChecks("/health").AllowAnonymous();
 
         InitDbFromRegisteredContext(app);
     }
