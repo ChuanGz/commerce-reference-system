@@ -18,8 +18,10 @@ namespace CustomerService.Infrastructure.Persistence {
                     logger.LogInformation("Database ensured created for Customer Service");
                 }
                 else {
-                    await context.Database.MigrateAsync();
-                    logger.LogInformation("Database migrated for Customer Service");
+                    logger.LogInformation(
+                        "Skipping automatic migrations for Customer Service in non-development environments"
+                    );
+                    return;
                 }
             }
             catch (Exception ex) {

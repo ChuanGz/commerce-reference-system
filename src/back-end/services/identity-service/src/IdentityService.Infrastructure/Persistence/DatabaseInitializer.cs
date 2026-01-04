@@ -20,9 +20,9 @@ namespace IdentityService.Infrastructure.Persistence {
                 logger.LogInformation("Database migration completed successfully");
             }
             else {
-                logger.LogInformation("Production environment. Running migrations...");
-                await context.Database.MigrateAsync();
-                logger.LogInformation("Database migration completed successfully");
+                logger.LogInformation(
+                    "Skipping automatic migrations for Identity Service in non-development environments"
+                );
             }
 
             if (context.Users.Any()) {
