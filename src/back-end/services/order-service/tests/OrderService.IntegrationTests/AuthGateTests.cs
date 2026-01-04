@@ -1,16 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OrderService.Application.Handlers;
+using OrderService.Application.Validators;
+using OrderService.Domain.Repositories;
+using OrderService.Infrastructure.Persistence;
+using OrderService.Infrastructure.Repositories;
+using Platform.Core.Extensions;
 using Xunit;
+using FluentValidation;
 
 namespace OrderService.IntegrationTests;
 
@@ -53,6 +62,14 @@ internal sealed class OrderServiceFactory : WebApplicationFactory<Program> {
         });
 
         builder.ConfigureServices(services => {
+            services.AddDbContext<OrderDbContext>(options =>
+                options.UseInMemoryDatabase("order-api-tests")
+            );
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddPlatformMediatR(typeof(CreateOrderCommandHandler).Assembly);
+            services.AddValidatorsFromAssembly(typeof(CreateOrderCommandValidator).Assembly);
+            services.AddPlatformValidation();
+
             services.RemoveAll<IConfigureOptions<AuthenticationOptions>>();
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = TestAuthHandler.SchemeName;
@@ -76,6 +93,17 @@ internal sealed class TestAuthHandler : AuthenticationHandler<AuthenticationSche
     ) : base(options, logger, encoder, clock) { }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync() {
-        return Task.FromResult(AuthenticateResult.NoResult());
+        var hasAuthHeader = Request.Headers.ContainsKey("Authorization");
+        if (!hasAuthHeader)
+            return Task.FromResult(AuthenticateResult.NoResult());
+
+        var claims = new[] {
+            new Claim("scp", "OrderService.read OrderService.write")
+        };
+        var identity = new ClaimsIdentity(claims, SchemeName);
+        var principal = new ClaimsPrincipal(identity);
+        var ticket = new AuthenticationTicket(principal, SchemeName);
+
+        return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 }
