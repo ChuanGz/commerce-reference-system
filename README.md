@@ -86,6 +86,13 @@ If directories move, update the workflow path filters so CI triggers correctly.
 - Node.js (for frontends)
 - .NET 8 SDK (for services)
 
+### Auth Configuration (Required)
+Backend services expect:
+- `Auth:Authority`
+- `Auth:Audience`
+
+Set them in `appsettings.*.json` or environment variables before running APIs.
+
 ### Run Storefront
 ```bash
 cd src/front-end/storefront
