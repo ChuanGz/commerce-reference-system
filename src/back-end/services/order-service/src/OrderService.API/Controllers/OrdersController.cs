@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Commands;
 using OrderService.Application.Queries;
 using OrderService.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OrderService.API.Controllers {
     [ApiController]
@@ -10,12 +11,14 @@ namespace OrderService.API.Controllers {
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
+        [Authorize(Policy = "OrderService.Read")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) {
             var result = await _mediator.Send(new GetAllOrdersQuery(), cancellationToken);
             return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Policy = "OrderService.Read")]
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
@@ -25,6 +28,7 @@ namespace OrderService.API.Controllers {
         }
 
         [HttpGet("customer/{customerId:guid}")]
+        [Authorize(Policy = "OrderService.Read")]
         public async Task<IActionResult> GetByCustomerId(
             Guid customerId,
             CancellationToken cancellationToken = default
@@ -37,6 +41,7 @@ namespace OrderService.API.Controllers {
         }
 
         [HttpGet("status/{status}")]
+        [Authorize(Policy = "OrderService.Read")]
         public async Task<IActionResult> GetByStatus(
             string status,
             CancellationToken cancellationToken = default
@@ -49,6 +54,7 @@ namespace OrderService.API.Controllers {
         }
 
         [HttpGet("date-range")]
+        [Authorize(Policy = "OrderService.Read")]
         public async Task<IActionResult> GetByDateRange(
             [FromQuery] DateTime startDate,
             [FromQuery] DateTime endDate,
@@ -62,6 +68,7 @@ namespace OrderService.API.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Policy = "OrderService.Write")]
         public async Task<IActionResult> Create(
             [FromBody] CreateOrderCommand command,
             CancellationToken cancellationToken = default
@@ -71,6 +78,7 @@ namespace OrderService.API.Controllers {
         }
 
         [HttpPut("{id:guid}/status")]
+        [Authorize(Policy = "OrderService.Write")]
         public async Task<IActionResult> UpdateStatus(
             Guid id,
             [FromBody] UpdateOrderStatusCommand command,
@@ -85,6 +93,7 @@ namespace OrderService.API.Controllers {
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Policy = "OrderService.Write")]
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default

@@ -1,6 +1,7 @@
 using CustomerService.Application.Commands;
 using CustomerService.Application.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerService.API.Controllers {
@@ -8,10 +9,12 @@ namespace CustomerService.API.Controllers {
     [Route("api/customers")]
     public class CustomersController(IMediator mediator) : ControllerBase {
         [HttpGet]
+        [Authorize(Policy = "CustomerService.Read")]
         public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
             Ok(await mediator.Send(new GetAllCustomersQuery(), cancellationToken));
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "CustomerService.Read")]
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
@@ -25,6 +28,7 @@ namespace CustomerService.API.Controllers {
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Policy = "CustomerService.Read")]
         public async Task<IActionResult> GetByUserId(
             Guid userId,
             CancellationToken cancellationToken = default
@@ -41,6 +45,7 @@ namespace CustomerService.API.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Policy = "CustomerService.Write")]
         public async Task<IActionResult> Create(
             [FromBody] CreateCustomerCommand command,
             CancellationToken cancellationToken = default
@@ -51,6 +56,7 @@ namespace CustomerService.API.Controllers {
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "CustomerService.Write")]
         public async Task<IActionResult> Update(
             Guid id,
             [FromBody] UpdateCustomerCommand command,
@@ -74,6 +80,7 @@ namespace CustomerService.API.Controllers {
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "CustomerService.Write")]
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default

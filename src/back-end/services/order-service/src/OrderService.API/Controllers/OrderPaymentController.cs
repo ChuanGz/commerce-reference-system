@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Commands;
 
@@ -6,6 +7,7 @@ namespace OrderService.API.Controllers {
     [Route("api/orders")]
     public class OrderPaymentController(IMediator mediator) : ControllerBase {
         [HttpPut("{orderId:guid}/payment-status")]
+        [Authorize(Policy = "OrderService.Write")]
         public async Task<IActionResult> UpdatePaymentStatus(
             Guid orderId,
             [FromBody] UpdatePaymentStatusRequest request,

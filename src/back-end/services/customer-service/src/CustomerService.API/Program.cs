@@ -5,6 +5,8 @@ using Platform.Core.Extensions;
 
 var builder = WebApp.CreateWithDefaults<CustomerServiceEntry>(args);
 
+builder.Services.AddServiceAuthorizationPolicies("CustomerService");
+
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 var app = builder.Build();

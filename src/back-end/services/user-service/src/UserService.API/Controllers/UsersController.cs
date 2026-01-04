@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.Commands;
 using UserService.Application.Queries;
@@ -7,10 +8,12 @@ namespace UserService.API.Controllers {
     [Route("api/users")]
     public class UsersController(IMediator mediator) : ControllerBase {
         [HttpGet]
+        [Authorize(Policy = "UserService.Read")]
         public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
             Ok(await mediator.Send(new GetAllUsersQuery(), cancellationToken));
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "UserService.Read")]
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
@@ -24,6 +27,7 @@ namespace UserService.API.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Policy = "UserService.Write")]
         public async Task<IActionResult> Create(
             [FromBody] CreateUserCommand command,
             CancellationToken cancellationToken = default
@@ -34,6 +38,7 @@ namespace UserService.API.Controllers {
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "UserService.Write")]
         public async Task<IActionResult> Update(
             Guid id,
             [FromBody] UpdateUserCommand command,
@@ -51,6 +56,7 @@ namespace UserService.API.Controllers {
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "UserService.Write")]
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default

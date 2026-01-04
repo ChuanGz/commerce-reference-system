@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Application.Commands;
 using PaymentService.Application.Queries;
@@ -10,12 +11,14 @@ namespace PaymentService.API.Controllers {
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
+        [Authorize(Policy = "PaymentService.Read")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) {
             var result = await _mediator.Send(new GetAllPaymentsQuery(), cancellationToken);
             return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Policy = "PaymentService.Read")]
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
@@ -25,6 +28,7 @@ namespace PaymentService.API.Controllers {
         }
 
         [HttpGet("order/{orderId:guid}")]
+        [Authorize(Policy = "PaymentService.Read")]
         public async Task<IActionResult> GetByOrderId(
             Guid orderId,
             CancellationToken cancellationToken = default
@@ -37,6 +41,7 @@ namespace PaymentService.API.Controllers {
         }
 
         [HttpGet("status/{status}")]
+        [Authorize(Policy = "PaymentService.Read")]
         public async Task<IActionResult> GetByStatus(
             string status,
             CancellationToken cancellationToken = default
@@ -49,6 +54,7 @@ namespace PaymentService.API.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Policy = "PaymentService.Write")]
         public async Task<IActionResult> Create(
             [FromBody] CreatePaymentCommand command,
             CancellationToken cancellationToken = default
@@ -58,6 +64,7 @@ namespace PaymentService.API.Controllers {
         }
 
         [HttpPut("{id:guid}/status")]
+        [Authorize(Policy = "PaymentService.Write")]
         public async Task<IActionResult> UpdateStatus(
             Guid id,
             [FromBody] UpdatePaymentStatusCommand command,
@@ -72,6 +79,7 @@ namespace PaymentService.API.Controllers {
         }
 
         [HttpPost("{id:guid}/process")]
+        [Authorize(Policy = "PaymentService.Write")]
         public async Task<IActionResult> Process(
             Guid id,
             CancellationToken cancellationToken = default
@@ -81,6 +89,7 @@ namespace PaymentService.API.Controllers {
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Policy = "PaymentService.Write")]
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default

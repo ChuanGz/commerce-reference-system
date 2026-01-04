@@ -4,6 +4,8 @@ using UserService.Infrastructure.Repositories;
 
 var builder = WebApp.CreateWithDefaults<UserServiceEntry>(args);
 
+builder.Services.AddServiceAuthorizationPolicies("UserService");
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();

@@ -2,6 +2,7 @@ using InventoryService.Application.Commands;
 using InventoryService.Application.Queries;
 using InventoryService.Domain.Constants;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryService.API.Controllers {
@@ -11,12 +12,14 @@ namespace InventoryService.API.Controllers {
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
+        [Authorize(Policy = "InventoryService.Read")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) {
             var result = await _mediator.Send(new GetAllInventoryQuery(), cancellationToken);
             return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Policy = "InventoryService.Read")]
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
@@ -26,6 +29,7 @@ namespace InventoryService.API.Controllers {
         }
 
         [HttpGet("product/{productId:guid}")]
+        [Authorize(Policy = "InventoryService.Read")]
         public async Task<IActionResult> GetByProductId(
             Guid productId,
             CancellationToken cancellationToken = default
@@ -38,6 +42,7 @@ namespace InventoryService.API.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Policy = "InventoryService.Write")]
         public async Task<IActionResult> Create(
             [FromBody] CreateInventoryCommand command,
             CancellationToken cancellationToken = default
@@ -47,6 +52,7 @@ namespace InventoryService.API.Controllers {
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Policy = "InventoryService.Write")]
         public async Task<IActionResult> Update(
             Guid id,
             [FromBody] UpdateInventoryCommand command,
@@ -62,6 +68,7 @@ namespace InventoryService.API.Controllers {
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Policy = "InventoryService.Write")]
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default
@@ -71,6 +78,7 @@ namespace InventoryService.API.Controllers {
         }
 
         [HttpPost("reserve")]
+        [Authorize(Policy = "InventoryService.Write")]
         public async Task<IActionResult> Reserve(
             [FromBody] ReserveInventoryCommand command,
             CancellationToken cancellationToken = default
@@ -80,6 +88,7 @@ namespace InventoryService.API.Controllers {
         }
 
         [HttpPost("release")]
+        [Authorize(Policy = "InventoryService.Write")]
         public async Task<IActionResult> ReleaseReserved(
             [FromBody] ReleaseReservedInventoryCommand command,
             CancellationToken cancellationToken = default
