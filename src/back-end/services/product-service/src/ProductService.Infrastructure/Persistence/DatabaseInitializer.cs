@@ -18,8 +18,10 @@ namespace ProductService.Infrastructure.Persistence {
                     logger.LogInformation("Database ensured for Product Service");
                 }
                 else {
-                    await context.Database.MigrateAsync();
-                    logger.LogInformation("Database migrated for Product Service");
+                    logger.LogInformation(
+                        "Skipping automatic migrations for Product Service in non-development environments"
+                    );
+                    return;
                 }
             }
             catch (Exception ex) {

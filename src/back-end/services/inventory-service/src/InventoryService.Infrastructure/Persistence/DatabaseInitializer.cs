@@ -18,8 +18,10 @@ namespace InventoryService.Infrastructure.Persistence {
                     logger.LogInformation("Database ensured for Inventory Service");
                 }
                 else {
-                    await context.Database.MigrateAsync();
-                    logger.LogInformation("Database migrated for Inventory Service");
+                    logger.LogInformation(
+                        "Skipping automatic migrations for Inventory Service in non-development environments"
+                    );
+                    return;
                 }
             }
             catch (Exception ex) {

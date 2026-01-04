@@ -18,8 +18,10 @@ namespace OrderService.Infrastructure.Persistence {
                     logger.LogInformation("Database ensured for Order Service");
                 }
                 else {
-                    await context.Database.MigrateAsync();
-                    logger.LogInformation("Database migrated for Order Service");
+                    logger.LogInformation(
+                        "Skipping automatic migrations for Order Service in non-development environments"
+                    );
+                    return;
                 }
             }
             catch (Exception ex) {

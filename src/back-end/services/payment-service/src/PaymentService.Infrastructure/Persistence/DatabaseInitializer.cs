@@ -18,8 +18,10 @@ namespace PaymentService.Infrastructure.Persistence {
                     logger.LogInformation("Database ensured for Payment Service");
                 }
                 else {
-                    await context.Database.MigrateAsync();
-                    logger.LogInformation("Database migrated for Payment Service");
+                    logger.LogInformation(
+                        "Skipping automatic migrations for Payment Service in non-development environments"
+                    );
+                    return;
                 }
             }
             catch (Exception ex) {
