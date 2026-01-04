@@ -21,15 +21,24 @@ jobs:
 
     # Step 3: Restore dependencies
     - name: Restore dependencies
-      run: dotnet restore src/back-end/services/inventory-service
+      run: dotnet restore src/back-end/services/inventory-service/src/InventoryService.API/InventoryService.API.csproj
 
     # Step 4: Build the service
     - name: Build
-      run: dotnet build src/back-end/services/inventory-service --no-restore
+      run: dotnet build src/back-end/services/inventory-service/src/InventoryService.API/InventoryService.API.csproj --no-restore
 
     # Step 5: Run tests
     - name: Run tests
-      run: dotnet test src/back-end/services/inventory-service --no-build
+      run: |
+        if [ -d src/back-end/services/inventory-service/tests ]; then
+          for testproj in src/back-end/services/inventory-service/tests/*.csproj src/back-end/services/inventory-service/tests/*/*.csproj; do
+            if [ -f "$testproj" ]; then
+              dotnet test "$testproj" --no-build
+            fi
+          done
+        else
+          echo "No tests configured for Inventory Service."
+        fi
 
   deploy:
     needs: build

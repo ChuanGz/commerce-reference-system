@@ -21,15 +21,20 @@ jobs:
 
     # Step 3: Restore dependencies
     - name: Restore dependencies
-      run: dotnet restore src/back-end/services/order-service
+      run: |
+        dotnet restore src/back-end/services/order-service/src/OrderService.API/OrderService.API.csproj
+        dotnet restore src/back-end/services/order-service/tests/OrderService.UnitTests/OrderService.UnitTests.csproj
+        dotnet restore src/back-end/services/order-service/tests/OrderService.IntegrationTests/OrderService.IntegrationTests.csproj
 
     # Step 4: Build the service
     - name: Build
-      run: dotnet build src/back-end/services/order-service --no-restore
+      run: dotnet build src/back-end/services/order-service/src/OrderService.API/OrderService.API.csproj --no-restore
 
     # Step 5: Run tests
     - name: Run tests
-      run: dotnet test src/back-end/services/order-service --no-build
+      run: |
+        dotnet test src/back-end/services/order-service/tests/OrderService.UnitTests/OrderService.UnitTests.csproj --no-build
+        dotnet test src/back-end/services/order-service/tests/OrderService.IntegrationTests/OrderService.IntegrationTests.csproj --no-build
 
   deploy:
     needs: build
