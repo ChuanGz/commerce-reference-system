@@ -3,7 +3,7 @@ version: '3.4'
 services:
   inventory-service:
     build:
-      context: .
+      context: ..
       dockerfile: docker/Dockerfile
     ports:
       - "5000:80"
