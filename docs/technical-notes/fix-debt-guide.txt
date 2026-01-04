@@ -1,0 +1,169 @@
+You are a code agent working in an existing .NET backend monorepo with multiple microservices under:
+src/back-end/services/<service>/src/<Service>.API|Application|Domain|Infrastructure
+There is a shared project at:
+src/back-end/Platform.Core
+
+We have critical security and operational issues:
+
+Critical: Services currently do NOT register authentication/authorization middleware. WebAppExtension.cs (lines ~40-124) lacks AddAuthentication/AddAuthorization and UseAppDefaults does not call UseAuthentication/UseAuthorization. Controllers such as OrdersController.cs have no [Authorize]. Endpoints are effectively public, violating RBAC/SSO requirements.
+High: Production auto-migrations run on startup. WebAppExtension.cs calls service initializers and DatabaseInitializer.cs calls MigrateAsync() outside dev. This risks outages and unreviewed schema changes.
+Medium: No backend tests exist. We need minimum unit/integration test scaffolding and an auth-gate integration test to prevent regression.
+Goal: Implement a best-practice, defense-in-depth approach:
+
+Each service MUST enforce auth/authz itself (gateway optional, not sufficient).
+Production MUST NOT auto-migrate on startup. Migrations must be run via controlled CI/CD step.
+Add minimal tests to lock in the auth gate and migration behavior.
+IMPORTANT: You MUST deliver this work as EXACTLY 4 pull requests (PR1–PR4). Do not mix scopes across PRs. Each PR must compile and pass tests. Each PR must include a brief markdown note in its PR description (or a PR summary file if required by workflow) explaining what changed and how to validate.
+
+Constraints:
+
+Target .NET 8.
+Keep changes pragmatic; avoid introducing new architectural frameworks unless necessary.
+Prefer centralized shared extension methods if Platform.Core is intended for that.
+Deny-by-default: all endpoints require auth unless explicitly allow-listed (health, readiness, etc.).
+Use JWT Bearer (assuming Entra ID / Identity Server style). Use configuration keys Auth:Authority and Auth:Audience (do not hardcode).
+Do not log tokens/PII.
+Repository scanning tasks (do in PR1 before coding):
+
+Find the actual WebAppExtension.cs and UseAppDefaults implementation.
+Identify how services create the WebApplication and where middleware is added.
+Find health endpoints conventions and existing swagger enabling logic.
+Locate DatabaseInitializer.cs and any other initializer calling MigrateAsync or EnsureCreated.
+Deliverable overview:
+PR-1: Authentication + Authorization registration and middleware pipeline (deny-by-default)
+PR-2: RBAC policies + controller protection ([Authorize] + per-endpoint policies)
+PR-3: Remove production startup auto-migrations + add controlled migration strategy (docs + CI script placeholder)
+PR-4: Add test scaffolding + integration tests for auth gate + migration policy
+
+========================
+PR-1 (CRITICAL): Global AuthN/AuthZ wiring (deny-by-default)
+Scope:
+
+Add AddAuthentication/AddAuthorization registrations in the standard service bootstrapping path.
+Ensure middleware pipeline includes UseAuthentication + UseAuthorization in correct order.
+Add a deny-by-default fallback policy requiring authenticated user for all endpoints.
+Explicitly allow anonymous only for health/readiness endpoints (and optionally swagger only in dev).
+Do NOT yet add fine-grained RBAC policies or [Authorize(Policy=...)] attributes (that is PR-2).
+Keep this PR minimal and repeatable across all services.
+Implementation requirements:
+
+In the shared startup extension (likely WebAppExtension.cs or a similar file), add:
+services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options => { options.Authority = config["Auth:Authority"]; options.Audience = config["Auth:Audience"]; options.RequireHttpsMetadata = true; ... })
+services.AddAuthorization(options => { options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build(); });
+In the middleware pipeline (UseAppDefaults or equivalent), add:
+app.UseAuthentication();
+app.UseAuthorization();
+Ensure ordering is: UseRouting -> UseAuthentication -> UseAuthorization -> MapControllers.
+Ensure health endpoints remain reachable without auth:
+Either apply [AllowAnonymous] on health controller/endpoint,
+OR map health endpoints before auth requirement, depending on current conventions.
+Prefer: keep FallbackPolicy and annotate health endpoints with [AllowAnonymous] or explicit allowlist.
+Swagger:
+If swagger is enabled in production today, require auth or disable it in production (prefer disable in prod).
+Keep changes minimal; do not break dev workflow.
+Add configuration documentation:
+Update relevant README or add a short note about required config keys Auth:Authority and Auth:Audience.
+Acceptance criteria (PR-1):
+
+Building all services succeeds.
+Calling any non-health controller endpoint without Authorization header returns 401.
+Health/readiness endpoints still return 200 without auth.
+No secrets/tokens are logged.
+========================
+PR-2 (CRITICAL): RBAC/SSO enforcement with policies + endpoint annotations
+Scope:
+
+Define authorization policies (scopes/roles/claims) and apply them to controllers/endpoints.
+Add [Authorize] / [Authorize(Policy="...")] to controllers (e.g., OrdersController) based on intended access.
+Standardize a small set of policy names across services, or service-specific policy names if that’s clearer.
+Do NOT alter migration behavior in this PR.
+Do NOT add tests in this PR.
+Implementation requirements:
+
+Create policy definitions in one consistent place:
+Prefer an extension method AddServiceAuthorizationPolicies(services, config) in Platform.Core or per-service API project.
+Policy model:
+If using scopes: RequireClaim("scp", "...") OR parse space-separated scopes (Azure AD uses "scp").
+If using roles: RequireRole("...") OR RequireClaim("roles", "...") (Azure uses "roles").
+Choose one approach (scopes preferred for APIs). Document the assumption in code comments.
+Apply policies:
+Apply [Authorize] at controller class level where appropriate.
+Apply [Authorize(Policy="X")] on endpoints that need elevated permissions (write vs read).
+Add [AllowAnonymous] only where required.
+Make it consistent across at least the key services shown in the findings (e.g., orders, identity/user, payment if exists).
+If too many services, implement a safe baseline: per-service policy names like "<Service>.Read" and "<Service>.Write".
+Add minimal docs:
+Document expected scopes/roles in a markdown file (e.g., docs/security/authz.md) and reference policy names.
+Acceptance criteria (PR-2):
+
+Endpoints return 403 for authenticated users missing required scope/role.
+Endpoints return 200 for properly authorized users (cannot fully test without tokens, but correctness of policy wiring must be verifiable by inspection).
+No public business endpoints exist except explicitly allowlisted.
+========================
+PR-3 (HIGH): Remove production startup auto-migrations + controlled migration strategy
+Scope:
+
+Remove/disable EF Core MigrateAsync on startup in non-development environments.
+Keep development convenience (auto-migrate allowed in Development only).
+Add a controlled migration strategy for production (CI/CD step or migration runner).
+Provide docs and a script placeholder; do not require full pipeline integration if repo lacks CI context.
+Implementation requirements:
+
+Locate DatabaseInitializer.cs (or equivalent) calling MigrateAsync outside dev.
+Change to: run MigrateAsync ONLY when env.IsDevelopment().
+In other environments, do not migrate. Optionally verify connectivity with a lightweight check.
+Ensure service startup does not fail due to missing migrations logic removal.
+Add migration execution guidance:
+Add docs/migrations.md explaining:
+How to run dotnet ef database update locally.
+Recommended prod approach: a CI/CD job or EF migrations bundle.
+Optionally add a script file under /scripts (e.g., scripts/run-migrations.sh or .ps1) as a placeholder.
+If possible, add an app setting flag:
+"Database:RunMigrationsOnStartup" default false, and only honored in Development.
+But do NOT overcomplicate; simplest safe fix is env-gated migrations.
+Acceptance criteria (PR-3):
+
+In Production/Staging environment simulation, app startup does NOT call MigrateAsync.
+In Development, migrations can still run on startup (if previously supported).
+Docs exist describing controlled migration execution.
+========================
+PR-4 (MEDIUM): Tests scaffolding + auth gate integration tests + migration policy tests
+Scope:
+
+Add minimum test project structure for at least one representative service (Orders preferred).
+Add an integration test that asserts:
+A protected endpoint returns 401 when called without auth.
+Health endpoint returns 200 without auth.
+Add a test that asserts production does NOT run migrations on startup.
+Keep tests stable and deterministic; do not require real external dependencies if avoidable.
+Implementation requirements:
+
+Create a test folder structure:
+src/back-end/services/orders-service/tests/OrdersService.IntegrationTests (or similar)
+Use Microsoft.AspNetCore.Mvc.Testing with WebApplicationFactory.
+Auth gate test:
+Choose one endpoint known to exist (e.g., GET /api/orders or similar).
+Assert 401 without Authorization header.
+Assert health endpoint is 200 without auth (use the repo’s actual health path).
+Migration policy test:
+Introduce a seam to observe whether migrations are invoked (e.g., interface IDatabaseInitializer, injectable implementation, or a flag/event).
+In test, configure environment as "Production" and assert initializer did NOT call MigrateAsync.
+Alternatively, if initializer already exposed, mock/spy it.
+Keep it minimal; do not refactor the world.
+Add a small unit test project if needed for policy config correctness (optional), but prioritize integration tests.
+Acceptance criteria (PR-4):
+
+dotnet test passes in CI/local.
+Integration test proves endpoints are not public.
+Migration test prevents regression (prod startup must not migrate).
+========================
+Operational notes
+Update any shared libraries only when it reduces duplication; avoid pushing business logic into shared code.
+Avoid breaking changes to route paths unless required.
+Ensure all changes are formatted and build cleanly.
+Each PR must include:
+Summary of changes
+Validation steps
+Any config keys required
+Maintain a changelog section in docs if repo uses it.
+Now execute PR-1 first. After PR-1 is complete and passing, proceed to PR-2, then PR-3, then PR-4. Do not start PR-2 work in PR-1.
