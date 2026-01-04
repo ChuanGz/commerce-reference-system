@@ -35,3 +35,5 @@ var app = builder.Build();
 app.UseAppDefaults();
 
 await app.RunAsync();
+
+public partial class Program { }

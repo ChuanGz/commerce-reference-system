@@ -82,6 +82,10 @@ public static class WebApp {
             );
 
         if (dbContextType == null) {
+            if (builder.Environment.IsEnvironment("Test")) {
+                return builder;
+            }
+
             throw new InvalidOperationException(
                 "No concrete DbContext type found in the service assembly."
             );
@@ -170,8 +174,13 @@ public static class WebApp {
     private static void InitDbFromRegisteredContext(WebApplication app) {
         // Try resolve the registered DbContext
         var dbContext = app.Services.GetServices<DbContext>().FirstOrDefault();
-        if (dbContext is null)
+        if (dbContext is null) {
+            if (app.Environment.IsEnvironment("Test")) {
+                return;
+            }
+
             throw new InvalidOperationException("No DbContext found to initialize.");
+        }
 
         var dbContextType = dbContext.GetType();
         var dbContextName = dbContextType.Name;
