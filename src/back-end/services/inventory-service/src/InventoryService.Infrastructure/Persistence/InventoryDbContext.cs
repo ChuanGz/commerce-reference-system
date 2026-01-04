@@ -25,6 +25,7 @@ namespace InventoryService.Infrastructure.Persistence {
         }
 
         private static void SeedData(ModelBuilder modelBuilder) {
+            var baseDate = new DateTime(2024, 01, 01, 0, 0, 0, DateTimeKind.Utc);
             var inventories = new[]
             {
                 new Inventory
@@ -34,7 +35,7 @@ namespace InventoryService.Infrastructure.Persistence {
                     Quantity = 100,
                     ReservedQuantity = 0,
                     Location = "Warehouse A - Shelf 1",
-                    LastUpdated = DateTime.UtcNow,
+                    LastUpdated = baseDate,
                 },
                 new Inventory
                 {
@@ -43,7 +44,7 @@ namespace InventoryService.Infrastructure.Persistence {
                     Quantity = 50,
                     ReservedQuantity = 5,
                     Location = "Warehouse B - Shelf 2",
-                    LastUpdated = DateTime.UtcNow,
+                    LastUpdated = baseDate,
                 },
                 new Inventory
                 {
@@ -52,7 +53,7 @@ namespace InventoryService.Infrastructure.Persistence {
                     Quantity = 25,
                     ReservedQuantity = 0,
                     Location = "Warehouse A - Shelf 3",
-                    LastUpdated = DateTime.UtcNow,
+                    LastUpdated = baseDate,
                 },
             };
 
