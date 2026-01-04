@@ -3,7 +3,7 @@ version: '3.8'
 services:
   identity-service:
     build:
-      context: ./services/identity-service
+      context: ..
       dockerfile: docker/Dockerfile
     ports:
       - "5001:80"

@@ -3,7 +3,7 @@ name: CI/CD for Product Service
 on:
   push:
     paths:
-      - 'src/services/product-service/**'
+      - 'src/back-end/services/product-service/**'
 
 jobs:
   build:
@@ -21,15 +21,15 @@ jobs:
 
     # Step 3: Restore dependencies
     - name: Restore dependencies
-      run: dotnet restore src/services/product-service
+      run: dotnet restore src/back-end/services/product-service
 
     # Step 4: Build the service
     - name: Build
-      run: dotnet build src/services/product-service --no-restore
+      run: dotnet build src/back-end/services/product-service --no-restore
 
     # Step 5: Run tests
     - name: Run tests
-      run: dotnet test src/services/product-service --no-build
+      run: dotnet test src/back-end/services/product-service --no-build
 
   deploy:
     needs: build

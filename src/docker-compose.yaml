@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   storefront:
-    build: ./frontend/storefront
+    build: ./front-end/storefront
     ports:
       - "3000:3000"
     depends_on:
@@ -12,7 +12,7 @@ services:
       - frontend
 
   backoffice:
-    build: ./frontend/backoffice
+    build: ./front-end/backoffice
     ports:
       - "4200:4200"
     depends_on:
@@ -23,14 +23,14 @@ services:
       - frontend
 
   identity-service:
-    build: ./services/identity-service
+    build: ./back-end/services/identity-service
     ports:
       - "5001:5001"
     networks:
       - backend
 
   user-service:
-    build: ./services/user-service
+    build: ./back-end/services/user-service
     ports:
       - "5002:5002"
     depends_on:
@@ -39,7 +39,7 @@ services:
       - backend
 
   customer-service:
-    build: ./services/customer-service
+    build: ./back-end/services/customer-service
     ports:
       - "5003:5003"
     depends_on:
@@ -48,7 +48,7 @@ services:
       - backend
 
   product-service:
-    build: ./services/product-service
+    build: ./back-end/services/product-service
     ports:
       - "5004:5004"
     depends_on:
@@ -57,14 +57,14 @@ services:
       - backend
 
   inventory-service:
-    build: ./services/inventory-service
+    build: ./back-end/services/inventory-service
     ports:
       - "5005:5005"
     networks:
       - backend
 
   order-service:
-    build: ./services/order-service
+    build: ./back-end/services/order-service
     ports:
       - "5006:5006"
     depends_on:
