@@ -1,12 +1,9 @@
 using FluentValidation;
 using InventoryService.Application.Commands;
 
-namespace InventoryService.Application.Validators
-{
-    public class UpdateInventoryCommandValidator : AbstractValidator<UpdateInventoryCommand>
-    {
-        public UpdateInventoryCommandValidator()
-        {
+namespace InventoryService.Application.Validators {
+    public class UpdateInventoryCommandValidator : AbstractValidator<UpdateInventoryCommand> {
+        public UpdateInventoryCommandValidator() {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
 
             RuleFor(x => x.Quantity)

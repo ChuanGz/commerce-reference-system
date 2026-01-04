@@ -1,10 +1,8 @@
 using CustomerService.Application.Commands;
 using FluentValidation;
 
-public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
-{
-    public UpdateCustomerCommandValidator()
-    {
+public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand> {
+    public UpdateCustomerCommandValidator() {
         RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
 
         RuleFor(x => x.FirstName)

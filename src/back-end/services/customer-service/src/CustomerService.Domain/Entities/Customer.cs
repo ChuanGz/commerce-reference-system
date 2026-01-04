@@ -1,7 +1,5 @@
-namespace CustomerService.Domain.Entities
-{
-    public class Customer
-    {
+namespace CustomerService.Domain.Entities {
+    public class Customer {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string FirstName { get; set; } = string.Empty;

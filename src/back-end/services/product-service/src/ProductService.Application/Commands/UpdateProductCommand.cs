@@ -1,5 +1,4 @@
-namespace ProductService.Application.Commands
-{
+namespace ProductService.Application.Commands {
     public record UpdateProductCommand(
         Guid Id,
         string Name,

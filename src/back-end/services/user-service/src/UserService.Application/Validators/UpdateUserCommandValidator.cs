@@ -2,14 +2,11 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Commands;
 
-namespace UserService.Application.Validators
-{
-    public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
-    {
+namespace UserService.Application.Validators {
+    public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand> {
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public UpdateUserCommandValidator(IServiceScopeFactory scopeFactory)
-        {
+        public UpdateUserCommandValidator(IServiceScopeFactory scopeFactory) {
             _scopeFactory = scopeFactory;
 
             RuleFor(x => x.Id).NotEmpty().WithMessage("User Id is required.");
@@ -30,8 +27,7 @@ namespace UserService.Application.Validators
 
             RuleFor(x => x)
                 .CustomAsync(
-                    async (command, context, cancellationToken) =>
-                    {
+                    async (command, context, cancellationToken) => {
                         using var scope = _scopeFactory.CreateScope();
                         var repo = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 

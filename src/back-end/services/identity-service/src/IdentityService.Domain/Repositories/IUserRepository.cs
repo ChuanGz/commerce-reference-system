@@ -1,9 +1,7 @@
 using IdentityService.Domain.Entities;
 
-namespace IdentityService.Domain.Repositories
-{
-    public interface IUserRepository
-    {
+namespace IdentityService.Domain.Repositories {
+    public interface IUserRepository {
         Task<User?> GetByUsernameAsync(
             string username,
             CancellationToken cancellationToken = default

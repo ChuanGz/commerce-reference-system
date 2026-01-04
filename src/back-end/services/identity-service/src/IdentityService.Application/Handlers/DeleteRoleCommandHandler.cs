@@ -1,16 +1,13 @@
 using IdentityService.Application.Commands;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class DeleteRoleCommandHandler(IRoleRepository roleRepository)
-        : IRequestHandler<DeleteRoleCommand, bool>
-    {
+        : IRequestHandler<DeleteRoleCommand, bool> {
         public async Task<bool> Handle(
             DeleteRoleCommand command,
             CancellationToken cancellationToken
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
 
             var role = await roleRepository.GetByIdAsync(command.Id, cancellationToken);

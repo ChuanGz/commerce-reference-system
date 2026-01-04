@@ -2,24 +2,20 @@ using IdentityService.Application.Queries;
 using IdentityService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class GetUserPermissionsQueryHandler(
         IUserRepository userRepository,
         ILogger<GetUserPermissionsQueryHandler> logger
-    ) : IRequestHandler<GetUserPermissionsQuery, IEnumerable<string>>
-    {
+    ) : IRequestHandler<GetUserPermissionsQuery, IEnumerable<string>> {
         public async Task<IEnumerable<string>> Handle(
             GetUserPermissionsQuery query,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(query);
             logger.LogInformation("Getting permissions for user: {UserId}", query.UserId);
 
             var user = await userRepository.GetByIdAsync(query.UserId, cancellationToken);
-            if (user == null)
-            {
+            if (user == null) {
                 logger.LogWarning("User not found: {UserId}", query.UserId);
                 return [];
             }

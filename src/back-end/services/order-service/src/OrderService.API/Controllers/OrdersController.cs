@@ -3,17 +3,14 @@ using OrderService.Application.Commands;
 using OrderService.Application.Queries;
 using OrderService.Domain.Constants;
 
-namespace OrderService.API.Controllers
-{
+namespace OrderService.API.Controllers {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrdersController(IMediator mediator) : ControllerBase
-    {
+    public class OrdersController(IMediator mediator) : ControllerBase {
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
-        {
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) {
             var result = await _mediator.Send(new GetAllOrdersQuery(), cancellationToken);
             return Ok(result);
         }
@@ -22,8 +19,7 @@ namespace OrderService.API.Controllers
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await _mediator.Send(new GetOrderByIdQuery(id), cancellationToken);
             return result != null ? Ok(result) : NotFound();
         }
@@ -32,8 +28,7 @@ namespace OrderService.API.Controllers
         public async Task<IActionResult> GetByCustomerId(
             Guid customerId,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await _mediator.Send(
                 new GetOrdersByCustomerIdQuery(customerId),
                 cancellationToken
@@ -45,8 +40,7 @@ namespace OrderService.API.Controllers
         public async Task<IActionResult> GetByStatus(
             string status,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await _mediator.Send(
                 new GetOrdersByStatusQuery(status),
                 cancellationToken
@@ -59,8 +53,7 @@ namespace OrderService.API.Controllers
             [FromQuery] DateTime startDate,
             [FromQuery] DateTime endDate,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await _mediator.Send(
                 new GetOrdersByDateRangeQuery(startDate, endDate),
                 cancellationToken
@@ -72,8 +65,7 @@ namespace OrderService.API.Controllers
         public async Task<IActionResult> Create(
             [FromBody] CreateOrderCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var id = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
@@ -83,8 +75,7 @@ namespace OrderService.API.Controllers
             Guid id,
             [FromBody] UpdateOrderStatusCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
             if (id != command.Id)
                 return BadRequest(ErrorMessages.IdMismatch);
@@ -97,8 +88,7 @@ namespace OrderService.API.Controllers
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             await _mediator.Send(new DeleteOrderCommand(id), cancellationToken);
             return NoContent();
         }

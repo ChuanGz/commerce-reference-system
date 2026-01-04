@@ -2,36 +2,30 @@ using IdentityService.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityService.Infrastructure.Persistence
-{
-    public static class DatabaseInitializer
-    {
+namespace IdentityService.Infrastructure.Persistence {
+    public static class DatabaseInitializer {
         public static async Task InitializeAsync(
             IServiceProvider serviceProvider,
             ILogger logger,
             bool isDevelopment
-        )
-        {
+        ) {
             using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
 
-            if (isDevelopment)
-            {
+            if (isDevelopment) {
                 logger.LogInformation("Development environment detected. Recreating database...");
                 await context.Database.EnsureDeletedAsync();
                 logger.LogInformation("Database deleted successfully");
                 await context.Database.MigrateAsync();
                 logger.LogInformation("Database migration completed successfully");
             }
-            else
-            {
+            else {
                 logger.LogInformation("Production environment. Running migrations...");
                 await context.Database.MigrateAsync();
                 logger.LogInformation("Database migration completed successfully");
             }
 
-            if (context.Users.Any())
-            {
+            if (context.Users.Any()) {
                 logger.LogInformation("Database already seeded");
                 return;
             }
@@ -64,8 +58,7 @@ namespace IdentityService.Infrastructure.Persistence
                 },
             };
 
-            var adminRole = new Role
-            {
+            var adminRole = new Role {
                 Id = Guid.NewGuid(),
                 Name = "Admin",
                 RolePermissions = permissions
@@ -73,8 +66,7 @@ namespace IdentityService.Infrastructure.Persistence
                     .ToList(),
             };
 
-            var managerRole = new Role
-            {
+            var managerRole = new Role {
                 Id = Guid.NewGuid(),
                 Name = "Manager",
                 RolePermissions = permissions
@@ -83,8 +75,7 @@ namespace IdentityService.Infrastructure.Persistence
                     .ToList(),
             };
 
-            var employeeRole = new Role
-            {
+            var employeeRole = new Role {
                 Id = Guid.NewGuid(),
                 Name = "Employee",
                 RolePermissions = permissions
@@ -93,8 +84,7 @@ namespace IdentityService.Infrastructure.Persistence
                     .ToList(),
             };
 
-            var auditorRole = new Role
-            {
+            var auditorRole = new Role {
                 Id = Guid.NewGuid(),
                 Name = "Auditor",
                 RolePermissions = permissions
@@ -139,15 +129,12 @@ namespace IdentityService.Infrastructure.Persistence
 
             var users = new List<User>();
 
-            foreach (var group in groups)
-            {
+            foreach (var group in groups) {
                 int userCount = group.Name == "Employee" ? 20 : 5;
 
-                for (int i = 1; i <= userCount; i++)
-                {
+                for (int i = 1; i <= userCount; i++) {
                     users.Add(
-                        new User
-                        {
+                        new User {
                             Id = Guid.NewGuid(),
                             Username = $"{group.Name.ToLower()}_{i}",
                             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Abcd@@1234"),

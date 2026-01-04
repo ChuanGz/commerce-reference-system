@@ -3,13 +3,10 @@ using UserService.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace UserService.Infrastructure.Migrations
-{
+namespace UserService.Infrastructure.Migrations {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
-    {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
+    partial class UserDbContextModelSnapshot : ModelSnapshot {
+        protected override void BuildModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.5")
@@ -19,8 +16,7 @@ namespace UserService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "UserService.Domain.Entities.User",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email").IsRequired().HasColumnType("nvarchar(max)");
@@ -32,62 +28,52 @@ namespace UserService.Infrastructure.Migrations
                     b.ToTable("Users");
 
                     b.HasData(
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             Email = "user001@example.com",
                             Name = "User Test 001",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
                             Email = "user002@example.com",
                             Name = "User Test 002",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
                             Email = "user003@example.com",
                             Name = "User Test 003",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
                             Email = "user004@example.com",
                             Name = "User Test 004",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
                             Email = "user005@example.com",
                             Name = "User Test 005",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
                             Email = "user006@example.com",
                             Name = "User Test 006",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
                             Email = "user007@example.com",
                             Name = "User Test 007",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
                             Email = "user008@example.com",
                             Name = "User Test 008",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
                             Email = "user009@example.com",
                             Name = "User Test 009",
                         },
-                        new
-                        {
+                        new {
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
                             Email = "user010@example.com",
                             Name = "User Test 010",

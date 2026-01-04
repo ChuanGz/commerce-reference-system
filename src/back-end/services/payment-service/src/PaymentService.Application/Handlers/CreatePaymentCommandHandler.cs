@@ -3,20 +3,16 @@ using PaymentService.Domain.Constants;
 using PaymentService.Domain.Entities;
 using PaymentService.Domain.Repositories;
 
-namespace PaymentService.Application.Handlers
-{
+namespace PaymentService.Application.Handlers {
     public class CreatePaymentCommandHandler(IPaymentRepository repo)
-        : IRequestHandler<CreatePaymentCommand, Guid>
-    {
+        : IRequestHandler<CreatePaymentCommand, Guid> {
         public async Task<Guid> Handle(
             CreatePaymentCommand request,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
 
-            var payment = new Payment
-            {
+            var payment = new Payment {
                 Id = Guid.NewGuid(),
                 OrderId = request.OrderId,
                 Amount = request.Amount,

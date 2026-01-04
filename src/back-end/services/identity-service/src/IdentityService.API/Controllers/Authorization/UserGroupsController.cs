@@ -5,17 +5,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers.Authorization
-{
+namespace IdentityService.API.Controllers.Authorization {
     [ApiController]
     [Route("api/usergroups")]
     [Authorize]
-    public class UserGroupController(IMediator mediator) : ControllerBase
-    {
+    public class UserGroupController(IMediator mediator) : ControllerBase {
         [Authorize(Policy = "CanViewGroup")]
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
-        {
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) {
             var result = await mediator.Send(new GetAllUserGroupsQuery(), cancellationToken);
             return Ok(result);
         }
@@ -25,8 +22,7 @@ namespace IdentityService.API.Controllers.Authorization
         public async Task<IActionResult> AssignUserToGroup(
             [FromBody] UserGroupDto dto,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(dto, nameof(dto));
             var success = await mediator.Send(
                 new AssignUserToGroupCommand(dto.UserId, dto.GroupId),
@@ -42,8 +38,7 @@ namespace IdentityService.API.Controllers.Authorization
         public async Task<IActionResult> Approve(
             [FromBody] UserGroupDto dto,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(dto, nameof(dto));
             var success = await mediator.Send(
                 new ApproveUserGroupCommand(dto.UserId, dto.GroupId),
@@ -57,8 +52,7 @@ namespace IdentityService.API.Controllers.Authorization
         public async Task<IActionResult> Remove(
             [FromBody] UserGroupDto dto,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(dto, nameof(dto));
             var success = await mediator.Send(
                 new RemoveUserGroupCommand(dto.UserId, dto.GroupId),

@@ -1,9 +1,7 @@
 using IdentityService.Domain.Entities;
 
-namespace IdentityService.Infrastructure.Persistence
-{
-    public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : DbContext(options)
-    {
+namespace IdentityService.Infrastructure.Persistence {
+    public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : DbContext(options) {
         public DbSet<User> Users => Set<User>();
         public DbSet<Group> Groups => Set<Group>();
         public DbSet<Role> Roles => Set<Role>();
@@ -13,8 +11,7 @@ namespace IdentityService.Infrastructure.Persistence
         public DbSet<GroupRole> GroupRoles => Set<GroupRole>();
         public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<UserGroup>().HasKey(ug => new { ug.UserId, ug.GroupId });

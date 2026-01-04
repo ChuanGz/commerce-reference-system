@@ -1,16 +1,13 @@
 using IdentityService.Application.Commands;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class ApproveUserGroupCommandHandler(IUserGroupRepository userGroupRepository)
-        : IRequestHandler<ApproveUserGroupCommand, bool>
-    {
+        : IRequestHandler<ApproveUserGroupCommand, bool> {
         public async Task<bool> Handle(
             ApproveUserGroupCommand command,
             CancellationToken cancellationToken
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
 
             var userGroup = await userGroupRepository.GetAsync(

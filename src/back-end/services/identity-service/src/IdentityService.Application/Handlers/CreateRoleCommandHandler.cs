@@ -2,20 +2,16 @@ using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class CreateRoleCommandHandler(IRoleRepository roleRepository)
-        : IRequestHandler<CreateRoleCommand, Guid>
-    {
+        : IRequestHandler<CreateRoleCommand, Guid> {
         public async Task<Guid> Handle(
             CreateRoleCommand command,
             CancellationToken cancellationToken
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
 
-            var role = new Role
-            {
+            var role = new Role {
                 Id = Guid.NewGuid(),
                 Name = command.Name,
                 RolePermissions = command

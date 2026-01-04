@@ -1,10 +1,8 @@
 using System.Linq.Expressions;
 using OrderService.Domain.Entities;
 
-namespace OrderService.Domain.Repositories
-{
-    public interface IOrderRepository
-    {
+namespace OrderService.Domain.Repositories {
+    public interface IOrderRepository {
         Task<List<Order>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<List<Order>> GetByCustomerIdAsync(

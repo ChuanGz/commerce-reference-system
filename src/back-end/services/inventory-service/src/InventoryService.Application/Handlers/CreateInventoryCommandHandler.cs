@@ -2,20 +2,16 @@ using InventoryService.Application.Commands;
 using InventoryService.Domain.Entities;
 using InventoryService.Domain.Repositories;
 
-namespace InventoryService.Application.Handlers
-{
+namespace InventoryService.Application.Handlers {
     public class CreateInventoryCommandHandler(IInventoryRepository repo)
-        : IRequestHandler<CreateInventoryCommand, Guid>
-    {
+        : IRequestHandler<CreateInventoryCommand, Guid> {
         public async Task<Guid> Handle(
             CreateInventoryCommand request,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
 
-            var inventory = new Inventory
-            {
+            var inventory = new Inventory {
                 Id = Guid.NewGuid(),
                 ProductId = request.ProductId,
                 Quantity = request.Quantity,

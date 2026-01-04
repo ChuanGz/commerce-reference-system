@@ -1,16 +1,13 @@
 using OrderService.Application.Commands;
 using OrderService.Domain.Repositories;
 
-namespace OrderService.Application.Handlers
-{
+namespace OrderService.Application.Handlers {
     public class UpdateOrderStatusCommandHandler(IOrderRepository repo)
-        : IRequestHandler<UpdateOrderStatusCommand, Unit>
-    {
+        : IRequestHandler<UpdateOrderStatusCommand, Unit> {
         public async Task<Unit> Handle(
             UpdateOrderStatusCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
 
             var order = await repo.GetByIdAsync(command.Id, cancellationToken);

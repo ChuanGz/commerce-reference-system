@@ -2,18 +2,15 @@ using Microsoft.Extensions.Logging;
 using OrderService.Application.Commands;
 using OrderService.Domain.Repositories;
 
-namespace OrderService.Application.Handlers
-{
+namespace OrderService.Application.Handlers {
     public class UpdateOrderPaymentStatusCommandHandler(
         IOrderRepository repo,
         ILogger<UpdateOrderPaymentStatusCommandHandler> logger
-    ) : IRequestHandler<UpdateOrderPaymentStatusCommand, bool>
-    {
+    ) : IRequestHandler<UpdateOrderPaymentStatusCommand, bool> {
         public async Task<bool> Handle(
             UpdateOrderPaymentStatusCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
 
             logger.LogInformation(
@@ -22,21 +19,17 @@ namespace OrderService.Application.Handlers
                 command.PaymentStatus
             );
 
-            try
-            {
+            try {
                 var order = await repo.GetByIdAsync(command.OrderId, cancellationToken);
-                if (order == null)
-                {
+                if (order == null) {
                     logger.LogWarning("Order not found: {OrderId}", command.OrderId);
                     return false;
                 }
 
-                if (command.PaymentStatus == "Completed")
-                {
+                if (command.PaymentStatus == "Completed") {
                     order.Status = "Confirmed";
                 }
-                else if (command.PaymentStatus == "Failed")
-                {
+                else if (command.PaymentStatus == "Failed") {
                     order.Status = "PaymentFailed";
                 }
 
@@ -49,8 +42,7 @@ namespace OrderService.Application.Handlers
                 );
                 return true;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(
                     ex,
                     "Error updating payment status for order: {OrderId}",

@@ -14,16 +14,14 @@ builder
     .AddScoped<ICustomerServiceClient, CustomerServiceClient>()
     .AddScoped<IOrderServiceClient, OrderServiceClient>();
 
-builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client =>
-{
+builder.Services.AddHttpClient<ICustomerServiceClient, CustomerServiceClient>(client => {
     client.BaseAddress = new Uri(
         builder.Configuration["Services:CustomerService:BaseUrl"] ?? "http://localhost:5050"
     );
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-builder.Services.AddHttpClient<IOrderServiceClient, OrderServiceClient>(client =>
-{
+builder.Services.AddHttpClient<IOrderServiceClient, OrderServiceClient>(client => {
     client.BaseAddress = new Uri(
         builder.Configuration["Services:OrderService:BaseUrl"] ?? "http://localhost:5080"
     );

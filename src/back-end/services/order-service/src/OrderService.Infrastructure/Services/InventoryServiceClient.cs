@@ -2,21 +2,17 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using OrderService.Application.Interfaces;
 
-namespace OrderService.Infrastructure.Services
-{
+namespace OrderService.Infrastructure.Services {
     public class InventoryServiceClient(
         HttpClient httpClient,
         ILogger<InventoryServiceClient> logger
-    ) : IInventoryServiceClient
-    {
+    ) : IInventoryServiceClient {
         public async Task<bool> CheckStockAvailabilityAsync(
             Guid productId,
             int quantity,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation(
                     "Checking stock availability: {ProductId} - Quantity: {Quantity}",
                     productId,
@@ -28,8 +24,7 @@ namespace OrderService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     var content = await response.Content.ReadAsStringAsync(cancellationToken);
                     var result = JsonSerializer.Deserialize<AvailabilityResponse>(
                         content,
@@ -51,8 +46,7 @@ namespace OrderService.Infrastructure.Services
                 );
                 return false;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error checking stock availability: {ProductId}", productId);
                 return false;
             }
@@ -62,10 +56,8 @@ namespace OrderService.Infrastructure.Services
             Guid productId,
             int quantity,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation(
                     "Reserving stock: {ProductId} - Quantity: {Quantity}",
                     productId,
@@ -85,8 +77,7 @@ namespace OrderService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     logger.LogInformation(
                         "Stock reserved successfully: {ProductId} - Quantity: {Quantity}",
                         productId,
@@ -102,8 +93,7 @@ namespace OrderService.Infrastructure.Services
                 );
                 return false;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error reserving stock: {ProductId}", productId);
                 return false;
             }
@@ -113,10 +103,8 @@ namespace OrderService.Infrastructure.Services
             Guid productId,
             int quantity,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation(
                     "Releasing stock: {ProductId} - Quantity: {Quantity}",
                     productId,
@@ -136,8 +124,7 @@ namespace OrderService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     logger.LogInformation(
                         "Stock released successfully: {ProductId} - Quantity: {Quantity}",
                         productId,
@@ -153,8 +140,7 @@ namespace OrderService.Infrastructure.Services
                 );
                 return false;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error releasing stock: {ProductId}", productId);
                 return false;
             }
@@ -163,10 +149,8 @@ namespace OrderService.Infrastructure.Services
         public async Task<InventoryInfo?> GetInventoryAsync(
             Guid productId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Fetching inventory info: {ProductId}", productId);
 
                 var response = await httpClient.GetAsync(
@@ -174,8 +158,7 @@ namespace OrderService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     var content = await response.Content.ReadAsStringAsync(cancellationToken);
                     var inventory = JsonSerializer.Deserialize<InventoryInfo>(
                         content,
@@ -196,15 +179,13 @@ namespace OrderService.Infrastructure.Services
                 );
                 return null;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error fetching inventory: {ProductId}", productId);
                 return null;
             }
         }
 
-        private class AvailabilityResponse
-        {
+        private class AvailabilityResponse {
             public bool IsAvailable { get; set; }
         }
     }

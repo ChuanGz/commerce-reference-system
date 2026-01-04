@@ -1,7 +1,5 @@
-namespace OrderService.Application.Interfaces
-{
-    public interface IInventoryServiceClient
-    {
+namespace OrderService.Application.Interfaces {
+    public interface IInventoryServiceClient {
         Task<bool> CheckStockAvailabilityAsync(
             Guid productId,
             int quantity,
@@ -23,8 +21,7 @@ namespace OrderService.Application.Interfaces
         );
     }
 
-    public class InventoryInfo
-    {
+    public class InventoryInfo {
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public int Quantity { get; set; }

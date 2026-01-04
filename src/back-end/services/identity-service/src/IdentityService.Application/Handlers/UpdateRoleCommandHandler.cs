@@ -2,16 +2,13 @@ using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class UpdateRoleCommandHandler(IRoleRepository roleRepository)
-        : IRequestHandler<UpdateRoleCommand, bool>
-    {
+        : IRequestHandler<UpdateRoleCommand, bool> {
         public async Task<bool> Handle(
             UpdateRoleCommand command,
             CancellationToken cancellationToken
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
             var role = await roleRepository.GetByIdAsync(command.Id, cancellationToken);
             if (role is null)

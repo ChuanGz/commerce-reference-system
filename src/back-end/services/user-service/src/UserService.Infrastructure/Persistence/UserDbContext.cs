@@ -1,11 +1,8 @@
-namespace UserService.Infrastructure.Persistence
-{
-    public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
-    {
+namespace UserService.Infrastructure.Persistence {
+    public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options) {
         public DbSet<User> Users => Set<User>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
             base.OnModelCreating(modelBuilder);
 

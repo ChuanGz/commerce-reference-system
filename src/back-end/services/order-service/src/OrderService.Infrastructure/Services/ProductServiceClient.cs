@@ -2,18 +2,14 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using OrderService.Application.Interfaces;
 
-namespace OrderService.Infrastructure.Services
-{
+namespace OrderService.Infrastructure.Services {
     public class ProductServiceClient(HttpClient httpClient, ILogger<ProductServiceClient> logger)
-        : IProductServiceClient
-    {
+        : IProductServiceClient {
         public async Task<ProductInfo?> GetProductAsync(
             Guid productId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Fetching product info: {ProductId}", productId);
 
                 var response = await httpClient.GetAsync(
@@ -21,8 +17,7 @@ namespace OrderService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     var content = await response.Content.ReadAsStringAsync(cancellationToken);
                     var product = JsonSerializer.Deserialize<ProductInfo>(
                         content,
@@ -43,8 +38,7 @@ namespace OrderService.Infrastructure.Services
                 );
                 return null;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error fetching product: {ProductId}", productId);
                 return null;
             }
@@ -53,10 +47,8 @@ namespace OrderService.Infrastructure.Services
         public async Task<bool> ValidateProductAsync(
             Guid productId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Validating product: {ProductId}", productId);
 
                 var product = await GetProductAsync(productId, cancellationToken);
@@ -69,8 +61,7 @@ namespace OrderService.Infrastructure.Services
                 );
                 return isValid;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error validating product: {ProductId}", productId);
                 return false;
             }
@@ -79,10 +70,8 @@ namespace OrderService.Infrastructure.Services
         public async Task<IEnumerable<ProductInfo>> GetProductsAsync(
             IEnumerable<Guid> productIds,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation(
                     "Fetching multiple products: {ProductCount}",
                     productIds.Count()
@@ -99,8 +88,7 @@ namespace OrderService.Infrastructure.Services
 
                 return products;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error fetching multiple products");
                 return [];
             }

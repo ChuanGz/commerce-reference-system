@@ -1,7 +1,5 @@
-namespace IdentityService.Application.Interfaces
-{
-    public interface IAuthenticationService
-    {
+namespace IdentityService.Application.Interfaces {
+    public interface IAuthenticationService {
         Task<string?> AuthenticateAsync(
             string username,
             string password,

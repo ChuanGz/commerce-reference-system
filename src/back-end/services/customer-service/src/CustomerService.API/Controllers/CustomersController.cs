@@ -3,12 +3,10 @@ using CustomerService.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CustomerService.API.Controllers
-{
+namespace CustomerService.API.Controllers {
     [ApiController]
     [Route("api/customers")]
-    public class CustomersController(IMediator mediator) : ControllerBase
-    {
+    public class CustomersController(IMediator mediator) : ControllerBase {
         [HttpGet]
         public async Task<IActionResult> Get(CancellationToken cancellationToken) =>
             Ok(await mediator.Send(new GetAllCustomersQuery(), cancellationToken));
@@ -17,8 +15,7 @@ namespace CustomerService.API.Controllers
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var customer = await mediator.Send(new GetCustomerByIdQuery(id), cancellationToken);
 
             if (customer == null)
@@ -31,8 +28,7 @@ namespace CustomerService.API.Controllers
         public async Task<IActionResult> GetByUserId(
             Guid userId,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var customer = await mediator.Send(
                 new GetCustomerByUserIdQuery(userId),
                 cancellationToken
@@ -48,8 +44,7 @@ namespace CustomerService.API.Controllers
         public async Task<IActionResult> Create(
             [FromBody] CreateCustomerCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var customerId = await mediator.Send(command, cancellationToken);
 
             return CreatedAtAction(nameof(GetById), new { id = customerId }, command);
@@ -60,8 +55,7 @@ namespace CustomerService.API.Controllers
             Guid id,
             [FromBody] UpdateCustomerCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command, nameof(command));
             var updatedCommand = new UpdateCustomerCommand(
                 id,
@@ -83,8 +77,7 @@ namespace CustomerService.API.Controllers
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await mediator.Send(new DeleteCustomerCommand(id), cancellationToken);
 
             if (!result.Equals(Unit.Value))

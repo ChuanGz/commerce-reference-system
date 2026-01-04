@@ -1,9 +1,7 @@
 using IdentityService.Domain.Entities;
 
-namespace IdentityService.Domain.Repositories
-{
-    public interface IUserGroupRepository
-    {
+namespace IdentityService.Domain.Repositories {
+    public interface IUserGroupRepository {
         Task<UserGroup?> GetAsync(
             Guid userId,
             Guid groupId,

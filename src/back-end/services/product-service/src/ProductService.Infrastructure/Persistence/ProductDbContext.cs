@@ -1,19 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using ProductService.Domain.Entities;
 
-namespace ProductService.Infrastructure.Persistence
-{
-    public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbContext(options)
-    {
+namespace ProductService.Infrastructure.Persistence {
+    public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbContext(options) {
         public DbSet<Product> Products { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>(entity =>
-            {
+            modelBuilder.Entity<Product>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
@@ -30,8 +26,7 @@ namespace ProductService.Infrastructure.Persistence
             SeedData(modelBuilder);
         }
 
-        private static void SeedData(ModelBuilder modelBuilder)
-        {
+        private static void SeedData(ModelBuilder modelBuilder) {
             var products = new[]
             {
                 new Product

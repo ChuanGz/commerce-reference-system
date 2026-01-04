@@ -8,8 +8,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Platform.Core.Extensions;
 
-public static class WebApp
-{
+public static class WebApp {
     /// <summary>
     /// Creates a WebApplicationBuilder with preconfigured logging, configuration,
     /// Swagger, health checks, MediatR, FluentValidation, and Entity Framework Core support.
@@ -17,8 +16,7 @@ public static class WebApp
     /// </summary>
     /// <typeparam name="TEntry">Marker type located in the target service's root namespace and assembly.</typeparam>
     public static WebApplicationBuilder CreateWithDefaults<TEntry>(string[] args)
-        where TEntry : class
-    {
+        where TEntry : class {
         var builder = WebApplication.CreateBuilder(args);
 
         // Configure default logging
@@ -45,8 +43,7 @@ public static class WebApp
         builder.Services.AddHealthChecks();
 
         // Configure Swagger with inferred service name
-        builder.Services.AddSwaggerGen(c =>
-        {
+        builder.Services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = $"{serviceName} API", Version = "v1" });
         });
 
@@ -59,8 +56,7 @@ public static class WebApp
                 && t.Name.EndsWith("DbContext")
             );
 
-        if (dbContextType == null)
-        {
+        if (dbContextType == null) {
             throw new InvalidOperationException(
                 "No concrete DbContext type found in the service assembly."
             );
@@ -79,8 +75,7 @@ public static class WebApp
             && m.GetParameters()[1].ParameterType.Name.Contains("Action")
         );
 
-        if (addDbContextMethod == null)
-        {
+        if (addDbContextMethod == null) {
             throw new InvalidOperationException("Unable to locate AddDbContext<TContext> method.");
         }
 
@@ -88,12 +83,10 @@ public static class WebApp
         var addDbContextGenericMethod = addDbContextMethod.MakeGenericMethod(dbContextType);
 
         // Build the options delegate using the configured connection string
-        var dbContextOptionsDelegate = new Action<DbContextOptionsBuilder>(options =>
-        {
+        var dbContextOptionsDelegate = new Action<DbContextOptionsBuilder>(options => {
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            if (string.IsNullOrEmpty(connectionString))
-            {
+            if (string.IsNullOrEmpty(connectionString)) {
                 throw new InvalidOperationException(
                     "Missing 'DefaultConnection' in configuration."
                 );
@@ -117,13 +110,11 @@ public static class WebApp
     /// <summary>
     /// Apply default middleware pipeline and database initialization logic.
     /// </summary>
-    public static void UseAppDefaults(this WebApplication app)
-    {
+    public static void UseAppDefaults(this WebApplication app) {
         ArgumentNullException.ThrowIfNull(app);
         app.UsePlatformExceptionHandling();
 
-        if (IsLocalOrDev(app.Environment))
-        {
+        if (IsLocalOrDev(app.Environment)) {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
@@ -140,8 +131,7 @@ public static class WebApp
     /// </summary>
     /// <param name="env"></param>
     /// <returns></returns>
-    private static bool IsLocalOrDev(IHostEnvironment env)
-    {
+    private static bool IsLocalOrDev(IHostEnvironment env) {
         return env.IsDevelopment()
             || env.EnvironmentName.Equals("Local", StringComparison.OrdinalIgnoreCase)
             || env.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase);
@@ -150,8 +140,7 @@ public static class WebApp
     /// <summary>
     /// Attempt to resolve registered DbContext type and run the initializer.
     /// </summary>
-    private static void InitDbFromRegisteredContext(WebApplication app)
-    {
+    private static void InitDbFromRegisteredContext(WebApplication app) {
         // Try resolve the registered DbContext
         var dbContext = app.Services.GetServices<DbContext>().FirstOrDefault();
         if (dbContext is null)
@@ -191,10 +180,8 @@ public static class WebApp
                 new object[] { app.Services, logger, app.Environment.IsDevelopment() }
             );
 
-        task?.ContinueWith(t =>
-        {
-            if (t.Exception != null)
-            {
+        task?.ContinueWith(t => {
+            if (t.Exception != null) {
                 var log = app.Services.GetRequiredService<ILogger<WebApplication>>();
                 log.LogError(t.Exception, "Database initialization failed.");
             }

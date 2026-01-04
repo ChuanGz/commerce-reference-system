@@ -1,26 +1,22 @@
 using Microsoft.Extensions.Logging;
 using UserService.Application.Commands;
 
-namespace UserService.Application.Handlers
-{
+namespace UserService.Application.Handlers {
     public class CreateUserCommandHandler(
         IUserRepository repo,
         ILogger<CreateUserCommandHandler> logger
-    ) : IRequestHandler<CreateUserCommand, Guid>
-    {
+    ) : IRequestHandler<CreateUserCommand, Guid> {
         private readonly ILogger<CreateUserCommandHandler> _logger = logger;
 
         public async Task<Guid> Handle(
             CreateUserCommand request,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
 
             _logger.LogInformation("Creating new user with email: {Email}", request.Email);
 
-            var user = new User
-            {
+            var user = new User {
                 Id = Guid.NewGuid(),
                 Name = request.Name.Trim(),
                 Email = request.Email.Trim(),
