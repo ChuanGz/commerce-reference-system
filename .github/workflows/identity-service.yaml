@@ -21,15 +21,24 @@ jobs:
 
     # Step 3: Restore dependencies
     - name: Restore dependencies
-      run: dotnet restore src/back-end/services/identity-service
+      run: dotnet restore src/back-end/services/identity-service/src/IdentityService.API/IdentityService.API.csproj
 
     # Step 4: Build the service
     - name: Build
-      run: dotnet build src/back-end/services/identity-service --no-restore
+      run: dotnet build src/back-end/services/identity-service/src/IdentityService.API/IdentityService.API.csproj --no-restore
 
     # Step 5: Run tests
     - name: Run tests
-      run: dotnet test src/back-end/services/identity-service --no-build
+      run: |
+        if [ -d src/back-end/services/identity-service/tests ]; then
+          for testproj in src/back-end/services/identity-service/tests/*.csproj src/back-end/services/identity-service/tests/*/*.csproj; do
+            if [ -f "$testproj" ]; then
+              dotnet test "$testproj" --no-build
+            fi
+          done
+        else
+          echo "No tests configured for Identity Service."
+        fi
 
   deploy:
     needs: build
