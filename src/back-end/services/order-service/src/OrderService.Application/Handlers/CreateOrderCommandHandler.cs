@@ -28,7 +28,7 @@ namespace OrderService.Application.Handlers {
                     .ToList(),
             };
 
-            order.TotalAmount = order.OrderItems.Sum(item => item.Quantity * item.UnitPrice);
+            order.RecalculateTotalAmount();
 
             await repo.AddAsync(order, cancellationToken);
             return order.Id;
