@@ -2,7 +2,7 @@ name: CI/CD (Backend)
 
 on:
   push:
-    branches: [main, production]
+    branches: [production]
   pull_request:
   workflow_dispatch:
 
@@ -30,7 +30,7 @@ jobs:
   docker-build-push:
     needs: build-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production'
+    if: github.ref == 'refs/heads/production'
     strategy:
       matrix:
         service:
@@ -71,7 +71,7 @@ jobs:
   deploy-staging:
     needs: docker-build-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production'
+    if: github.ref == 'refs/heads/production'
     steps:
       - name: Deploy (placeholder)
         run: echo "Deploy step placeholder. Configure staging deployment secrets and commands."
