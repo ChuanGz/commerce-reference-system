@@ -30,6 +30,7 @@ namespace PaymentService.Infrastructure.Persistence {
         }
 
         private static void SeedData(ModelBuilder modelBuilder) {
+            var baseDate = new DateTime(2024, 01, 01, 0, 0, 0, DateTimeKind.Utc);
             var payments = new[]
             {
                 new Payment
@@ -40,8 +41,8 @@ namespace PaymentService.Infrastructure.Persistence {
                     PaymentMethod = "Credit Card",
                     Status = PaymentStatus.Completed,
                     TransactionId = "TXN-ABC123456789",
-                    ProcessedAt = DateTime.UtcNow.AddDays(-2),
-                    CreatedAt = DateTime.UtcNow.AddDays(-2),
+                    ProcessedAt = baseDate.AddDays(-2),
+                    CreatedAt = baseDate.AddDays(-2),
                 },
                 new Payment
                 {
@@ -51,8 +52,8 @@ namespace PaymentService.Infrastructure.Persistence {
                     PaymentMethod = "PayPal",
                     Status = PaymentStatus.Completed,
                     TransactionId = "TXN-DEF987654321",
-                    ProcessedAt = DateTime.UtcNow.AddDays(-1),
-                    CreatedAt = DateTime.UtcNow.AddDays(-1),
+                    ProcessedAt = baseDate.AddDays(-1),
+                    CreatedAt = baseDate.AddDays(-1),
                 },
                 new Payment
                 {
@@ -62,8 +63,8 @@ namespace PaymentService.Infrastructure.Persistence {
                     PaymentMethod = "Debit Card",
                     Status = PaymentStatus.Pending,
                     TransactionId = null,
-                    ProcessedAt = DateTime.UtcNow,
-                    CreatedAt = DateTime.UtcNow,
+                    ProcessedAt = baseDate,
+                    CreatedAt = baseDate,
                 },
                 new Payment
                 {
@@ -73,8 +74,8 @@ namespace PaymentService.Infrastructure.Persistence {
                     PaymentMethod = "Bank Transfer",
                     Status = PaymentStatus.Failed,
                     TransactionId = null,
-                    ProcessedAt = DateTime.UtcNow.AddHours(-6),
-                    CreatedAt = DateTime.UtcNow.AddHours(-6),
+                    ProcessedAt = baseDate.AddHours(-6),
+                    CreatedAt = baseDate.AddHours(-6),
                 },
             };
 
