@@ -4,7 +4,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ../src .
+COPY src .
 RUN dotnet publish "OrderService.API/OrderService.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
