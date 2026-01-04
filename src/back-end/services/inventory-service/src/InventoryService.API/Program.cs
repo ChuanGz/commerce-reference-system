@@ -5,6 +5,8 @@ using Platform.Core.Extensions;
 
 var builder = WebApp.CreateWithDefaults<InventoryServiceEntry>(args);
 
+builder.Services.AddServiceAuthorizationPolicies("InventoryService");
+
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
 var app = builder.Build();

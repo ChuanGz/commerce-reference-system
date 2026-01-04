@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.Application.Commands;
 using ProductService.Application.Queries;
@@ -10,18 +11,21 @@ namespace ProductService.API.Controllers {
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
+        [Authorize(Policy = "ProductService.Read")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) {
             var result = await _mediator.Send(new GetAllProductsQuery(), cancellationToken);
             return Ok(result);
         }
 
         [HttpGet("active")]
+        [Authorize(Policy = "ProductService.Read")]
         public async Task<IActionResult> GetActive(CancellationToken cancellationToken = default) {
             var result = await _mediator.Send(new GetActiveProductsQuery(), cancellationToken);
             return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Policy = "ProductService.Read")]
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
@@ -31,6 +35,7 @@ namespace ProductService.API.Controllers {
         }
 
         [HttpGet("sku/{sku}")]
+        [Authorize(Policy = "ProductService.Read")]
         public async Task<IActionResult> GetBySKU(
             string sku,
             CancellationToken cancellationToken = default
@@ -40,6 +45,7 @@ namespace ProductService.API.Controllers {
         }
 
         [HttpGet("category/{category}")]
+        [Authorize(Policy = "ProductService.Read")]
         public async Task<IActionResult> GetByCategory(
             string category,
             CancellationToken cancellationToken = default
@@ -52,6 +58,7 @@ namespace ProductService.API.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Policy = "ProductService.Write")]
         public async Task<IActionResult> Create(
             [FromBody] CreateProductCommand command,
             CancellationToken cancellationToken = default
@@ -61,6 +68,7 @@ namespace ProductService.API.Controllers {
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Policy = "ProductService.Write")]
         public async Task<IActionResult> Update(
             Guid id,
             [FromBody] UpdateProductCommand command,
@@ -76,6 +84,7 @@ namespace ProductService.API.Controllers {
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Policy = "ProductService.Write")]
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default

@@ -3,6 +3,8 @@ using Platform.Core.Extensions;
 
 var builder = WebApp.CreateWithDefaults<OrderServiceEntry>(args);
 
+builder.Services.AddServiceAuthorizationPolicies("OrderService");
+
 builder.Services.AddScoped<ICustomerServiceClient, CustomerServiceClient>();
 builder.Services.AddScoped<IProductServiceClient, ProductServiceClient>();
 builder.Services.AddScoped<IInventoryServiceClient, InventoryServiceClient>();

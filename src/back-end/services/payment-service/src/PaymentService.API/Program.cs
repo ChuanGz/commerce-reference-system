@@ -7,7 +7,7 @@ using Platform.Core.Extensions;
 
 var builder = WebApp.CreateWithDefaults<PaymentServiceEntry>(args);
 
-var app = builder.Build();
+builder.Services.AddServiceAuthorizationPolicies("PaymentService");
 
 builder
     .Services.AddScoped<IPaymentRepository, PaymentRepository>()
@@ -27,6 +27,8 @@ builder.Services.AddHttpClient<IOrderServiceClient, OrderServiceClient>(client =
     );
     client.Timeout = TimeSpan.FromSeconds(30);
 });
+
+var app = builder.Build();
 
 app.UseAppDefaults();
 
