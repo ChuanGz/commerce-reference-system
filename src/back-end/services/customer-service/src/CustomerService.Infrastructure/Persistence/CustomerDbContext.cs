@@ -19,7 +19,7 @@ namespace CustomerService.Infrastructure.Persistence {
                     LastName = "Doe",
                     Phone = "1234567890",
                     Address = "123 Main St, City, State",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 01, 01, 0, 0, 0, DateTimeKind.Utc),
                 },
                 new Customer
                 {
@@ -29,7 +29,7 @@ namespace CustomerService.Infrastructure.Persistence {
                     LastName = "Smith",
                     Phone = "0987654321",
                     Address = "456 Oak Ave, City, State",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 01, 02, 0, 0, 0, DateTimeKind.Utc),
                 },
                 new Customer
                 {
@@ -39,7 +39,7 @@ namespace CustomerService.Infrastructure.Persistence {
                     LastName = "Johnson",
                     Phone = "5555555555",
                     Address = "789 Pine Rd, City, State",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 01, 03, 0, 0, 0, DateTimeKind.Utc),
                 },
                 new Customer
                 {
@@ -49,7 +49,7 @@ namespace CustomerService.Infrastructure.Persistence {
                     LastName = "Brown",
                     Phone = "1111111111",
                     Address = "321 Elm St, City, State",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 01, 04, 0, 0, 0, DateTimeKind.Utc),
                 },
                 new Customer
                 {
@@ -59,7 +59,7 @@ namespace CustomerService.Infrastructure.Persistence {
                     LastName = "Wilson",
                     Phone = "2222222222",
                     Address = "654 Maple Dr, City, State",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 01, 05, 0, 0, 0, DateTimeKind.Utc),
                 },
             };
 

@@ -27,6 +27,7 @@ namespace ProductService.Infrastructure.Persistence {
         }
 
         private static void SeedData(ModelBuilder modelBuilder) {
+            var baseDate = new DateTime(2024, 01, 01, 0, 0, 0, DateTimeKind.Utc);
             var products = new[]
             {
                 new Product
@@ -39,7 +40,7 @@ namespace ProductService.Infrastructure.Persistence {
                     Category = "Electronics",
                     SKU = "WBH-001",
                     IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = baseDate,
                 },
                 new Product
                 {
@@ -51,7 +52,7 @@ namespace ProductService.Infrastructure.Persistence {
                     Category = "Furniture",
                     SKU = "EOC-002",
                     IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = baseDate,
                 },
                 new Product
                 {
@@ -63,7 +64,7 @@ namespace ProductService.Infrastructure.Persistence {
                     Category = "Sports",
                     SKU = "SSWB-003",
                     IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = baseDate,
                 },
                 new Product
                 {
@@ -74,7 +75,7 @@ namespace ProductService.Infrastructure.Persistence {
                     Category = "Clothing",
                     SKU = "OCT-004",
                     IsActive = false,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = baseDate,
                 },
                 new Product
                 {
@@ -85,7 +86,7 @@ namespace ProductService.Infrastructure.Persistence {
                     Category = "Electronics",
                     SKU = "SFT-005",
                     IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = baseDate,
                 },
             };
 
