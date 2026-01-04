@@ -1,5 +1,7 @@
 using System.Reflection;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Platform.Core.Logging;
 
 namespace Platform.Core.Extensions;
 
@@ -9,6 +11,7 @@ public static class MediatRExtension {
         Assembly handlerAssembly
     ) {
         services.AddMediatR(handlerAssembly);
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         return services;
     }
 }
