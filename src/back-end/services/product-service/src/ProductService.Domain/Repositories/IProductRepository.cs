@@ -1,10 +1,8 @@
 using System.Linq.Expressions;
 using ProductService.Domain.Entities;
 
-namespace ProductService.Domain.Repositories
-{
-    public interface IProductRepository
-    {
+namespace ProductService.Domain.Repositories {
+    public interface IProductRepository {
         Task<List<Product>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Product?> GetBySKUAsync(string sku, CancellationToken cancellationToken = default);

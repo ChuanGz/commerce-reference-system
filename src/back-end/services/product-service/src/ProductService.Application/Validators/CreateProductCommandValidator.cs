@@ -2,12 +2,9 @@ using FluentValidation;
 using ProductService.Application.Commands;
 using ProductService.Domain.Repositories;
 
-namespace ProductService.Application.Validators
-{
-    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
-    {
-        public CreateProductCommandValidator(IProductRepository repo)
-        {
+namespace ProductService.Application.Validators {
+    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand> {
+        public CreateProductCommandValidator(IProductRepository repo) {
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage("Name is required")
@@ -34,8 +31,7 @@ namespace ProductService.Application.Validators
                 .Length(3, 20)
                 .WithMessage("SKU must be between 3 and 20 characters")
                 .MustAsync(
-                    async (sku, cancellationToken) =>
-                    {
+                    async (sku, cancellationToken) => {
                         return !await repo.AnyAsync(p => p.SKU == sku.ToUpper(), cancellationToken);
                     }
                 )

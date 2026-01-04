@@ -1,14 +1,11 @@
 using CustomerService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CustomerService.Infrastructure.Persistence
-{
-    public class CustomerDbContext(DbContextOptions<CustomerDbContext> options) : DbContext(options)
-    {
+namespace CustomerService.Infrastructure.Persistence {
+    public class CustomerDbContext(DbContextOptions<CustomerDbContext> options) : DbContext(options) {
         public DbSet<Customer> Customers => Set<Customer>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
             base.OnModelCreating(modelBuilder);
 

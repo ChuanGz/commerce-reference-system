@@ -3,10 +3,8 @@ using Platform.Core.Validation;
 
 namespace Platform.Core.Extensions;
 
-public static class ValidationExtension
-{
-    public static IServiceCollection AddPlatformValidation(this IServiceCollection services)
-    {
+public static class ValidationExtension {
+    public static IServiceCollection AddPlatformValidation(this IServiceCollection services) {
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         return services;
     }

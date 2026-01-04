@@ -3,17 +3,14 @@ using PaymentService.Application.Commands;
 using PaymentService.Application.Queries;
 using PaymentService.Domain.Constants;
 
-namespace PaymentService.API.Controllers
-{
+namespace PaymentService.API.Controllers {
     [ApiController]
     [Route("api/[controller]")]
-    public class PaymentsController(IMediator mediator) : ControllerBase
-    {
+    public class PaymentsController(IMediator mediator) : ControllerBase {
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
-        {
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) {
             var result = await _mediator.Send(new GetAllPaymentsQuery(), cancellationToken);
             return Ok(result);
         }
@@ -22,8 +19,7 @@ namespace PaymentService.API.Controllers
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await _mediator.Send(new GetPaymentByIdQuery(id), cancellationToken);
             return result != null ? Ok(result) : NotFound();
         }
@@ -32,8 +28,7 @@ namespace PaymentService.API.Controllers
         public async Task<IActionResult> GetByOrderId(
             Guid orderId,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await _mediator.Send(
                 new GetPaymentByOrderIdQuery(orderId),
                 cancellationToken
@@ -45,8 +40,7 @@ namespace PaymentService.API.Controllers
         public async Task<IActionResult> GetByStatus(
             string status,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await _mediator.Send(
                 new GetPaymentsByStatusQuery(status),
                 cancellationToken
@@ -58,8 +52,7 @@ namespace PaymentService.API.Controllers
         public async Task<IActionResult> Create(
             [FromBody] CreatePaymentCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var id = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
@@ -69,8 +62,7 @@ namespace PaymentService.API.Controllers
             Guid id,
             [FromBody] UpdatePaymentStatusCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command, nameof(command));
             if (id != command.Id)
                 return BadRequest(ErrorMessages.IdMismatch);
@@ -83,8 +75,7 @@ namespace PaymentService.API.Controllers
         public async Task<IActionResult> Process(
             Guid id,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             await _mediator.Send(new ProcessPaymentCommand(id), cancellationToken);
             return Ok();
         }
@@ -93,8 +84,7 @@ namespace PaymentService.API.Controllers
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             await _mediator.Send(new DeletePaymentCommand(id), cancellationToken);
             return NoContent();
         }

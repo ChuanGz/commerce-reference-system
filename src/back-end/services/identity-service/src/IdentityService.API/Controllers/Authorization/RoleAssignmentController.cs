@@ -4,20 +4,17 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityService.API.Controllers.Authorization
-{
+namespace IdentityService.API.Controllers.Authorization {
     [ApiController]
     [Route("api/roles/{roleId:guid}/permissions")]
     [Authorize]
-    public class RolePermissionsController(IMediator mediator) : ControllerBase
-    {
+    public class RolePermissionsController(IMediator mediator) : ControllerBase {
         [Authorize(Policy = "CanViewRole")]
         [HttpGet]
         public async Task<IActionResult> Get(
             Guid roleId,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var result = await mediator.Send(
                 new GetPermissionsByRoleQuery(roleId),
                 cancellationToken
@@ -31,8 +28,7 @@ namespace IdentityService.API.Controllers.Authorization
             Guid roleId,
             Guid permissionId,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var success = await mediator.Send(
                 new AddRolePermissionCommand(roleId, permissionId),
                 cancellationToken
@@ -46,8 +42,7 @@ namespace IdentityService.API.Controllers.Authorization
             Guid roleId,
             Guid permissionId,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             var success = await mediator.Send(
                 new RemoveRolePermissionCommand(roleId, permissionId),
                 cancellationToken

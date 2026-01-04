@@ -2,22 +2,18 @@ using IdentityService.Application.Models;
 using IdentityService.Application.Queries;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class GetRoleByIdQueryHandler(IRoleRepository roleRepository)
-        : IRequestHandler<GetRoleByIdQuery, RoleDto?>
-    {
+        : IRequestHandler<GetRoleByIdQuery, RoleDto?> {
         public async Task<RoleDto?> Handle(
             GetRoleByIdQuery query,
             CancellationToken cancellationToken
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(query);
             var role = await roleRepository.GetByIdAsync(query.Id, cancellationToken);
             return role is null
                 ? null
-                : new RoleDto
-                {
+                : new RoleDto {
                     Id = role.Id,
                     Name = role.Name,
                     PermissionIds = role.RolePermissions.Select(rp => rp.PermissionId).ToList(),

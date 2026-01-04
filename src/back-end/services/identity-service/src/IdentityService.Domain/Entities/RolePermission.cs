@@ -1,7 +1,5 @@
-namespace IdentityService.Domain.Entities
-{
-    public class RolePermission
-    {
+namespace IdentityService.Domain.Entities {
+    public class RolePermission {
         public Guid RoleId { get; set; }
         public Role Role { get; set; } = default!;
 

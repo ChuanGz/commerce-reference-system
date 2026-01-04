@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IdentityService.Application.Models
-{
-    public class RegisterDto
-    {
+namespace IdentityService.Application.Models {
+    public class RegisterDto {
         [Required]
         public string Username { get; set; } = string.Empty;
 

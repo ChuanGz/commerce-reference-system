@@ -2,12 +2,9 @@ using FluentValidation;
 using PaymentService.Application.Commands;
 using PaymentService.Domain.Constants;
 
-namespace PaymentService.Application.Validators
-{
-    public class UpdatePaymentStatusCommandValidator : AbstractValidator<UpdatePaymentStatusCommand>
-    {
-        public UpdatePaymentStatusCommandValidator()
-        {
+namespace PaymentService.Application.Validators {
+    public class UpdatePaymentStatusCommandValidator : AbstractValidator<UpdatePaymentStatusCommand> {
+        public UpdatePaymentStatusCommandValidator() {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
 
             RuleFor(x => x.Status)

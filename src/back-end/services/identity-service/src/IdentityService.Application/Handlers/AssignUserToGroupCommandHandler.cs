@@ -2,16 +2,13 @@ using IdentityService.Application.Commands;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class AssignUserToGroupCommandHandler(IUserGroupRepository userGroupRepository)
-        : IRequestHandler<AssignUserToGroupCommand, bool>
-    {
+        : IRequestHandler<AssignUserToGroupCommand, bool> {
         public async Task<bool> Handle(
             AssignUserToGroupCommand command,
             CancellationToken cancellationToken
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
 
             var exists = await userGroupRepository.GetAsync(
@@ -22,8 +19,7 @@ namespace IdentityService.Application.Handlers
             if (exists is not null)
                 return false;
 
-            var userGroup = new UserGroup
-            {
+            var userGroup = new UserGroup {
                 UserId = command.UserId,
                 GroupId = command.GroupId,
                 IsApproved = false,

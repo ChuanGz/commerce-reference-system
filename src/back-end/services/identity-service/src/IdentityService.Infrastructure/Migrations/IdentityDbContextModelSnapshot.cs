@@ -3,13 +3,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 #nullable disable
 
-namespace IdentityService.Infrastructure.Migrations
-{
+namespace IdentityService.Infrastructure.Migrations {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
-    {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
+    partial class IdentityDbContextModelSnapshot : ModelSnapshot {
+        protected override void BuildModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.5")
@@ -19,8 +16,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.Group",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name").IsRequired().HasColumnType("nvarchar(max)");
@@ -33,8 +29,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.GroupRole",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("GroupId").HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("RoleId").HasColumnType("uniqueidentifier");
@@ -49,8 +44,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.Permission",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description").IsRequired().HasColumnType("nvarchar(max)");
@@ -65,8 +59,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.Role",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name").IsRequired().HasColumnType("nvarchar(max)");
@@ -79,8 +72,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.RolePermission",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("RoleId").HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PermissionId").HasColumnType("uniqueidentifier");
@@ -95,8 +87,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.User",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PasswordHash").IsRequired().HasColumnType("nvarchar(max)");
@@ -111,8 +102,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.UserGroup",
-                b =>
-                {
+                b => {
                     b.Property<Guid>("UserId").HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("GroupId").HasColumnType("uniqueidentifier");
@@ -129,8 +119,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.GroupRole",
-                b =>
-                {
+                b => {
                     b.HasOne("IdentityService.Domain.Entities.Group", "Group")
                         .WithMany("GroupRoles")
                         .HasForeignKey("GroupId")
@@ -151,8 +140,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.RolePermission",
-                b =>
-                {
+                b => {
                     b.HasOne("IdentityService.Domain.Entities.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
@@ -173,8 +161,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.UserGroup",
-                b =>
-                {
+                b => {
                     b.HasOne("IdentityService.Domain.Entities.Group", "Group")
                         .WithMany("UserGroups")
                         .HasForeignKey("GroupId")
@@ -195,8 +182,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.Group",
-                b =>
-                {
+                b => {
                     b.Navigation("GroupRoles");
 
                     b.Navigation("UserGroups");
@@ -205,16 +191,14 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.Permission",
-                b =>
-                {
+                b => {
                     b.Navigation("RolePermissions");
                 }
             );
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.Role",
-                b =>
-                {
+                b => {
                     b.Navigation("GroupRoles");
 
                     b.Navigation("RolePermissions");
@@ -223,8 +207,7 @@ namespace IdentityService.Infrastructure.Migrations
 
             modelBuilder.Entity(
                 "IdentityService.Domain.Entities.User",
-                b =>
-                {
+                b => {
                     b.Navigation("UserGroups");
                 }
             );

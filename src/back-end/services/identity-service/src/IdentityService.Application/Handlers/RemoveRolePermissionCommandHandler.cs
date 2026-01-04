@@ -1,16 +1,13 @@
 using IdentityService.Application.Commands;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class RemoveRolePermissionCommandHandler(IRoleRepository roleRepository)
-        : IRequestHandler<RemoveRolePermissionCommand, bool>
-    {
+        : IRequestHandler<RemoveRolePermissionCommand, bool> {
         public async Task<bool> Handle(
             RemoveRolePermissionCommand command,
             CancellationToken cancellationToken
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
             var removed = await roleRepository.RevokePermissionAsync(
                 command.RoleId,

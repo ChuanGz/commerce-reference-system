@@ -1,7 +1,5 @@
-namespace IdentityService.Domain.Entities
-{
-    public class UserGroup
-    {
+namespace IdentityService.Domain.Entities {
+    public class UserGroup {
         public Guid UserId { get; set; }
         public User User { get; set; } = default!;
 

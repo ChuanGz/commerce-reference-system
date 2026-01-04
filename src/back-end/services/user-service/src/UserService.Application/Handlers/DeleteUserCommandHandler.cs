@@ -1,15 +1,12 @@
 using UserService.Application.Commands;
 using UserService.Domain.Constants;
 
-namespace UserService.Application.Handlers
-{
-    public class DeleteUserCommandHandler(IUserRepository repo) : IRequestHandler<DeleteUserCommand>
-    {
+namespace UserService.Application.Handlers {
+    public class DeleteUserCommandHandler(IUserRepository repo) : IRequestHandler<DeleteUserCommand> {
         public async Task<Unit> Handle(
             DeleteUserCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
             var user =
                 await repo.GetByIdAsync(command.Id, cancellationToken)

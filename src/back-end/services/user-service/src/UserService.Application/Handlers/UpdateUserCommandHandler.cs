@@ -1,15 +1,12 @@
 using UserService.Application.Commands;
 
-namespace UserService.Application.Handlers
-{
+namespace UserService.Application.Handlers {
     public class UpdateUserCommandHandler(IUserRepository repo)
-        : IRequestHandler<UpdateUserCommand, Unit>
-    {
+        : IRequestHandler<UpdateUserCommand, Unit> {
         public async Task<Unit> Handle(
             UpdateUserCommand command,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(command);
 
             var user =

@@ -1,20 +1,16 @@
 using InventoryService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryService.Infrastructure.Persistence
-{
+namespace InventoryService.Infrastructure.Persistence {
     public class InventoryDbContext(DbContextOptions<InventoryDbContext> options)
-        : DbContext(options)
-    {
+        : DbContext(options) {
         public DbSet<Inventory> Inventories { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Inventory>(entity =>
-            {
+            modelBuilder.Entity<Inventory>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.ProductId).IsRequired();
                 entity.Property(e => e.Quantity).IsRequired();
@@ -28,8 +24,7 @@ namespace InventoryService.Infrastructure.Persistence
             SeedData(modelBuilder);
         }
 
-        private static void SeedData(ModelBuilder modelBuilder)
-        {
+        private static void SeedData(ModelBuilder modelBuilder) {
             var inventories = new[]
             {
                 new Inventory

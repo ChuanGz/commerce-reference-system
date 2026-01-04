@@ -2,18 +2,14 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using PaymentService.Application.Interfaces;
 
-namespace PaymentService.Infrastructure.Services
-{
+namespace PaymentService.Infrastructure.Services {
     public class CustomerServiceClient(HttpClient httpClient, ILogger<CustomerServiceClient> logger)
-        : ICustomerServiceClient
-    {
+        : ICustomerServiceClient {
         public async Task<CustomerInfo?> GetCustomerAsync(
             Guid customerId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Fetching customer info: {CustomerId}", customerId);
 
                 var response = await httpClient.GetAsync(
@@ -21,8 +17,7 @@ namespace PaymentService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     var content = await response.Content.ReadAsStringAsync(cancellationToken);
                     var customer = JsonSerializer.Deserialize<CustomerInfo>(
                         content,
@@ -43,8 +38,7 @@ namespace PaymentService.Infrastructure.Services
                 );
                 return null;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error fetching customer: {CustomerId}", customerId);
                 return null;
             }
@@ -53,10 +47,8 @@ namespace PaymentService.Infrastructure.Services
         public async Task<bool> ValidateCustomerAsync(
             Guid customerId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Validating customer: {CustomerId}", customerId);
 
                 var customer = await GetCustomerAsync(customerId, cancellationToken);
@@ -69,8 +61,7 @@ namespace PaymentService.Infrastructure.Services
                 );
                 return isValid;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error validating customer: {CustomerId}", customerId);
                 return false;
             }

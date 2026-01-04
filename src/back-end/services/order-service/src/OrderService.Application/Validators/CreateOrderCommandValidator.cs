@@ -1,12 +1,9 @@
 using FluentValidation;
 using OrderService.Application.Commands;
 
-namespace OrderService.Application.Validators
-{
-    public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
-    {
-        public CreateOrderCommandValidator()
-        {
+namespace OrderService.Application.Validators {
+    public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand> {
+        public CreateOrderCommandValidator() {
             RuleFor(x => x.CustomerId).NotEmpty().WithMessage("CustomerId is required");
 
             RuleFor(x => x.ShippingAddress)
@@ -22,8 +19,7 @@ namespace OrderService.Application.Validators
                 .WithMessage("At least one order item is required");
 
             RuleForEach(x => x.OrderItems)
-                .ChildRules(item =>
-                {
+                .ChildRules(item => {
                     item.RuleFor(x => x.ProductId).NotEmpty().WithMessage("ProductId is required");
 
                     item.RuleFor(x => x.Quantity)

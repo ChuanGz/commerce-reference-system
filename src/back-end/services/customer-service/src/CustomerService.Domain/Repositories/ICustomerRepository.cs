@@ -1,10 +1,8 @@
 using System.Linq.Expressions;
 using CustomerService.Domain.Entities;
 
-namespace CustomerService.Domain.Repositories
-{
-    public interface ICustomerRepository
-    {
+namespace CustomerService.Domain.Repositories {
+    public interface ICustomerRepository {
         Task<List<Customer>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<Customer?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Customer?> GetByUserIdAsync(

@@ -3,16 +3,13 @@ using PaymentService.Domain.Constants;
 using PaymentService.Domain.Entities;
 using PaymentService.Domain.Repositories;
 
-namespace PaymentService.Application.Handlers
-{
+namespace PaymentService.Application.Handlers {
     public class ProcessPaymentCommandHandler(IPaymentRepository repo)
-        : IRequestHandler<ProcessPaymentCommand, Unit>
-    {
+        : IRequestHandler<ProcessPaymentCommand, Unit> {
         public async Task<Unit> Handle(
             ProcessPaymentCommand request,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
 
             var payment = await repo.GetByIdAsync(request.Id, cancellationToken);
@@ -32,8 +29,7 @@ namespace PaymentService.Application.Handlers
             return Unit.Value;
         }
 
-        private static async Task<bool> SimulatePaymentProcessing(Payment payment)
-        {
+        private static async Task<bool> SimulatePaymentProcessing(Payment payment) {
             await Task.Delay(100);
             return payment.Amount <= 10000m;
         }

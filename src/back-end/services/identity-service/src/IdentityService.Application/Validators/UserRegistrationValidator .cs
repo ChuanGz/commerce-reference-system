@@ -1,12 +1,9 @@
 using FluentValidation;
 using IdentityService.Application.Commands;
 
-namespace UserService.Application.Validators
-{
-    public class UserRegistrationValidator : AbstractValidator<UserRegistrationCommand>
-    {
-        public UserRegistrationValidator()
-        {
+namespace UserService.Application.Validators {
+    public class UserRegistrationValidator : AbstractValidator<UserRegistrationCommand> {
+        public UserRegistrationValidator() {
             RuleFor(x => x.Username).NotEmpty().MinimumLength(4).MaximumLength(16);
 
             RuleFor(x => x.Password)

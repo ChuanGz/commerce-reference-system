@@ -4,22 +4,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace UserService.Infrastructure.Migrations
-{
-    public partial class InitialCreate : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace UserService.Infrastructure.Migrations {
+    public partial class InitialCreate : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder?.CreateTable(
                 name: "Users",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 }
             );
@@ -83,8 +78,7 @@ namespace UserService.Infrastructure.Migrations
             );
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder?.DropTable(name: "Users");
         }
     }

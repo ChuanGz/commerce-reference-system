@@ -1,16 +1,13 @@
 using PaymentService.Application.Commands;
 using PaymentService.Domain.Repositories;
 
-namespace PaymentService.Application.Handlers
-{
+namespace PaymentService.Application.Handlers {
     public class UpdatePaymentStatusCommandHandler(IPaymentRepository repo)
-        : IRequestHandler<UpdatePaymentStatusCommand, Unit>
-    {
+        : IRequestHandler<UpdatePaymentStatusCommand, Unit> {
         public async Task<Unit> Handle(
             UpdatePaymentStatusCommand request,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
 
             var payment = await repo.GetByIdAsync(request.Id, cancellationToken);

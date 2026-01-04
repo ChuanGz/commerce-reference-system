@@ -1,20 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using OrderService.Domain.Entities;
 
-namespace OrderService.Infrastructure.Persistence
-{
-    public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContext(options)
-    {
+namespace OrderService.Infrastructure.Persistence {
+    public class OrderDbContext(DbContextOptions<OrderDbContext> options) : DbContext(options) {
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Order>(entity =>
-            {
+            modelBuilder.Entity<Order>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.CustomerId).IsRequired();
                 entity.Property(e => e.TotalAmount).IsRequired().HasColumnType("decimal(18,2)");
@@ -34,8 +30,7 @@ namespace OrderService.Infrastructure.Persistence
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<OrderItem>(entity =>
-            {
+            modelBuilder.Entity<OrderItem>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.OrderId).IsRequired();
                 entity.Property(e => e.ProductId).IsRequired();
@@ -49,8 +44,7 @@ namespace OrderService.Infrastructure.Persistence
             SeedData(modelBuilder);
         }
 
-        private static void SeedData(ModelBuilder modelBuilder)
-        {
+        private static void SeedData(ModelBuilder modelBuilder) {
             var orders = new[]
             {
                 new Order

@@ -1,20 +1,16 @@
-namespace Platform.Core.Validation
-{
+namespace Platform.Core.Validation {
     public class ValidationBehavior<TRequest, TResponse>(
         IEnumerable<IValidator<TRequest>> validators
     ) : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
-    {
+        where TRequest : IRequest<TResponse> {
         public async Task<TResponse> Handle(
             TRequest request,
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
 
-            if (validators.Any())
-            {
+            if (validators.Any()) {
                 var context = new ValidationContext<TRequest>(request);
                 var failures = (
                     await Task.WhenAll(

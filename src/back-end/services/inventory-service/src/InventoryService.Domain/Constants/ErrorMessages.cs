@@ -1,7 +1,5 @@
-namespace InventoryService.Domain.Constants
-{
-    public static class ErrorMessages
-    {
+namespace InventoryService.Domain.Constants {
+    public static class ErrorMessages {
         public const string InsufficientInventory = "Insufficient inventory to reserve";
         public const string InsufficientReservedQuantity =
             "Insufficient reserved quantity to release";

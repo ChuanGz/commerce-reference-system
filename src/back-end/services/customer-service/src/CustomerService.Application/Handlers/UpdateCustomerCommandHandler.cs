@@ -1,16 +1,13 @@
 using CustomerService.Application.Commands;
 using CustomerService.Domain.Repositories;
 
-namespace CustomerService.Application.Handlers
-{
+namespace CustomerService.Application.Handlers {
     public class UpdateCustomerCommandHandler(ICustomerRepository repo)
-        : IRequestHandler<UpdateCustomerCommand, Unit>
-    {
+        : IRequestHandler<UpdateCustomerCommand, Unit> {
         public async Task<Unit> Handle(
             UpdateCustomerCommand request,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
 
             var customer = await repo.GetByIdAsync(request.Id, cancellationToken);

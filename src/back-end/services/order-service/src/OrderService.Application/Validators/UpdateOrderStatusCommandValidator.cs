@@ -1,12 +1,9 @@
 using FluentValidation;
 using OrderService.Application.Commands;
 
-namespace OrderService.Application.Validators
-{
-    public class UpdateOrderStatusCommandValidator : AbstractValidator<UpdateOrderStatusCommand>
-    {
-        public UpdateOrderStatusCommandValidator()
-        {
+namespace OrderService.Application.Validators {
+    public class UpdateOrderStatusCommandValidator : AbstractValidator<UpdateOrderStatusCommand> {
+        public UpdateOrderStatusCommandValidator() {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
 
             RuleFor(x => x.Status)

@@ -2,18 +2,14 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using UserService.Application.Interfaces;
 
-namespace UserService.Infrastructure.Services
-{
+namespace UserService.Infrastructure.Services {
     public class IdentityServiceClient(HttpClient httpClient, ILogger<IdentityServiceClient> logger)
-        : IIdentityServiceClient
-    {
+        : IIdentityServiceClient {
         public async Task<bool> ValidateUserAsync(
             Guid userId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Validating user {UserId} with Identity Service", userId);
                 var response = await httpClient.GetAsync(
                     $"/api/users/{userId}/validate",
@@ -21,8 +17,7 @@ namespace UserService.Infrastructure.Services
                 );
                 return response.IsSuccessStatusCode;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(
                     ex,
                     "Failed to validate user {UserId} with Identity Service",
@@ -35,10 +30,8 @@ namespace UserService.Infrastructure.Services
         public async Task<UserPermissions> GetUserPermissionsAsync(
             Guid userId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation(
                     "Getting permissions for user {UserId} from Identity Service",
                     userId
@@ -48,8 +41,7 @@ namespace UserService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (!response.IsSuccessStatusCode)
-                {
+                if (!response.IsSuccessStatusCode) {
                     logger.LogWarning("Failed to get permissions for user {UserId}", userId);
                     return new UserPermissions();
                 }
@@ -62,8 +54,7 @@ namespace UserService.Infrastructure.Services
 
                 return permissions ?? new UserPermissions();
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(
                     ex,
                     "Failed to get permissions for user {UserId} from Identity Service",

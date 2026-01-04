@@ -2,18 +2,14 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using PaymentService.Application.Interfaces;
 
-namespace PaymentService.Infrastructure.Services
-{
+namespace PaymentService.Infrastructure.Services {
     public class OrderServiceClient(HttpClient httpClient, ILogger<OrderServiceClient> logger)
-        : IOrderServiceClient
-    {
+        : IOrderServiceClient {
         public async Task<OrderInfo?> GetOrderAsync(
             Guid orderId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Fetching order info: {OrderId}", orderId);
 
                 var response = await httpClient.GetAsync(
@@ -21,8 +17,7 @@ namespace PaymentService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     var content = await response.Content.ReadAsStringAsync(cancellationToken);
                     var order = JsonSerializer.Deserialize<OrderInfo>(
                         content,
@@ -40,8 +35,7 @@ namespace PaymentService.Infrastructure.Services
                 );
                 return null;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error fetching order: {OrderId}", orderId);
                 return null;
             }
@@ -50,10 +44,8 @@ namespace PaymentService.Infrastructure.Services
         public async Task<bool> ValidateOrderAsync(
             Guid orderId,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation("Validating order: {OrderId}", orderId);
 
                 var order = await GetOrderAsync(orderId, cancellationToken);
@@ -66,8 +58,7 @@ namespace PaymentService.Infrastructure.Services
                 );
                 return isValid;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error validating order: {OrderId}", orderId);
                 return false;
             }
@@ -77,10 +68,8 @@ namespace PaymentService.Infrastructure.Services
             Guid orderId,
             string paymentStatus,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 logger.LogInformation(
                     "Updating order payment status: {OrderId} - {PaymentStatus}",
                     orderId,
@@ -100,8 +89,7 @@ namespace PaymentService.Infrastructure.Services
                     cancellationToken
                 );
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     logger.LogInformation(
                         "Order payment status updated successfully: {OrderId}",
                         orderId
@@ -116,8 +104,7 @@ namespace PaymentService.Infrastructure.Services
                 );
                 return false;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Error updating order payment status: {OrderId}", orderId);
                 return false;
             }

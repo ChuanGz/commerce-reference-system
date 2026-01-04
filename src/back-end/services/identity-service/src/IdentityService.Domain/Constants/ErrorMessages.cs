@@ -1,7 +1,5 @@
-namespace IdentityService.Domain.Constants
-{
-    public static class ErrorMessages
-    {
+namespace IdentityService.Domain.Constants {
+    public static class ErrorMessages {
         public const string ValidationFailed = "Validation failed";
         public const string UnhandledException = "An error occurred while processing your request";
         public const string DefaultGroupNotFound = "Default group not found";

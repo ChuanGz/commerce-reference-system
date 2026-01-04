@@ -3,19 +3,16 @@ using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Repositories;
 
-namespace IdentityService.Application.Handlers
-{
+namespace IdentityService.Application.Handlers {
     public class UserRegistrationCommandHandler(
         IUserRepository userRepository,
         IGroupRepository groupRepository,
         IUserGroupRepository userGroupRepository
-    ) : IRequestHandler<UserRegistrationCommand, UserRegistrationResult?>
-    {
+    ) : IRequestHandler<UserRegistrationCommand, UserRegistrationResult?> {
         public async Task<UserRegistrationResult?> Handle(
             UserRegistrationCommand request,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             ArgumentNullException.ThrowIfNull(request);
             if (await userRepository.ExistsByUsernameAsync(request.Username, cancellationToken))
                 return null;
@@ -24,8 +21,7 @@ namespace IdentityService.Application.Handlers
             if (customerGroup is null)
                 throw new InvalidOperationException(ErrorMessages.DefaultGroupNotFound);
 
-            var user = new User
-            {
+            var user = new User {
                 Id = Guid.NewGuid(),
                 Username = request.Username,
                 PasswordHash = request.Password,

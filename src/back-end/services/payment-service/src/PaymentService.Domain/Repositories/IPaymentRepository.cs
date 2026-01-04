@@ -1,10 +1,8 @@
 using System.Linq.Expressions;
 using PaymentService.Domain.Entities;
 
-namespace PaymentService.Domain.Repositories
-{
-    public interface IPaymentRepository
-    {
+namespace PaymentService.Domain.Repositories {
+    public interface IPaymentRepository {
         Task<List<Payment>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<Payment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Payment?> GetByOrderIdAsync(

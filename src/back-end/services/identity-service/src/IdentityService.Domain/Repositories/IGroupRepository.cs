@@ -1,9 +1,7 @@
 using IdentityService.Domain.Entities;
 
-namespace IdentityService.Domain.Repositories
-{
-    public interface IGroupRepository
-    {
+namespace IdentityService.Domain.Repositories {
+    public interface IGroupRepository {
         Task<Group?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Group?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
         Task<List<Group>> GetAllAsync(CancellationToken cancellationToken = default);

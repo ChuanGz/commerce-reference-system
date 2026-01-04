@@ -1,7 +1,5 @@
-namespace OrderService.Application.Interfaces
-{
-    public interface ICustomerServiceClient
-    {
+namespace OrderService.Application.Interfaces {
+    public interface ICustomerServiceClient {
         Task<CustomerInfo?> GetCustomerAsync(
             Guid customerId,
             CancellationToken cancellationToken = default
@@ -12,8 +10,7 @@ namespace OrderService.Application.Interfaces
         );
     }
 
-    public class CustomerInfo
-    {
+    public class CustomerInfo {
         public Guid Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

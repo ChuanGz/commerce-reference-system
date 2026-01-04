@@ -2,19 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using PaymentService.Domain.Constants;
 using PaymentService.Domain.Entities;
 
-namespace PaymentService.Infrastructure.Persistence
-{
-    public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbContext(options)
-    {
+namespace PaymentService.Infrastructure.Persistence {
+    public class PaymentDbContext(DbContextOptions<PaymentDbContext> options) : DbContext(options) {
         public DbSet<Payment> Payments { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             ArgumentNullException.ThrowIfNull(modelBuilder, nameof(modelBuilder));
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Payment>(entity =>
-            {
+            modelBuilder.Entity<Payment>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.OrderId).IsRequired();
                 entity.Property(e => e.Amount).IsRequired().HasColumnType("decimal(18,2)");
@@ -33,8 +29,7 @@ namespace PaymentService.Infrastructure.Persistence
             SeedData(modelBuilder);
         }
 
-        private static void SeedData(ModelBuilder modelBuilder)
-        {
+        private static void SeedData(ModelBuilder modelBuilder) {
             var payments = new[]
             {
                 new Payment

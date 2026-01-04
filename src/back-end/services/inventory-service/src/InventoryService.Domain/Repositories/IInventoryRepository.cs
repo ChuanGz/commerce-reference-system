@@ -1,10 +1,8 @@
 using System.Linq.Expressions;
 using InventoryService.Domain.Entities;
 
-namespace InventoryService.Domain.Repositories
-{
-    public interface IInventoryRepository
-    {
+namespace InventoryService.Domain.Repositories {
+    public interface IInventoryRepository {
         Task<List<Inventory>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<Inventory?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Inventory?> GetByProductIdAsync(

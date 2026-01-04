@@ -7,25 +7,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
-namespace IdentityService.Infrastructure.Services
-{
+namespace IdentityService.Infrastructure.Services {
     public class JwtAuthenticationService(
         IUserRepository userRepository,
         IConfiguration config,
         ILogger<JwtAuthenticationService> logger
-    ) : IAuthenticationService
-    {
+    ) : IAuthenticationService {
         public async Task<string?> AuthenticateAsync(
             string username,
             string password,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             logger.LogInformation("Attempting authentication for user: {Username}", username);
 
             var user = await userRepository.GetByUsernameAsync(username, cancellationToken);
-            if (user is null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-            {
+            if (user is null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) {
                 logger.LogWarning("Authentication failed for user: {Username}", username);
                 return null;
             }
@@ -65,17 +61,14 @@ namespace IdentityService.Infrastructure.Services
         public async Task<TokenValidationResult> ValidateTokenAsync(
             string token,
             CancellationToken cancellationToken = default
-        )
-        {
-            try
-            {
+        ) {
+            try {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.UTF8.GetBytes(config["Jwt:Secret"]!);
 
                 tokenHandler.ValidateToken(
                     token,
-                    new TokenValidationParameters
-                    {
+                    new TokenValidationParameters {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = true,
@@ -94,16 +87,14 @@ namespace IdentityService.Infrastructure.Services
                     .Select(x => x.Value);
 
                 return await Task.FromResult(
-                    new TokenValidationResult
-                    {
+                    new TokenValidationResult {
                         IsValid = true,
                         UserId = userId,
                         Permissions = permissions,
                     }
                 );
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogWarning(ex, "Token validation failed");
                 return new TokenValidationResult { IsValid = false };
             }
@@ -112,8 +103,7 @@ namespace IdentityService.Infrastructure.Services
         public async Task RevokeTokenAsync(
             string token,
             CancellationToken cancellationToken = default
-        )
-        {
+        ) {
             logger.LogInformation("Token revocation requested");
             await Task.CompletedTask;
         }

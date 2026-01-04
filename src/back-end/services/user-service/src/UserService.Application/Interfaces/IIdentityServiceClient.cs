@@ -1,7 +1,5 @@
-namespace UserService.Application.Interfaces
-{
-    public interface IIdentityServiceClient
-    {
+namespace UserService.Application.Interfaces {
+    public interface IIdentityServiceClient {
         Task<bool> ValidateUserAsync(Guid userId, CancellationToken cancellationToken = default);
         Task<UserPermissions> GetUserPermissionsAsync(
             Guid userId,
@@ -9,8 +7,7 @@ namespace UserService.Application.Interfaces
         );
     }
 
-    public class UserPermissions
-    {
+    public class UserPermissions {
         public IEnumerable<string> Permissions { get; set; } = [];
     }
 }

@@ -2,12 +2,10 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Commands;
 
-public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
-{
+public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand> {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public CreateUserCommandValidator(IServiceScopeFactory scopeFactory)
-    {
+    public CreateUserCommandValidator(IServiceScopeFactory scopeFactory) {
         _scopeFactory = scopeFactory;
 
         RuleFor(x => x.Name)
@@ -26,8 +24,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 
         RuleFor(x => x)
             .CustomAsync(
-                async (command, context, cancellationToken) =>
-                {
+                async (command, context, cancellationToken) => {
                     using var scope = _scopeFactory.CreateScope();
                     var repo = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 

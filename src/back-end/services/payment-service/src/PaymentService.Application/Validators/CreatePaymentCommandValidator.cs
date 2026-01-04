@@ -2,18 +2,14 @@ using FluentValidation;
 using PaymentService.Application.Commands;
 using PaymentService.Domain.Repositories;
 
-namespace PaymentService.Application.Validators
-{
-    public class CreatePaymentCommandValidator : AbstractValidator<CreatePaymentCommand>
-    {
-        public CreatePaymentCommandValidator(IPaymentRepository repo)
-        {
+namespace PaymentService.Application.Validators {
+    public class CreatePaymentCommandValidator : AbstractValidator<CreatePaymentCommand> {
+        public CreatePaymentCommandValidator(IPaymentRepository repo) {
             RuleFor(x => x.OrderId)
                 .NotEmpty()
                 .WithMessage("OrderId is required")
                 .MustAsync(
-                    async (orderId, cancellationToken) =>
-                    {
+                    async (orderId, cancellationToken) => {
                         return !await repo.AnyAsync(p => p.OrderId == orderId, cancellationToken);
                     }
                 )

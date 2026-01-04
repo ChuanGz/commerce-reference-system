@@ -3,12 +3,10 @@ using CustomerService.Domain.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
-{
+public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand> {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public CreateCustomerCommandValidator(IServiceScopeFactory scopeFactory)
-    {
+    public CreateCustomerCommandValidator(IServiceScopeFactory scopeFactory) {
         _scopeFactory = scopeFactory;
 
         RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
@@ -39,8 +37,7 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
 
         RuleFor(x => x)
             .CustomAsync(
-                async (command, context, cancellationToken) =>
-                {
+                async (command, context, cancellationToken) => {
                     using var scope = _scopeFactory.CreateScope();
                     var repo = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
 
