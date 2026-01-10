@@ -1,234 +1,149 @@
-# AI Frontend Application Guide
-*(Enterprise CRUD SPA – Internal AI Prompt)*
+# Frontend Common Standard
+
+**Version**: 2.0
 
-This document is used as:
-- An **internal AI prompt** for all AI agents
-- A **standard coding guide** for the frontend team
+## Authority
+
+This document is the single source of truth for frontend standards.
+Personal preferences do not override these rules.
+Deviations require explicit technical justification and reviewer approval.
+
+## Scope
 
-Goals:
-- Build a **frontend application** (not a UI library)
-- Reuse the existing **UI Core**
-- Focus on **CRUD** and **API integration**
-- Keep code **readable, maintainable, and easy to onboard new developers**
+- Applies to all frontend code and AI agents in this repository.
+- Covers architecture, TypeScript usage, styling, and execution workflow.
+- These rules are enforceable during code review.
 
----
+## Enforceability & Review
 
-## 1. Scope & Mindset
+- Violations without justification are review failures.
+- AI agents must follow the same rules as human engineers.
+- Any exception must be documented in the PR description with reviewer approval.
 
-- This project is a **pure SPA** (API-backed CRUD)
-- We are **not building a UI system**
-- Avoid unnecessary complexity and “architecture for architecture’s sake”
-- Code must be easy for newcomers to understand and easy for future maintainers to change
+## Allowed / Forbidden / Requires Justification
 
-Always ask:
-> “If someone else edits this file 6 months from now, will they understand it quickly?”
+**Allowed**
+- Feature-based organization for application code.
+- Framework-specific implementations when they obey these standards.
+- Plain CSS or CSS Modules by default.
 
----
+**Forbidden**
+- `any` in TypeScript.
+- Cross-feature imports without explicit approval.
+- UI or rendering layers containing business logic.
+- Mixing multiple styling systems in one project.
+- Duplicating server data into client state.
+- Framework demo code or architecture for show.
 
-## 2. UI Core — Correct Usage
+**Requires justification**
+- Unsafe type assertions (`as`).
+- SCSS or CSS-in-JS usage.
+- Dependency inversion when no change or testing need exists.
 
-- Use **UI Core only**
-- **Do not wrap, fork, or copy** UI Core logic
-- If a component is missing → **request it from the UI Core team**
-- The application **must not** take ownership of the UI system
+## TypeScript Coding Standard
 
----
+TypeScript is a strict contract system, not optional typing.
 
-## 3. Data & State — React Query + Zustand
+Rules:
+- TypeScript is mandatory for all frontend code.
+- `any` is forbidden.
+- `unknown` is allowed only at system boundaries and must be narrowed.
+- Unsafe `as` assertions are forbidden unless justified.
+- API request/response types must be centralized.
+- External data must be validated at boundaries (API, forms).
+
+References:
+- https://www.typescriptlang.org/docs/handbook/
+- https://effectivetypescript.com/
+
+## Frontend Architecture Concepts
+
+Rules:
+- Business logic must be organized by feature, not technical modules.
+- Feature-based organization is mandatory for application code.
+- Cross-feature imports are forbidden unless explicitly approved.
+- Technical module-based organization is allowed only for shared or infrastructure code.
+- Features must not call HTTP or depend on concrete service implementations.
+- All external interactions must go through interfaces.
+- Services implement interfaces and are wired in the app bootstrap.
+
+References:
+- https://martinfowler.com/articles/modularization.html
+- https://web.dev/
+- https://developer.mozilla.org/
+
+## Styling & CSS Standards
+
+Rules:
+- Styling systems must be consistent per project.
+- Allowed approaches (in order of preference):
+  1. Plain CSS / CSS Modules
+  2. SCSS (only if justified)
+  3. CSS-in-JS (only if framework-required)
+- Mixing multiple styling systems in one project is forbidden.
+- CSS must be organized by responsibility (base, layout, components, utilities).
+- Responsive design must be mobile-first.
+- Breakpoints must be centralized, not hardcoded.
+
+References:
+- https://cssguidelin.es/
+- https://every-layout.dev/
+
+## SOLID Application (Controlled, Not Dogmatic)
+
+Rules:
+- SOLID exists to reduce long-term risk, not to increase abstraction.
+- No abstraction without a concrete need.
+- Dependency inversion is required only when change or testing is expected.
+- CRUD flows do not require complex patterns by default.
+
+Violating SOLID principles without justification is a review failure.
+
+## UI Core Usage
 
-### 3.1 Responsibilities
+Rules:
+- Use UI Core components as the primary UI system.
+- Do not wrap, fork, or copy UI Core components.
+- If a component is missing, request it from the UI Core team.
 
-**React Query**
-- Manages **server state**
-- Fetches data from APIs
-- Caching, refetching, invalidation
+## Data & State
 
-**Zustand**
-- Manages **client/UI state**, e.g.:
-  - Page-level UI mode
-  - Feature flags
-  - Local view preferences (outside UI Core components)
+Rules:
+- Server data must remain in the server-state layer and be refetched after mutations.
+- Client state must not duplicate server data.
+- CRUD mutations must trigger a refetch or invalidation.
 
-For DataGrid, state such as filters, pagination, sorting, and selected rows
-is already handled inside UI Core (via its hooks/context). Use the UI Core
-custom hook as-is; do not reimplement or mirror that state in Zustand.
+## AI Agent Execution Workflow
 
-Do not mix responsibilities.  
-Do not use Zustand as the primary source for server data fetching.  
-If data comes from API responses, keep it in React Query and derive UI state from it.
+### Phase 1: Planning
 
----
+- Identify the exact files to change.
+- Keep scope minimal and aligned to the request.
+- Prefer early return and low nesting.
+- Do not design for non-existent use cases.
 
-### 3.2 React Query usage
+### Phase 2: Implementation
 
-- Use React Query data **directly**
-- After mutations → **invalidate** or **refetch**
-- Avoid copying server data into Zustand
+- Use clear naming; no unclear abbreviations.
+- Keep logic at the lowest indentation level.
+- Avoid abstractions used in only one place.
+- Do not reimplement UI Core.
+- Do not duplicate server state into client state.
+- CRUD mutations must have clear refetch or invalidation.
 
-If you need derived data, compute it in selectors or memoized helpers instead of storing a second copy.
+### Phase 3: Cleanup & Build
 
-Objectives:
-- Prevent stale data
-- Avoid “double source of truth”
-- Improve maintainability
+- Format code with the project formatter.
+- Run the build (`npm run build` or equivalent).
+- If the build fails, fix the root cause immediately.
 
----
+## Final Checklist (Mandatory)
 
-### 3.3 CRUD refetch strategy
-
-- Create → refetch list
-- Update → refetch list and/or detail
-- Delete → refetch list
-- Reload page → data must still be correct
-
-Prefer data correctness over premature optimization.
-
----
-
-## 4. DataGrid / Table
-
-- Use the UI Core **DataGrid**
-- Prefer **server-side** pagination, sorting, and filtering
-
-**State management**
-- React Query: data
-- UI Core hooks/context: filters, pagination, sorting, selection
-
-**Performance**
-- Memoize column definitions
-- Avoid inline functions inside render
-- Prevent unnecessary table re-renders
-
----
-
-## 5. Forms & Validation
-
-### 5.1 Form definition
-
-- Use `useForm`
-- Strong typing
-- Declare only the fields you actually use
-- Always provide `defaultValues`
-
----
-
-### 5.2 Validation
-
-- Use a **Zod schema** + resolver
-- The schema is the **single source of truth**
-- Do not scatter manual validation logic
-
----
-
-### 5.3 Behavior & performance
-
-- `isValid` and `isDirty` should be tracked in real-time as needed
-- Never submit when invalid
-- Avoid watching the entire form (`watch()` everything)
-- For large forms → split into smaller components
-
----
-
-## 6. Routing
-
-- Use **TanStack Router**
-- Do not call router APIs directly everywhere
-- Route through a small abstraction (e.g., `useAppRouter`) to reduce lock-in
-
-**URL query params**
-- Use for filters, sorting, pagination
-- Do not put sensitive data in URLs
-- Anything in the URL is considered **public**
-
----
-
-## 7. Feature Flags
-
-- Feature flags must be supported
-- Feature flags are **configuration**, not business logic
-- Features should be easy to toggle and test independently
-
----
-
-## 8. Pre-Push Checklist (Before Opening a PR)
-
-Treat this checklist as **mandatory** before creating a PR or pushing to production.
-
-### Functionality
-- CRUD works correctly
-- Update/Delete triggers refetch
-- Reloading the page does not show stale data
-
-### Data & State
-- React Query is used for the correct responsibilities
-- Server data is not copied into Zustand
-
-### Forms
-- `defaultValues` exist
-- Validation is correct
-- No unnecessary re-renders
-
-### Tables
-- Pagination/filter/sort behave correctly
-- Performance is acceptable with large datasets
-
-### Routing
-- Query params do not leak sensitive information
-
-### Clean code & tooling
-- No `console.log`
-- No `alert`
-- No `debugger`
-- Code is readable; no overengineering
-- TypeScript has no errors
-- Lint/format checks pass
-
-### PR review checklist selection
-Before pushing a PR, identify the project stack and complete **all** items in the
-matching checklist:
-- React SPA → `docs/code-review/[PR] React code review checklist.md`
-- Angular SPA → `docs/code-review/[PR] Angular code review checklist.md`
-- .NET backend → `docs/code-review/[PR] .NET code review checklist.md`
-
-If the project type is unclear, confirm with the tech lead before opening the PR.
-
----
-
-## 9. Long-Term Maintainability Rules
-
-### 9.1 TypeScript discipline
-
-- Use TypeScript for all frontend code
-- Avoid `any`; prefer `unknown` and narrow it
-- Do not silence type errors with unsafe `as` unless justified
-- Keep API response/request types in one place (shared types module)
-- Validate external data at boundaries (API or form schemas)
-
----
-
-### 9.2 Code organization for large teams
-
-- Feature-based folders; keep feature internals private
-- Only expose feature public APIs via a single entry point
-- Avoid cross-feature imports that bypass public APIs
-- Keep components small; split when a file becomes hard to scan
-- Name things clearly; no abbreviations that require team context
-
----
-
-### 9.3 Consistency & collaboration
-
-- One canonical pattern for API calls and mutation handling
-- One canonical pattern for form setup and validation
-- Keep PRs small; avoid mixing refactors with feature work
-- Add brief docs for any non-obvious flow or convention
-
----
-
-## Conclusion
-
-This guide is a baseline, not a rigid law.
-
-Breaking it is acceptable with a valid technical reason.
-
-Keep code clean because you respect future maintainers — not because of rules.
+- [ ] Logic uses early return; no deep nesting.
+- [ ] Naming is clear; no confusing abbreviations.
+- [ ] No function exceeds ~20 lines without justification.
+- [ ] No `console.log`, `alert`, or `debugger`.
+- [ ] No duplication of server data in client state.
+- [ ] CRUD mutations refetch or invalidate data.
+- [ ] TypeScript has no errors.
+- [ ] Build succeeds.
