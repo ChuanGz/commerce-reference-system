@@ -8,6 +8,12 @@ This guide covers the simplest local run options for the repository.
 - .NET 8 SDK
 - Docker and Docker Compose for the full local stack
 
+## Configuration Rule
+
+The repository intentionally keeps only placeholder credentials in checked-in config files.
+
+Before running any service, provide real values through environment variables or local-only config overrides.
+
 ## Run Frontend Apps
 
 ### Storefront
@@ -42,6 +48,15 @@ Other services follow the same shape:
 - `src/back-end/services/product-service/src/ProductService.API`
 - `src/back-end/services/inventory-service/src/InventoryService.API`
 - `src/back-end/services/payment-service/src/PaymentService.API`
+
+## Common Local Variables
+
+Examples:
+
+```bash
+export ConnectionStrings__DefaultConnection="Server=localhost;Database=<set-me>;User Id=<set-me>;Password=<set-me>;TrustServerCertificate=true;"
+export Jwt__Secret="<set-me>"
+```
 
 ## Run Docker Compose
 

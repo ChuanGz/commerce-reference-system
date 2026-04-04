@@ -10,6 +10,7 @@ This document is the starting point for the repository documentation.
 - [`tech-stack.md`](tech-stack.md): stack choices and rationale
 - [`development-process.md`](development-process.md): expected delivery workflow
 - [`migrations.md`](migrations.md): database migration guidance
+- [`operations-baseline.md`](operations-baseline.md): logging, health, metrics, and incident-handling expectations
 
 ## Requirements
 
@@ -33,3 +34,7 @@ This document is the starting point for the repository documentation.
 - [`security`](security): security-specific notes
 - [`technical-notes`](technical-notes): technical notes and scripts
 - [`ai-prompt`](ai-prompt): AI collaboration notes
+
+## Security
+
+- [`security/configuration-baseline.md`](security/configuration-baseline.md): placeholder and secret-handling rules for checked-in config

@@ -1,6 +1,6 @@
-# Template Architect
+# Commerce Reference System
 
-Template Architect is a full-stack commerce reference repository. It combines a React storefront, an Angular backoffice, and .NET microservices for identity, users, customers, products, inventory, orders, and payments.
+Commerce Reference System is a full-stack commerce reference repository. It combines a React storefront, an Angular backoffice, and .NET microservices for identity, users, customers, products, inventory, orders, and payments.
 
 The repository is meant to help engineers, reviewers, and architects understand the target system shape, service boundaries, delivery approach, and local development flow without digging through the whole codebase first.
 
@@ -50,6 +50,8 @@ flowchart LR
 - Read [`docs/run-local.md`](docs/run-local.md) for local run instructions.
 - Read [`docs/service-map.md`](docs/service-map.md) for service ownership and cross-service flows.
 - Read [`docs/tech-stack.md`](docs/tech-stack.md) for stack choices and rationale.
+- Read [`docs/operations-baseline.md`](docs/operations-baseline.md) for the expected logging, metrics, and incident-handling baseline.
+- Read [`docs/security/configuration-baseline.md`](docs/security/configuration-baseline.md) for secret handling and local configuration expectations.
 
 ## Documentation Index
 
@@ -59,3 +61,4 @@ flowchart LR
 
 - The original AsciiDoc requirement files remain under `docs/requirements/*.adoc` as source material.
 - The Markdown requirement files are the easier-to-discuss version for product, architecture, and delivery conversations.
+- Checked-in configuration now uses placeholders for credentials and signing keys. Real values should be injected through local environment variables or local-only overrides.

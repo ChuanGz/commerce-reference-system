@@ -39,7 +39,7 @@ The system will have the following features and functionalities:
        - **Member**: Logged-in customers with access to Storefront features.
        - **Backoffice User**: Internal users who manage storefront operations (e.g., logistics staff).
        - **SuperAdmin**: A user with the highest privileges who:
-         - Is initialized with default credentials (username: `manager`, password: `manager`) on the first use.
+         - Requires an administrator account to be initialized securely on the first use.
          - Cannot be deleted.
     2. Perform CRUD operations for all roles except **SuperAdmin**.
   - **Product Service**:
