@@ -62,3 +62,9 @@ flowchart LR
 - The original AsciiDoc requirement files remain under `docs/requirements/*.adoc` as source material.
 - The Markdown requirement files are the easier-to-discuss version for product, architecture, and delivery conversations.
 - Checked-in configuration now uses placeholders for credentials and signing keys. Real values should be injected through local environment variables or local-only overrides.
+
+## Usage Policy
+
+- This repository is shared for learning, technical review, and knowledge sharing.
+- No permission is granted to copy, reuse, modify, redistribute, sublicense, sell, deploy, or use this code in another repository, product, service, or internal system without prior written approval from the repository owner.
+- See [LICENSE](LICENSE), [DISCLAIMER.md](DISCLAIMER.md), [CONTRIBUTING.md](CONTRIBUTING.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
