@@ -1,7 +1,7 @@
 using FluentValidation;
 using IdentityService.Application.Commands;
 
-namespace UserService.Application.Validators {
+namespace IdentityService.Application.Validators {
     public class UserRegistrationValidator : AbstractValidator<UserRegistrationCommand> {
         public UserRegistrationValidator() {
             RuleFor(x => x.Username).NotEmpty().MinimumLength(4).MaximumLength(16);
