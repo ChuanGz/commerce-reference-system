@@ -4,27 +4,32 @@ This document is the starting point for the repository documentation.
 
 ## Start Here
 
-- [`requirements/requirements.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/requirements.md): simplified product and system requirements
-- [`run-local.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/run-local.md): local run instructions
-- [`service-map.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/service-map.md): service ownership and cross-service flows
-- [`tech-stack.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/tech-stack.md): stack choices and rationale
-- [`development-process.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/development-process.md): expected delivery workflow
-- [`migrations.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/migrations.md): database migration guidance
+- [`requirements/requirements.md`](requirements/requirements.md): simplified product and system requirements
+- [`run-local.md`](run-local.md): local run instructions
+- [`service-map.md`](service-map.md): service ownership and cross-service flows
+- [`tech-stack.md`](tech-stack.md): stack choices and rationale
+- [`development-process.md`](development-process.md): expected delivery workflow
+- [`migrations.md`](migrations.md): database migration guidance
 
 ## Requirements
 
-- [`requirements/requirements.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/requirements.md)
-- [`requirements/implementation-plan.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/implementation-plan.md)
-- [`requirements/milestones.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/milestones.md)
-- [`requirements/acceptance-criteria.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/acceptance-criteria.md)
+- [`requirements/requirements.md`](requirements/requirements.md)
+- [`requirements/implementation-plan.md`](requirements/implementation-plan.md)
+- [`requirements/milestones.md`](requirements/milestones.md)
+- [`requirements/acceptance-criteria.md`](requirements/acceptance-criteria.md)
 
 ## Source Material
 
 - original AsciiDoc requirement files remain under `docs/requirements/*.adoc`
+- source files:
+  - `requirements/1-requirement.adoc`
+  - `requirements/2-implementation-plan.adoc`
+  - `requirements/3-milestones.adoc`
+  - `requirements/4-result-gathering.adoc`
 
 ## Supporting Docs
 
-- `docs/code-review`: review checklists by stack
-- `docs/security`: security-specific notes
-- `docs/technical-notes`: technical notes and scripts
-- `docs/ai-prompt`: AI collaboration notes
+- [`code-review`](code-review): review checklists by stack
+- [`security`](security): security-specific notes
+- [`technical-notes`](technical-notes): technical notes and scripts
+- [`ai-prompt`](ai-prompt): AI collaboration notes
