@@ -4,13 +4,13 @@ This document defines the expected delivery workflow for the repository.
 
 ## 1. Start From Requirements
 
-- Read [`docs/requirements/requirements.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/requirements.md).
+- Read [`requirements/requirements.md`](requirements/requirements.md).
 - Confirm whether the change affects storefront, backoffice, backend services, or shared contracts.
 - If the requirement is unclear, write the open question before coding.
 
 ## 2. Confirm Ownership
 
-Use [`docs/service-map.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/service-map.md) to decide:
+Use [`service-map.md`](service-map.md) to decide:
 
 - which service owns the data
 - which service owns the workflow decision
@@ -40,7 +40,7 @@ Before opening a PR:
 - validate the changed flow end to end
 - update documentation when behavior or ownership changes
 
-Use [`docs/run-local.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/run-local.md) for commands.
+Use [`run-local.md`](run-local.md) for commands.
 
 ## 6. Testing Expectations
 

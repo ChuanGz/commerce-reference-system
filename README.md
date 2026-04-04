@@ -46,14 +46,14 @@ flowchart LR
 
 ## Quick Start
 
-- Read [`docs/requirements/requirements.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/requirements.md) for the simplified product and system requirements.
-- Read [`docs/run-local.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/run-local.md) for local run instructions.
-- Read [`docs/service-map.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/service-map.md) for service ownership and cross-service flows.
-- Read [`docs/tech-stack.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/tech-stack.md) for stack choices and rationale.
+- Read [`docs/requirements/requirements.md`](docs/requirements/requirements.md) for the simplified product and system requirements.
+- Read [`docs/run-local.md`](docs/run-local.md) for local run instructions.
+- Read [`docs/service-map.md`](docs/service-map.md) for service ownership and cross-service flows.
+- Read [`docs/tech-stack.md`](docs/tech-stack.md) for stack choices and rationale.
 
 ## Documentation Index
 
-- [`docs/README.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/README.md)
+- [`docs/README.md`](docs/README.md)
 
 ## Notes
 
