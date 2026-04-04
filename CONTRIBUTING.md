@@ -34,3 +34,13 @@ By submitting code, text, diagrams, issues, or other material, you confirm that:
 You grant the repository owner a perpetual, worldwide, irrevocable, royalty-free, sublicensable right to use, modify, adapt, publish, redistribute, relicense, or reject the submission without compensation.
 
 Do not contribute if you do not agree with these terms.
+
+## Commit Messages
+
+Use short, clean English commit messages with a clear action.
+
+Recommended style:
+
+- `Clarify service ownership documentation`
+- `Sanitize Docker configuration examples`
+- `Add operations baseline`
