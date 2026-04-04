@@ -1,2 +1,0 @@
-dotnet add src/IdentityService.Application package Microsoft.IdentityModel.Tokens
-dotnet add src/IdentityService.Application package System.IdentityModel.Tokens.Jwt

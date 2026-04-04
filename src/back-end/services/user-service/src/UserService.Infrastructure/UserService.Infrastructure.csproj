@@ -2,12 +2,9 @@
   <ItemGroup>
     <ProjectReference Include="..\UserService.Application\UserService.Application.csproj" />
     <ProjectReference Include="..\UserService.Domain\UserService.Domain.csproj" />
-    <!-- runtime packages you probably already have -->
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
-    <!-- 🔥 ADD THIS: required for migrations / update-database -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
-      <!-- keep it design-time only so it isn't copied to production output -->
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
