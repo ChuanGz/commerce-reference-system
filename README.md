@@ -1,122 +1,61 @@
 # Template Architect
 
-Template Architect is a full-stack reference project that matches the current
-requirements: a customer Storefront (React), an internal Backoffice (Angular),
-and .NET microservices for users, products, orders, and inventory.
+Template Architect is a full-stack commerce reference repository. It combines a React storefront, an Angular backoffice, and .NET microservices for identity, users, customers, products, inventory, orders, and payments.
 
-Use this repo to understand **what the system does**, **where each part lives**,
-and **how to run the basics**.
+The repository is meant to help engineers, reviewers, and architects understand the target system shape, service boundaries, delivery approach, and local development flow without digging through the whole codebase first.
 
----
+## Repository Layout
 
-## What This Repository Contains
+- `src/front-end/storefront`: customer-facing React application
+- `src/front-end/backoffice`: internal Angular application
+- `src/back-end`: .NET backend solution and shared backend platform code
+- `src/docker-compose.yaml`: local multi-service compose file
+- `docs`: project documentation, requirements, run guides, and reference notes
+- `.github/workflows`: service-specific CI workflows
 
-- **Storefront (React)**: customer-facing product browsing and ordering
-- **Backoffice (Angular)**: internal CRUD for users/products/orders
-- **.NET microservices**: identity, user, customer, product, inventory, order, payment
-- **Docs**: requirements and technical notes under `docs/`
+## System Scope
 
-See requirements in `docs/requirements/1-requirement.adoc`.
+- Storefront for product browsing, login, and order history
+- Backoffice for user, product, and order operations
+- Backend services for identity, user, customer, product, inventory, order, and payment concerns
 
----
+## Architecture Snapshot
 
-## Project Structure
-
-```
-template-architect/
-├── src/
-│   ├── front-end/
-│   │   ├── storefront/   # React storefront app
-│   │   └── backoffice/   # Angular backoffice app
-│   └── back-end/
-│       ├── BackEnd.sln   # .NET solution
-│       └── services/
-│           ├── identity-service/
-│           ├── user-service/
-│           ├── customer-service/
-│           ├── product-service/
-│           ├── inventory-service/
-│           ├── order-service/
-│           └── payment-service/
-├── docs/
-└── .github/workflows/    # CI/CD workflows per service
+```mermaid
+flowchart LR
+  Storefront[Storefront React] --> Gateway[API Gateway]
+  Backoffice[Backoffice Angular] --> Gateway
+  Gateway --> Identity[identity-service]
+  Gateway --> User[user-service]
+  Gateway --> Customer[customer-service]
+  Gateway --> Product[product-service]
+  Gateway --> Inventory[inventory-service]
+  Gateway --> Order[order-service]
+  Gateway --> Payment[payment-service]
 ```
 
----
+## Service Map
 
-## Service Responsibilities (High Level)
+- `identity-service`: authentication, token issuance, and identity integration
+- `user-service`: internal users, roles, and user administration
+- `customer-service`: customer profile data used by ordering flows
+- `product-service`: product catalog and pricing
+- `inventory-service`: stock, reservation, and availability logic
+- `order-service`: order lifecycle and order orchestration
+- `payment-service`: payment workflow extension point
 
-### Frontend
-- **Storefront (React)**: product listing, login, order creation, order history
-- **Backoffice (Angular)**: CRUD for users/products, order review and status changes
+## Quick Start
 
-### Backend
-- **Identity service**: authentication, token issuance, SSO/MFA (per requirements)
-- **User service**: roles and user CRUD
-- **Customer service**: customer profile data used by orders
-- **Product service**: catalog and pricing
-- **Inventory service**: stock, commit, and availability
-- **Order service**: order creation and lifecycle
-- **Payment service**: extension point for payment flows
+- Read [`docs/requirements/requirements.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/requirements/requirements.md) for the simplified product and system requirements.
+- Read [`docs/run-local.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/run-local.md) for local run instructions.
+- Read [`docs/service-map.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/service-map.md) for service ownership and cross-service flows.
+- Read [`docs/tech-stack.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/tech-stack.md) for stack choices and rationale.
 
----
+## Documentation Index
 
-## Why One Repository (Monorepo)
+- [`docs/README.md`](/Users/nhantathanh/GitHub/Personal/template-architect/docs/README.md)
 
-- **Single source of truth** for requirements, docs, and contracts
-- **Cross-service changes** are easier to review in one PR
-- **Consistent tooling** (lint/test/build) across all services
-- **Shared UI Core** and frontend conventions stay aligned
+## Notes
 
----
-
-## CI/CD Workflows (Why They Exist)
-
-Workflows in `.github/workflows/*-service.yaml` are **per service** and trigger
-on path changes. This keeps builds focused and avoids rebuilding the whole repo
-for a small change.
-
-If directories move, update the workflow path filters so CI triggers correctly.
-
----
-
-## Quick Start (Basic)
-
-### Prerequisites
-- Node.js (for frontends)
-- .NET 8 SDK (for services)
-
-### Auth Configuration (Required)
-Backend services expect:
-- `Auth:Authority`
-- `Auth:Audience`
-
-Set them in `appsettings.*.json` or environment variables before running APIs.
-
-### Run Storefront
-```bash
-cd src/front-end/storefront
-npm install
-npm start
-```
-
-### Run Backoffice
-```bash
-cd src/front-end/backoffice
-npm install
-npm start
-```
-
-### Run a Backend Service (example: Order Service)
-```bash
-dotnet run --project src/back-end/services/order-service/src/OrderService.API
-```
-
-For full orchestration, see `docs/technical-notes/HOW_TO_RUN.md`.
-
----
-
-## Docs
-
-- Requirements: `docs/requirements/1-requirement.adoc`
-- Technical notes: `docs/technical-notes/`
+- The original AsciiDoc requirement files remain under `docs/requirements/*.adoc` as source material.
+- The Markdown requirement files are the easier-to-discuss version for product, architecture, and delivery conversations.
