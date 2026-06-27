@@ -72,3 +72,9 @@ flowchart LR
 - This repository is shared for learning, technical review, and knowledge sharing.
 - No permission is granted to copy, reuse, modify, redistribute, sublicense, sell, deploy, or use this code in another repository, product, service, or internal system without prior written approval from the repository owner.
 - See [LICENSE](LICENSE), [DISCLAIMER.md](DISCLAIMER.md), [CONTRIBUTING.md](CONTRIBUTING.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+## Validation and status
+
+Follow [`docs/run-local.md`](docs/run-local.md) to start the applicable services and use each application or service's test project for validation. The repository is a reviewable reference system, not a turnkey production deployment; incomplete or extension-point behavior is tracked in [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md).
+
+Security expectations and environment hardening are documented in [`docs/security-hardening.md`](docs/security-hardening.md). Never commit production credentials, customer data, or signing material.
