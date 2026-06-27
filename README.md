@@ -4,6 +4,10 @@ Commerce Reference System is a full-stack commerce reference repository. It comb
 
 The repository is meant to help engineers, reviewers, and architects understand the target system shape, service boundaries, delivery approach, and local development flow without digging through the whole codebase first.
 
+## Purpose
+
+This system is a reviewable reference for designing and operating a complete commerce platform across customer, staff, and service boundaries. It demonstrates how storefront and backoffice experiences coordinate with independently owned services, and gives teams a concrete baseline for architecture reviews, delivery planning, security, and operational readiness. It is not positioned as a turnkey production product.
+
 ## Repository Layout
 
 - `src/front-end/storefront`: customer-facing React application
